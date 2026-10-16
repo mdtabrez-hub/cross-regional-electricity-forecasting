@@ -28,18 +28,30 @@ submission/                  journal comparison, checklist, cover letter, statem
 
 ## Reproduce
 
-Requires Python 3.13 and ~8 GB RAM; full run ≈ 3–4 h on 4 CPU cores.
+Requires Python 3.13, ~8 GB RAM, pandoc ≥ 3.1 and (for the PDF) a Chromium/Chrome binary.
+Full run ≈ 6–7 h wall-clock on 4 CPU cores (main campaign) + ≈ 2 h (post-review analyses); `python -m src.run_all` runs everything.
 
 ```bash
 cd cross_regional_electricity_forecasting
 python -m pip install -r requirements.txt
-python -m pytest -q tests            # unit tests
-python -m src.run_all                # full pipeline (downloads ~95 MB from PUDL S3)
-python -m src.build_manuscript       # regenerate manuscript .docx (+ .pdf if LibreOffice present)
+python -m pytest -q tests                      # 15 unit tests (leakage, metrics, conformal, adapters)
+python -m src.run_all                          # download → preprocess → train → evaluate → tables/figures
+python -m src.revision_experiments ridge       # post-review analyses (DECISION_LOG D14–D16)
+python -m src.revision_experiments excluded
+python -m src.revision_experiments origins
+python -m src.revision_experiments spatial
+python -m src.revision_evaluate
+python -m src.robustness_analysis evaluate && python -m src.generate_tables && python -m src.generate_figures
+python -m src.manuscript_numbers               # every number quoted in the manuscript
+python -m src.build_manuscript                 # manuscript_final.docx/.pdf
+python -m src.build_manuscript --sections-dir manuscript/supplement --rendered manuscript/supplement_rendered.md --out manuscript/supplementary_material.docx
+python -m src.build_submission_docs            # cover letter, highlights, declarations, response template
+python -m src.qa_checks                        # automated consistency checks
 ```
 
-Individual stages: see `src/run_all.py` (`STAGES`). Raw files are verified by SHA-256
-(`configs/experiment.yaml`, `data/raw/SHA256SUMS`).
+Raw files are verified by SHA-256 (`configs/experiment.yaml`, `data/raw/SHA256SUMS`). Note that the
+PUDL `stable/` alias moves with new releases; use the versioned archive if checksums no longer match.
+The Chromium path used for the PDF is set in `src/build_manuscript.py` (`CHROME`).
 
 ## Status
 
@@ -48,5 +60,5 @@ and `FINAL_QA_REPORT.md`.
 
 ## Licence
 
-Code: MIT (placeholder pending author confirmation). Data: EIA-930 is a U.S. Government
+Code: no licence chosen yet [AUTHOR ACTION: add a LICENSE file, e.g. MIT]. Data: EIA-930 is a U.S. Government
 work (public domain); PUDL outputs are CC-BY-4.0 — cite Catalyst Cooperative / PUDL and EIA.

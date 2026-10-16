@@ -8,15 +8,19 @@ claims to their evidence. Status: **S** supported, **P** partially supported / c
 |---|---|---|---|
 | C1 | 48 BAs pass pre-specified quality criteria; 2.95 M BA-hours | `data/processed/regions.csv`, `data/metadata/dataset_metadata.json` | S |
 | C2 | Zero-shot (G-LRO) is systematically but slightly worse than in-region (G-IN); gap grows as horizon shortens | `results/metrics/paired_tests_point.csv`, `block_bootstrap_summary.csv`, Table 3 | S (median relative changes with bootstrap CIs; spatial correlation caveat) |
-| C3 | G-LRO is not worse than local models trained on 4 years of target data | `paired_tests_point.csv` (LGB_G_LRO vs LGB_L) | S at 1 h and 6 h; at 24 h the CI includes 0 (non-inferior, not superior) |
+| C3 | Zero-shot better than local at 1 h/6 h (random folds); non-inferior at 24 h (post-hoc 1% margin); on a par with local at both horizons under spatial blocking | `paired_tests_point.csv`, `rev_equivalence_tost.csv`, `rev_zero_shot_vs_local_by_year.csv`, `rev_spatial_tests.csv` | S (margin post hoc) |
 | C4 | Global in-region beats local | `paired_tests_point.csv` | S |
-| C5 | Fine-tuning / local training on 1–13 weeks mostly degrades accuracy | `paired_tests_adaptation.csv`, Table 4 | S for the tested (untuned) adaptation settings; window is December (seasonality caveat) |
-| C6 | Errors grow with model age; refit helps local, not global, models | `temporal_metrics_summary.csv`, `paired_tests_refit.csv` | S (one refit origin) |
+| C5 | Fine-tuning / local training on 1–13 weeks degrades accuracy at every onboarding date tested | `paired_tests_adaptation.csv`, `rev_adapt_origins_tests.csv`, Tables 4, S5 | S for the tested (untuned) settings; exception h = 1 h, 13 weeks, December origin (−1.5%) |
+| C6 | Errors did not grow monotonically with model age (2025 harder for all models incl. SN24); refit helps local, not global, models | `temporal_metrics_summary.csv`, `paired_tests_refit.csv` | S (one refit origin) |
 | C7 | Static intervals near-nominal on average but under-cover in a substantial share of BAs, both in-region and unseen | `probabilistic_summary.csv` (share_regions_undercover_5pp) | S |
 | C8 | Target-calibrated SCP on 4 weeks under-covers | `probabilistic_summary.csv` (SCP-T4) | S |
-| C9 | ACI restores per-BA coverage; γ = 0.005 produces wide capped intervals; validation-selected γ gives coverage at CQR-like sharpness | `probabilistic_summary.csv`, `aci_capped_share_by_region.csv`, `aci_gamma_selected_on_validation.csv`, `aci_gamma_sensitivity_summary.csv` | P: ACI-CQR-V added post freeze (DECISION_LOG D10); γ selected on validation only |
+| C9 | ACI marginal coverage by construction; γ = 0.005 produces wide capped intervals at 24 h; γ chosen on source BAs (ACI-CQR-S) gives CQR-like sharpness at 24 h and slightly lower at 1 h; γ = 0 control under-covers | `rev_calibration_summary.csv`, `rev_gamma_source_selected.csv`, `aci_capped_share_by_region.csv`, `aci_gamma_sensitivity_summary.csv` | S (post-review analysis, D15); ACI-CQR-V exploratory |
 | C10 | BA day-ahead forecasts more accurate than weather-free 24-h models | `ba_dayahead_summary.csv` | S as a reference only (different information sets) |
-| C11 | Robustness to missing inputs | `missing_data_summary.csv`, Table 8 | see results |
-| C12 | Ablations (calendar, weekly lags, source-pool size) | `ablation_results.csv`, Table 9 | see results |
-| C13 | Compute: all models train on 4-core CPU; global cheaper to maintain than 48 local | `results/logs/compute_costs_*.csv`, Table 10 | S (wall-clock on shared VM; indicative) |
+| C11 | Missing inputs hurt 1-h far more than 24-h forecasts; MCAR-trained model mitigates | `missing_data_summary.csv` (common hours), Tables 9, S3 | S (stylised MCAR/uniform outages) |
+| C12 | Calendar features matter most; accuracy declines steadily as source pool shrinks | `ablation_results.csv`, Table 10 | S (3 draws per pool size) |
+| C13 | Compute: all models train on 4-core CPU; global cheaper to maintain than 48 local | `results/logs/compute_costs_*.csv`, Table 11 | S (wall-clock on shared VM; indicative) |
 | C14 | Novelty: combination not found in literature | `literature/research_gap_analysis.md` | P: search via web snippets only; not exhaustive |
+| C15 | Geographic gap larger when whole regions held out (spatial blocks): 1.7% (24 h), 8.0% (1 h) | `rev_spatial_tests.csv`, `rev_spatial_gap_tails.csv` | S (post-review, D14) |
+| C16 | Gap has a heavy tail at 1 h (max 44.6%, GCPD; MISO 18.5%) | `rev_gap_distribution_cluster_bootstrap.csv` | S |
+| C17 | Static intervals under-cover at daily peaks (~11–12% vs 5% nominal upper tail) | `rev_peak_metrics_by_region.csv` | S |
+| C18 | Excluded small BAs: zero-shot comparable to local but much larger errors | `rev_excluded_bas.csv` | S (5 BAs) |

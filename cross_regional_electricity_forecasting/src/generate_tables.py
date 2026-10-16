@@ -50,7 +50,7 @@ def t_point():
                       "nRMSE % median": (100 * s.nRMSE_median).round(2), "MASE median": s.MASE_median.round(3),
                       "Bias % median": (100 * s.bias_pct_median).map(lambda v: f"{v:.2f}".replace("-0.00", "0.00")),
                       "Regions": s.n_regions})
-    save(t, "table_2_point_accuracy", "Table 2. Test-period (2024–2025) point accuracy across 48 BAs.",
+    save(t, "table_01_point_accuracy", "Table 1. Test-period (2024–2025) point accuracy across 48 BAs.",
          "results/metrics/point_metrics_summary.csv")
 
 
@@ -83,7 +83,7 @@ def t_adapt():
     s = s.sort_values(["h", "o"])
     t = pd.DataFrame({"h (h)": s.h, "Method": s.method.map(lab), "nMAE % median [IQR]": fmt_iqr(s, "nMAE"),
                       "MASE median": s.MASE_median.round(3)})
-    save(t, "table_4_adaptation", "Table 4. Limited target-data adaptation for unseen BAs (test 2024–2025).",
+    save(t, "table_04_adaptation", "Table 4. Limited target-data adaptation for unseen BAs (test 2024–2025).",
          "results/metrics/adaptation_metrics_summary.csv")
 
 
@@ -101,10 +101,10 @@ def t_temporal():
                        "Global refit (2025) %": (100 * rr.LGB_G_IN_refit).round(2),
                        "Local frozen (2025) %": (100 * rr.LGB_L).round(2),
                        "Local refit (2025) %": (100 * rr.LGB_L_refit).round(2)})
-    save(t.rename(columns={"h": "h (h)", "method": "Method"}), "table_5_temporal",
+    save(t.rename(columns={"h": "h (h)", "method": "Method"}), "table_05_temporal",
          "Table 5. Median nMAE (%) by evaluation year (frozen models trained on 2019–2022).",
          "results/metrics/temporal_metrics_summary.csv")
-    save(t2, "table_6_refit", "Table 6. Frozen vs. refit (rolling origin) models on 2025: median nMAE (%).",
+    save(t2, "table_06_refit", "Table 6. Frozen vs. refit (rolling origin) models on 2025: median nMAE (%).",
          "results/metrics/refit_metrics_summary.csv")
 
 
@@ -168,7 +168,7 @@ def t_ablation():
                       "Median rel. change vs full LRO %": (100 * s.median_rel_change).map(lambda v: "reference" if pd.isna(v) else f"{v:.1f}"),
                       "95% CI": s.apply(lambda r: "" if pd.isna(r.rel_ci_lo) else f"[{100*r.rel_ci_lo:.1f}, {100*r.rel_ci_hi:.1f}]", axis=1),
                       "Wilcoxon p (Holm)": s.p_holm.map(lambda p: "" if pd.isna(p) else f"{p:.2g}")})
-    save(t, "table_10_ablation", "Table 10. Ablations of the zero-shot global model (h = 24 h, unseen BAs).",
+    save(t, "table_11_ablation", "Table 11. Ablations of the zero-shot global model (h = 24 h, unseen BAs).",
          "results/metrics/ablation_results.csv")
 
 
@@ -184,10 +184,10 @@ def t_compute():
                       "Model size (MB)": (g.size_mb / 1e6).round(2), "Trees": g.trees.round(0),
                       "Peak RSS of run (MB)": g.peak_rss.round(0)})
     a = LOG_DIR / "compute_costs_adapt.csv"
-    save(t, "table_11_compute", "Table 11. Computational cost (4-core CPU).", "results/logs/compute_costs_point.csv")
+    save(t, "table_12_compute", "Table 12. Computational cost (4-core CPU).", "results/logs/compute_costs_point.csv")
     if a.exists():
         aa = pd.read_csv(a)
-        save(aa.round(3), "table_S10_compute_adaptation", "Table 10b. Adaptation fit time per target BA (s).",
+        save(aa.round(3), "table_S10_compute_adaptation", "Table S10. Adaptation fit time per target BA (s).",
              "results/logs/compute_costs_adapt.csv")
 
 
@@ -195,7 +195,7 @@ def t_ba():
     s = pd.read_csv(METRIC_DIR / "ba_dayahead_summary.csv")
     t = pd.DataFrame({"h (h)": s.h, "Method": s.method.map(LABEL), "nMAE % median [IQR]": fmt_iqr(s, "nMAE"),
                       "Bias % median": (100 * s.bias_pct_median).round(2), "Regions": s.n_regions})
-    save(t, "table_12_ba_reference", "Table 12. Comparison with BA-reported day-ahead forecasts (hours where available).",
+    save(t, "table_03_ba_reference", "Table 3. Comparison with BA-reported day-ahead forecasts (hours where available).",
          "results/metrics/ba_dayahead_summary.csv")
 
 
@@ -214,8 +214,8 @@ def t_tests_main():
                         "A sig. better / B sig. better (block bootstrap, BAs %)": t.apply(
                             lambda r: f"{100*r.share_a_better_sig:.0f} / {100*r.share_b_better_sig:.0f}", axis=1),
                         "Holm p": t.p_holm_all.map(lambda p: f"{p:.1g}" if p >= 1e-4 else "<1e-4")})
-    save(out.sort_values(["h (h)"]), "table_3_paired_tests",
-         "Table 3. Key paired comparisons of per-BA nMAE (test period; negative = A more accurate).",
+    save(out.sort_values(["h (h)"]), "table_02_paired_tests",
+         "Table 2. Key paired comparisons of per-BA nMAE (test period; negative = A more accurate).",
          "results/metrics/paired_tests_point.csv; results/metrics/block_bootstrap_summary.csv")
 
 
@@ -231,7 +231,7 @@ def t_prob_main():
                       "BAs > 5 pp under %": (100 * s.share_regions_undercover_5pp).round(0),
                       "Median hourly width %": (100 * s.width_hour_median_norm_median).round(2),
                       "Median IS %": (100 * s.interval_score_norm_median).round(2)})
-    save(t, "table_7_probabilistic", "Table 7. Calibration of nominal 90% intervals for unseen BAs (random folds, test "
+    save(t, "table_07_probabilistic", "Table 7. Calibration of nominal 90% intervals for unseen BAs (random folds, test "
          "period). Widths and interval scores (IS) are in % of mean load.", "results/metrics/probabilistic_summary.csv")
 
 
@@ -240,13 +240,15 @@ def t_rev_calibration():
     if not f.exists():
         return
     s = pd.read_csv(f)
-    t = pd.DataFrame({"Setting": s.setting, "h (h)": s.h, "Method": s.method,
+    lab = s.method.str.replace("gamma=", "γ = ", regex=False).str.replace("pre-registered", "frozen protocol", regex=False)\
+        .str.replace("gamma source-selected", "γ selected on source BAs", regex=False)
+    t = pd.DataFrame({"Setting": s.setting, "h (h)": s.h, "Method": lab,
                       "Mean cov. %": (100 * s.coverage_mean).round(1),
                       "Min–max cov. %": s.apply(lambda r: f"{100*r.coverage_min:.1f}–{100*r.coverage_max:.1f}", axis=1),
                       "BAs > 5 pp under %": (100 * s.share_under_5pp).round(0),
                       "Median hourly width %": (100 * s.width_p50_median).round(2),
                       "Median IS %": (100 * s.IS_median).round(2)})
-    save(t, "table_8_calibration_revision", "Table 8. Online and source-only calibration of 90% intervals for unseen BAs, "
+    save(t, "table_08_calibration_revision", "Table 8. Online and source-only calibration of 90% intervals for unseen BAs, "
          "including spatially blocked folds (post-review analyses; γ selected on source BAs only for ACI-CQR-S).",
          "results/metrics/rev_calibration_summary.csv")
 
@@ -261,8 +263,8 @@ def t_missing_main():
     piv = piv.sort_values(["h", "scenario"], key=lambda c: c.map(order) if c.name == "scenario" else c)
     piv = piv.rename(columns={"h": "h (h)", "scenario": "Scenario"})
     cols = ["h (h)", "Scenario", "Native NaN", "LOCF", "Weekly-seasonal", "MCAR-trained, native"]
-    save(piv[[c for c in cols if c in piv]].fillna("–"), "table_9_missing_data",
-         "Table 9. Median nMAE (%) of the in-region global model with corrupted inputs (test period; common scored hours).",
+    save(piv[[c for c in cols if c in piv]].fillna("–"), "table_10_missing_data",
+         "Table 10. Median nMAE (%) of the in-region global model with corrupted inputs (test period; common scored hours).",
          "results/metrics/missing_data_summary.csv")
 
 
@@ -291,7 +293,9 @@ def t_supplementary_revision():
     if f.exists():
         s = pd.read_csv(f)
         s = s[s.method.str.startswith(("CQR", "ACI-CQR-S"))]
-        t = pd.DataFrame({"Setting": s.setting, "h (h)": s.h, "Method": s.method, "Conditioning": s.by, "Level": s.level,
+        lab = (s.method.str.replace("gamma=", "γ = ", regex=False).str.replace("pre-registered", "frozen protocol", regex=False)
+               .str.replace("gamma source-selected", "γ selected on source BAs", regex=False))
+        t = pd.DataFrame({"Setting": s.setting, "h (h)": s.h, "Method": lab, "Conditioning": s.by, "Level": s.level,
                           "Mean cov. over BAs %": (100 * s.coverage_mean_over_BAs).round(1),
                           "Min cov. over BAs %": (100 * s.coverage_min_over_BAs).round(1)})
         save(t, "table_S8_conditional_coverage", "Table S8. Conditional coverage of 90% intervals by season and by "

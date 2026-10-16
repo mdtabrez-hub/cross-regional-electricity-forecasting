@@ -1,0 +1,19 @@
+**Table 8. Online and source-only calibration of 90% intervals for unseen BAs, including spatially blocked folds (post-review analyses; γ selected on source BAs only for ACI-CQR-S).**
+
+| Setting                 |   h (h) | Method                                     |   Mean cov. % | Min–max cov. %   |   BAs > 5 pp under % |   Median hourly width % |   Median IS % |
+|:------------------------|--------:|:-------------------------------------------|--------------:|:-----------------|---------------------:|------------------------:|--------------:|
+| unseen (random folds)   |       1 | ACI-CQR (γ = 0, expanding pool)            |          88.3 | 70.2–98.6        |                   31 |                    4.75 |          7.21 |
+| unseen (random folds)   |       1 | ACI-CQR (γ = 0.005, frozen protocol)       |          90   | 89.9–90.2        |                    0 |                    4.9  |          7.4  |
+| unseen (random folds)   |       1 | ACI-CQR-S (γ selected on source BAs)       |          90   | 89.8–90.2        |                    0 |                    4.9  |          7.4  |
+| unseen (random folds)   |       1 | CQR                                        |          88.1 | 69.2–98.7        |                   33 |                    4.74 |          7.21 |
+| unseen (random folds)   |       1 | SCP-R4 (rolling 4-week target calibration) |          89.9 | 89.5–90.1        |                    0 |                    4.76 |          7.31 |
+| unseen (random folds)   |      24 | ACI-CQR (γ = 0, expanding pool)            |          89.2 | 79.3–97.1        |                   21 |                   18.07 |         28.15 |
+| unseen (random folds)   |      24 | ACI-CQR (γ = 0.005, frozen protocol)       |          90   | 89.8–90.2        |                    0 |                   18.6  |         88.55 |
+| unseen (random folds)   |      24 | ACI-CQR-S (γ selected on source BAs)       |          89.9 | 88.9–90.8        |                    0 |                   17.81 |         28.18 |
+| unseen (random folds)   |      24 | CQR                                        |          89.2 | 78.6–97.3        |                   21 |                   18.14 |         28.15 |
+| unseen (random folds)   |      24 | SCP-R4 (rolling 4-week target calibration) |          89.2 | 88.4–90.0        |                    0 |                   19.39 |         31.65 |
+| unseen (spatial blocks) |      24 | ACI-CQR (γ = 0, expanding pool)            |          89.6 | 79.5–97.8        |                   19 |                   19.39 |         28.5  |
+| unseen (spatial blocks) |      24 | ACI-CQR (γ = 0.005, frozen protocol)       |          90   | 89.8–90.1        |                    0 |                   19.04 |         88.27 |
+| unseen (spatial blocks) |      24 | ACI-CQR-S (γ selected on source BAs)       |          89.9 | 88.9–91.0        |                    0 |                   18.51 |         28.51 |
+| unseen (spatial blocks) |      24 | CQR                                        |          89.5 | 78.9–98.0        |                   19 |                   19.39 |         28.5  |
+| unseen (spatial blocks) |      24 | SCP-R4 (rolling 4-week target calibration) |          89.3 | 88.4–90.0        |                    0 |                   19.63 |         31.9  |

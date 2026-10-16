@@ -2,7 +2,7 @@
   {
     "check": "All manuscript number keys resolve",
     "status": "Passed",
-    "detail": "228 keys; missing=[]"
+    "detail": "229 keys; missing=[]"
   },
   {
     "check": "Headline h=24 nMAE medians recomputed from raw predictions",
@@ -10,7 +10,7 @@
     "detail": "[('LGB_G_IN', '4.64', '4.64'), ('LGB_G_LRO', '4.75', '4.75'), ('LGB_L', '4.72', '4.72')]"
   },
   {
-    "check": "Table 2 matches point_metrics_summary.csv",
+    "check": "Table 1 (point accuracy) matches point_metrics_summary.csv",
     "status": "Passed",
     "detail": "23 values"
   },
@@ -67,7 +67,7 @@
   {
     "check": "Author-specific placeholders (intentional)",
     "status": "Requires manual verification",
-    "detail": "9 [AUTHOR ACTION] placeholders: names/affiliations, funding, CRediT, COI, AI disclosure, repository DOI"
+    "detail": "10 [AUTHOR ACTION] placeholders: names/affiliations, funding, CRediT, COI, AI disclosure, repository DOI"
   },
   {
     "check": "DOCX embeds figures",
@@ -87,6 +87,6 @@
   {
     "check": "Unit tests",
     "status": "Passed",
-    "detail": "15 passed in 1.03s"
+    "detail": "15 passed in 0.73s"
   }
 ]

@@ -1,0 +1,243 @@
+path,bytes,category,description,in_git
+.gitignore,309,project-doc,"Git ignore rules (raw data, processed panel, models, predictions, HTML renders)",True
+CLAIMS_AND_EVIDENCE.md,3739,project-doc,Map of manuscript claims to evidence files,True
+DECISION_LOG.md,5766,project-doc,Decision log D1-D16 incl. post-freeze amendments,True
+FINAL_QA_REPORT.md,32567,qa,Final independent QA report (this audit),True
+LICENSES_AND_DATA_PROVENANCE.md,2242,project-doc,"Data source, licences, checksums, OPSD note",True
+PROJECT_PLAN.md,2056,project-doc,Project plan,True
+README.md,3661,project-doc,"Project overview, layout and reproduction commands",True
+RESEARCH_STATUS.md,2208,project-doc,Live research status and author actions,True
+configs/experiment.yaml,3321,config,Frozen experimental configuration incl. checksums,True
+data/metadata/data_inventory.csv,17665,data-metadata,Raw data inventory,True
+data/metadata/data_quality_report.md,5620,data-metadata,Data quality report,True
+data/metadata/dataset_metadata.json,4042,data-metadata,"Dataset metadata (version, licence, DOI, window)",True
+data/metadata/imputation_codes_by_region.csv,1686,data-metadata,PUDL imputation codes by BA (Fig. 4 source),True
+data/metadata/quality_by_region_year.csv,29322,data-metadata,Quality by BA and year (Fig. 2 source),True
+data/processed/panel.parquet,32523223,data-processed,"Processed hourly panel, 48 BAs 2019-2025 (regenerable)",False
+data/processed/regions.csv,9685,data-processed,Selected 48 BAs with quality statistics,True
+data/processed/regions_all.csv,13809,data-processed,All 66 candidate BAs with exclusion reasons,True
+data/raw/SHA256SUMS,431,data-raw-metadata,SHA-256 checksums of raw PUDL parquet files,True
+data/raw/pudl_parquet_datapackage.json,4529544,data-raw-metadata,PUDL v2026.10.0 datapackage metadata (CC-BY-4.0),True
+docs/ablation_results.csv,7934,documentation,Ablation results copy for docs,True
+docs/experimental_protocol.md,3548,documentation,Frozen experimental protocol,True
+docs/limitations_register.md,4130,documentation,Limitations register,True
+docs/methodology_specification.md,6391,documentation,Frozen methodology specification,True
+docs/model_selection_criteria.md,1668,documentation,Model selection criteria,True
+docs/robustness_report.md,2964,documentation,Robustness report,True
+docs/statistical_audit.md,5744,documentation,Statistical audit,True
+environment.yml,124,environment,Conda environment (python 3.13 + pip requirements),True
+figures/fig01_workflow.pdf,22408,figure,Figure 01 (workflow) vector PDF,True
+figures/fig01_workflow.png,393881,figure,Figure 01 (workflow) PNG 600 dpi,True
+figures/fig02_dataset_coverage.pdf,77429,figure,Figure 02 (dataset coverage) vector PDF,True
+figures/fig02_dataset_coverage.png,602532,figure,Figure 02 (dataset coverage) PNG 600 dpi,True
+figures/fig03_example_series.pdf,34029,figure,Figure 03 (example series) vector PDF,True
+figures/fig03_example_series.png,1061357,figure,Figure 03 (example series) PNG 600 dpi,True
+figures/fig04_data_quality.pdf,24794,figure,Figure 04 (data quality) vector PDF,True
+figures/fig04_data_quality.png,315094,figure,Figure 04 (data quality) PNG 600 dpi,True
+figures/fig05_accuracy.pdf,18712,figure,Figure 05 (accuracy) vector PDF,True
+figures/fig05_accuracy.png,503240,figure,Figure 05 (accuracy) PNG 600 dpi,True
+figures/fig06_regional_errors.pdf,30705,figure,Figure 06 (regional errors) vector PDF,True
+figures/fig06_regional_errors.png,449589,figure,Figure 06 (regional errors) PNG 600 dpi,True
+figures/fig07_transfer.pdf,17399,figure,Figure 07 (transfer) vector PDF,True
+figures/fig07_transfer.png,292310,figure,Figure 07 (transfer) PNG 600 dpi,True
+figures/fig08_temporal_shift.pdf,24070,figure,Figure 08 (temporal shift) vector PDF,True
+figures/fig08_temporal_shift.png,368750,figure,Figure 08 (temporal shift) PNG 600 dpi,True
+figures/fig09_calibration.pdf,35968,figure,Figure 09 (calibration) vector PDF,True
+figures/fig09_calibration.png,820773,figure,Figure 09 (calibration) PNG 600 dpi,True
+figures/fig10_interval_example.pdf,35583,figure,Figure 10 (interval example) vector PDF,True
+figures/fig10_interval_example.png,938347,figure,Figure 10 (interval example) PNG 600 dpi,True
+figures/fig11_missing_data.pdf,19993,figure,Figure 11 (missing data) vector PDF,True
+figures/fig11_missing_data.png,490190,figure,Figure 11 (missing data) PNG 600 dpi,True
+figures/fig12_ablation.pdf,24843,figure,Figure 12 (ablation) vector PDF,True
+figures/fig12_ablation.png,247592,figure,Figure 12 (ablation) PNG 600 dpi,True
+figures/fig13_compute.pdf,20406,figure,Figure 13 (compute) vector PDF,True
+figures/fig13_compute.png,232594,figure,Figure 13 (compute) PNG 600 dpi,True
+figures/figure_manifest.csv,3817,figure,"Figure manifest: captions, sources, script, font",True
+final_file_inventory.csv,22586,qa,File inventory (this audit),True
+literature/excluded_references.bib,483,literature,,True
+literature/literature_matrix.csv,44741,literature,Literature matrix with verification status,True
+literature/literature_review.md,21936,literature,Literature review,True
+literature/related_work_draft.md,9221,literature,Related work draft,True
+literature/research_gap_analysis.md,12097,literature,Research gap analysis,True
+literature/search_log.md,13604,literature,Literature search log,True
+literature/verified_references.bib,22404,literature,BibTeX references (incl. one do-not-cite entry),True
+manuscript/independent_review_report.md,34493,manuscript,Simulated internal review report (labelled),True
+manuscript/manuscript_final.docx,6071084,manuscript,"Main manuscript (Word, submission source)",True
+manuscript/manuscript_final.html,9164230,manuscript,Manuscript HTML render (intermediate),False
+manuscript/manuscript_final.pdf,6814307,manuscript,Manuscript PDF preview (pandoc+Chromium),True
+manuscript/manuscript_print.html,9194229,manuscript,Older print HTML render (intermediate),False
+manuscript/manuscript_rendered.md,104872,manuscript,Rendered Markdown manuscript with numbers filled in,True
+manuscript/response_to_reviewers_template.docx,42676,manuscript,Response template (labelled simulated/preparation exercise),True
+manuscript/reviewer_comments.csv,11812,manuscript,Simulated internal reviewer comments R1-R30,True
+manuscript/revised_manuscript.docx,6071084,manuscript,Revised manuscript copy (identical to final),True
+manuscript/revision_matrix.csv,11926,manuscript,"Revision matrix: responses, actions, verification",True
+manuscript/sections/00_front.md,1843,manuscript-source,Manuscript section source: 00_front,True
+manuscript/sections/01_intro.md,3116,manuscript-source,Manuscript section source: 01_intro,True
+manuscript/sections/02_related.md,8069,manuscript-source,Manuscript section source: 02_related,True
+manuscript/sections/02b_gap.md,2727,manuscript-source,Manuscript section source: 02b_gap,True
+manuscript/sections/03_methods.md,15468,manuscript-source,Manuscript section source: 03_methods,True
+manuscript/sections/04_results.md,18276,manuscript-source,Manuscript section source: 04_results,True
+manuscript/sections/05_discussion.md,6368,manuscript-source,Manuscript section source: 05_discussion,True
+manuscript/sections/06_robustness.md,9611,manuscript-source,Manuscript section source: 06_robustness,True
+manuscript/sections/07_practice_limits.md,9828,manuscript-source,Manuscript section source: 07_practice_limits,True
+manuscript/sections/08_backmatter.md,3056,manuscript-source,Manuscript section source: 08_backmatter,True
+manuscript/styles/elsevier-harvard.csl,8102,manuscript-style,Citation style (CSL),True
+manuscript/styles/elsevier-with-titles.csl,5260,manuscript-style,Citation style (CSL),True
+manuscript/styles/ieee.csl,17587,manuscript-style,Citation style (CSL),True
+manuscript/styles/print.css,1518,manuscript-style,Print CSS for PDF render,True
+manuscript/styles/reference.docx,10161,manuscript-style,Word reference template,True
+manuscript/supplement/00_supp.md,1547,manuscript-source,Supplement source Markdown,True
+manuscript/supplement_rendered.md,52816,manuscript,Rendered supplement Markdown (intermediate),False
+manuscript/supplementary_material.docx,26900,manuscript,Supplementary material (Word),True
+manuscript/supplementary_material.html,118224,manuscript,Supplement HTML render (intermediate),False
+manuscript/supplementary_material.pdf,870225,manuscript,Supplementary material PDF,True
+requirements.txt,212,environment,Pinned Python dependencies,True
+results/logs/campaign.out,522,results-log,Run/stage log,True
+results/logs/campaign2.out,899,results-log,Run/stage log,True
+results/logs/campaign3.out,2960,results-log,Run/stage log,True
+results/logs/compute_costs_adapt.csv,604,results-log,Compute cost log (adaptation),True
+results/logs/compute_costs_point.csv,8489,results-log,Compute cost log (point/quantile models),True
+results/logs/evaluate.log,2769,results-log,Run/stage log,True
+results/logs/final2.out,479,results-log,Run/stage log,True
+results/logs/hyperparameter_grid_validation.json,1355,results-log,LightGBM grid search results,True
+results/logs/post.out,701,results-log,Run/stage log,True
+results/logs/preprocess.log,533,results-log,Run/stage log,True
+results/logs/prob_eval.out,304,results-log,Run/stage log,True
+results/logs/qa_checks.json,3466,results-log,Automated QA check results,True
+results/logs/rev_eval.log,400,results-log,Run/stage log,True
+results/logs/revision.log,2508,results-log,Run/stage log,True
+results/logs/revision.out,2522,results-log,Run/stage log,True
+results/logs/ridge_alpha_grid_validation.csv,178,results-log,Ridge penalty grid (validation),True
+results/logs/robustness.log,1745,results-log,Run/stage log,True
+results/logs/robustness_evaluate_rerun.log,7,results,,True
+results/logs/run_campaign.sh,275,results-log,Run script,True
+results/logs/run_final.sh,292,results-log,Run script,True
+results/logs/run_post.sh,248,results-log,Run script,True
+results/logs/run_revision.sh,252,results-log,Run script,True
+results/logs/selected_hyperparameters.json,864,results-log,Selected hyper-parameters and LRO folds,True
+results/logs/spatial_folds.json,823,results-log,Spatial block fold assignment,True
+results/logs/stage_select.out,1386,results-log,Run/stage log,True
+results/logs/train.log,4008,results-log,Run/stage log,True
+results/manuscript_numbers.json,620503,results,Every number quoted in manuscript (generated),True
+results/metrics/ablation_by_region.csv,110943,results-metrics,Per-BA metrics: ablation by region,True
+results/metrics/ablation_results.csv,7934,results-metrics,Summary/test results: ablation results,True
+results/metrics/aci_capped_share_by_region.csv,34579,results-metrics,Per-BA metrics: aci capped share by region,True
+results/metrics/aci_gamma_selected_on_validation.csv,465,results-metrics,Summary/test results: aci gamma selected on validation,True
+results/metrics/aci_gamma_sensitivity_by_region.csv,39086,results-metrics,Per-BA metrics: aci gamma sensitivity by region,True
+results/metrics/aci_gamma_sensitivity_summary.csv,1138,results-metrics,Summary/test results: aci gamma sensitivity summary,True
+results/metrics/adaptation_metrics_by_region.csv,231009,results-metrics,Per-BA metrics: adaptation metrics by region,True
+results/metrics/adaptation_metrics_summary.csv,13131,results-metrics,Summary/test results: adaptation metrics summary,True
+results/metrics/ba_dayahead_by_region.csv,91804,results-metrics,Per-BA metrics: ba dayahead by region,True
+results/metrics/ba_dayahead_summary.csv,5389,results-metrics,Summary/test results: ba dayahead summary,True
+results/metrics/block_bootstrap_by_region.csv,73457,results-metrics,Per-BA metrics: block bootstrap by region,True
+results/metrics/block_bootstrap_summary.csv,1108,results-metrics,Summary/test results: block bootstrap summary,True
+results/metrics/mase_scales.json,1401,results-metrics,MASE scaling denominators per BA,True
+results/metrics/missing_data_by_region.csv,882567,results-metrics,Per-BA metrics: missing data by region,True
+results/metrics/missing_data_summary.csv,43023,results-metrics,Summary/test results: missing data summary,True
+results/metrics/paired_tests_adaptation.csv,4645,results-metrics,Summary/test results: paired tests adaptation,True
+results/metrics/paired_tests_point.csv,14196,results-metrics,Summary/test results: paired tests point,True
+results/metrics/paired_tests_refit.csv,1217,results-metrics,Summary/test results: paired tests refit,True
+results/metrics/pinball_by_region.csv,7745,results-metrics,Per-BA metrics: pinball by region,True
+results/metrics/pinball_summary.csv,248,results-metrics,Summary/test results: pinball summary,True
+results/metrics/point_metrics_by_region.csv,184401,results-metrics,Per-BA metrics: point metrics by region,True
+results/metrics/point_metrics_summary.csv,10581,results-metrics,Summary/test results: point metrics summary,True
+results/metrics/probabilistic_by_region.csv,728950,results-metrics,Per-BA metrics: probabilistic by region,True
+results/metrics/probabilistic_monthly_coverage.csv,59433,results-metrics,Summary/test results: probabilistic monthly coverage,True
+results/metrics/probabilistic_summary.csv,29237,results-metrics,Summary/test results: probabilistic summary,True
+results/metrics/refit_metrics_by_region.csv,138888,results-metrics,Per-BA metrics: refit metrics by region,True
+results/metrics/refit_metrics_summary.csv,8031,results-metrics,Summary/test results: refit metrics summary,True
+results/metrics/rev_adapt_origins_by_region.csv,245812,results-metrics,Per-BA metrics: rev adapt origins by region,True
+results/metrics/rev_adapt_origins_summary.csv,13378,results-metrics,Summary/test results: rev adapt origins summary,True
+results/metrics/rev_adapt_origins_tests.csv,4415,results-metrics,Summary/test results: rev adapt origins tests,True
+results/metrics/rev_calibration_by_region.csv,89085,results-metrics,Per-BA metrics: rev calibration by region,True
+results/metrics/rev_calibration_summary.csv,2799,results-metrics,Summary/test results: rev calibration summary,True
+results/metrics/rev_conditional_coverage.csv,22724,results-metrics,Summary/test results: rev conditional coverage,True
+results/metrics/rev_equivalence_tost.csv,692,results-metrics,Summary/test results: rev equivalence tost,True
+results/metrics/rev_excluded_bas.csv,1201,results-metrics,Summary/test results: rev excluded bas,True
+results/metrics/rev_gamma_source_selected.csv,3330,results-metrics,Summary/test results: rev gamma source selected,True
+results/metrics/rev_gap_distribution_cluster_bootstrap.csv,1684,results-metrics,Summary/test results: rev gap distribution cluster bootstrap,True
+results/metrics/rev_peak_metrics_by_region.csv,16718,results-metrics,Per-BA metrics: rev peak metrics by region,True
+results/metrics/rev_spatial_by_region.csv,77222,results-metrics,Per-BA metrics: rev spatial by region,True
+results/metrics/rev_spatial_gap_tails.csv,263,results-metrics,Summary/test results: rev spatial gap tails,True
+results/metrics/rev_spatial_summary.csv,4577,results-metrics,Summary/test results: rev spatial summary,True
+results/metrics/rev_spatial_tests.csv,1160,results-metrics,Summary/test results: rev spatial tests,True
+results/metrics/rev_zero_shot_vs_local_by_year.csv,3414,results-metrics,Summary/test results: rev zero shot vs local by year,True
+results/metrics/temporal_metrics_by_region.csv,689588,results-metrics,Per-BA metrics: temporal metrics by region,True
+results/metrics/temporal_metrics_summary.csv,37435,results-metrics,Summary/test results: temporal metrics summary,True
+results/tables/table_01_point_accuracy.csv,1676,results,,True
+results/tables/table_01_point_accuracy.md,3745,results,,True
+results/tables/table_02_paired_tests.csv,887,results,,True
+results/tables/table_02_paired_tests.md,2531,results,,True
+results/tables/table_03_ba_reference.csv,822,results,,True
+results/tables/table_03_ba_reference.md,1655,results,,True
+results/tables/table_04_adaptation.csv,1910,results,,True
+results/tables/table_04_adaptation.md,3216,results,,True
+results/tables/table_05_temporal.csv,596,results,,True
+results/tables/table_05_temporal.md,1461,results,,True
+results/tables/table_06_refit.csv,157,results,,True
+results/tables/table_06_refit.md,661,results,,True
+results/tables/table_07_probabilistic.csv,736,results,,True
+results/tables/table_07_probabilistic.md,2532,results,,True
+results/tables/table_08_calibration_revision.csv,1446,results,,True
+results/tables/table_08_calibration_revision.md,3338,results,,True
+results/tables/table_10_missing_data.csv,376,results,,True
+results/tables/table_10_missing_data.md,1255,results,,True
+results/tables/table_11_ablation.csv,940,results,,True
+results/tables/table_11_ablation.md,2323,results,,True
+results/tables/table_12_compute.csv,817,results,,True
+results/tables/table_12_compute.md,2731,results,,True
+results/tables/table_A1_regions.csv,2671,results-table,CSV table table_A1 (regions),True
+results/tables/table_A1_regions.md,7574,results-table,Markdown table table_A1 (regions),True
+results/tables/table_S10_compute_adaptation.csv,357,results-table,CSV table table_S10 (compute adaptation),True
+results/tables/table_S10_compute_adaptation.md,1015,results-table,Markdown table table_S10 (compute adaptation),True
+results/tables/table_S1_probabilistic_full.csv,3330,results-table,CSV table table_S1 (probabilistic full),True
+results/tables/table_S1_probabilistic_full.md,11077,results-table,Markdown table table_S1 (probabilistic full),True
+results/tables/table_S2_aci_sensitivity.csv,384,results-table,CSV table table_S2 (aci sensitivity),True
+results/tables/table_S2_aci_sensitivity.md,1575,results-table,Markdown table table_S2 (aci sensitivity),True
+results/tables/table_S3_missing_data_full.csv,4298,results-table,CSV table table_S3 (missing data full),True
+results/tables/table_S3_missing_data_full.md,12803,results-table,Markdown table table_S3 (missing data full),True
+results/tables/table_S4_paired_tests_full.csv,2727,results-table,CSV table table_S4 (paired tests full),True
+results/tables/table_S4_paired_tests_full.md,7644,results-table,Markdown table table_S4 (paired tests full),True
+results/tables/table_S5_adaptation_origins.csv,285,results-table,CSV table table_S5 (adaptation origins),True
+results/tables/table_S5_adaptation_origins.md,851,results-table,Markdown table table_S5 (adaptation origins),True
+results/tables/table_S6_spatial.csv,663,results-table,CSV table table_S6 (spatial),True
+results/tables/table_S6_spatial.md,1315,results-table,Markdown table table_S6 (spatial),True
+results/tables/table_S7_excluded_bas.csv,337,results-table,CSV table table_S7 (excluded bas),True
+results/tables/table_S7_excluded_bas.md,1108,results-table,Markdown table table_S7 (excluded bas),True
+results/tables/table_S8_conditional_coverage.csv,5617,results-table,CSV table table_S8 (conditional coverage),True
+results/tables/table_S8_conditional_coverage.md,13306,results-table,Markdown table table_S8 (conditional coverage),True
+results/tables/table_S9_ridge_grid.csv,109,results-table,CSV table table_S9 (ridge grid),True
+results/tables/table_S9_ridge_grid.md,488,results-table,Markdown table table_S9 (ridge grid),True
+results/tables/table_manifest.csv,4018,results-table,"Table manifest: captions, sources, script",True
+src/build_manuscript.py,14201,code,Build DOCX/PDF manuscript from sections,True
+src/build_submission_docs.py,9151,code,"Build cover letter, highlights, declarations, response",True
+src/common.py,2612,code,"Shared paths, config, logging",True
+src/conformal.py,2930,code,SCP/CQR/ACI conformal methods,True
+src/download_data.py,3344,code,Download PUDL data and verify SHA-256,True
+src/evaluate_models.py,23923,code,Point and probabilistic evaluation,True
+src/features.py,6297,code,Causal feature construction,True
+src/generate_figures.py,28872,code,Generate figures 1-13,True
+src/generate_tables.py,20952,code,Generate main and supplementary tables,True
+src/inspect_data.py,7364,code,Data inspection and quality report,True
+src/manuscript_numbers.py,12427,code,Export manuscript numbers JSON,True
+src/metrics.py,1762,code,Forecast metrics,True
+src/models.py,3293,code,LightGBM and ridge model wrappers,True
+src/opsd_adapter.py,3279,code,OPSD to panel converter (untested on real data),True
+src/package_submission.py,2703,code,Source module,True
+src/preprocess_data.py,6614,code,Region selection and panel construction,True
+src/qa_checks.py,8127,code,Automated QA checks,True
+src/revision_evaluate.py,15923,code,Evaluate post-review analyses,True
+src/revision_experiments.py,8989,code,"Post-review experiments (spatial, origins, excluded, ridge)",True
+src/robustness_analysis.py,10528,code,Missing-data and ablation experiments,True
+src/run_all.py,2016,code,Pipeline orchestrator (main campaign stages),True
+src/stats.py,3456,code,"Wilcoxon/Holm, bootstrap statistics",True
+src/train_models.py,15157,code,"Model training (select, point, adapt, refit)",True
+submission/cover_letter.docx,38117,submission,Cover letter draft (author placeholders),True
+submission/declarations_template.docx,37850,submission,Declarations template (author placeholders),True
+submission/highlights.docx,37085,submission,Highlights (Word),True
+submission/highlights.txt,388,submission,Highlights (text),True
+submission/journal_comparison.csv,25426,submission,Journal comparison scores and sources,True
+submission/journal_selection_report.md,16884,submission,Journal selection report (IJF primary),True
+submission/submission_checklist.md,7996,submission,IJF submission checklist,True
+tests/test_opsd_adapter.py,1232,test,Unit tests: OPSD adapter (synthetic),True
+tests/test_pipeline.py,5811,test,"Unit tests: leakage, metrics, conformal",True

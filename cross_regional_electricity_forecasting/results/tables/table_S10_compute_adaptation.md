@@ -1,4 +1,4 @@
-**Table 10b. Adaptation fit time per target BA (s).**
+**Table S10. Adaptation fit time per target BA (s).**
 
 | model      |   h |   fit_seconds_per_region |
 |:-----------|----:|-------------------------:|

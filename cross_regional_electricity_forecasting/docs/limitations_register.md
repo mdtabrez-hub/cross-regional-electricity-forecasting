@@ -15,3 +15,9 @@
 | L11 | Literature verification relied on search-engine snippets (Crossref/Scopus/WoS not accessible) | Bibliography | Residual risk of metadata errors | Verification status column in literature matrix; manual check required before submission |
 | L12 | Calendar features use each BA's reporting time zone and U.S. federal holidays only | Features | Regional holidays not modelled | Equal for all models |
 | L13 | Conformal guarantees assume exchangeability, which time series and unseen regions violate | Theory | Coverage is empirical, not guaranteed | This is the object of study (RQ3) |
+| L14 | Random LRO folds keep neighbouring BAs in training | Design | Gap underestimated with random folds | Spatially blocked folds added (D14): gap 1.7% (24 h), 8.0% (1 h) |
+| L15 | Hyper-parameters tuned once (h = 24, pooled), small grids; unequal convergence at h = 1 | Tuning | Arms not equally optimised | Disclosed (manuscript Limitation 9) |
+| L16 | Adaptation models untuned; tested at 4 origins | Design | Better adaptation may exist | Disclosed; future work |
+| L17 | Non-inferiority margins chosen post hoc | Statistics | Interpretive | Labelled post hoc |
+| L18 | ACI-CQR-V motivated by test behaviour | Selection | Exploratory only | ACI-CQR-S (source-only γ) used for recommendations |
+| L19 | Peak-hour upper-tail under-coverage (~11–12% vs 5%) | Calibration | Reserve risk under-stated | Reported; conditional methods as future work |

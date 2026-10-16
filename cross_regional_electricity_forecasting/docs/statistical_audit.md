@@ -67,7 +67,10 @@ Headline h = 24 medians are recomputed independently from raw predictions by `sr
 * "Missing data is harmless" — only the tested corruption mechanisms and rates.
 * Superiority over operator forecasts — not supported (operators are better at 24 h).
 
-## 7. Outstanding items
+## 7. Post-review additions (audited)
 
-* Missing-data and ablation results to be audited when available (see `robustness_report.md`).
-* Spatially aware inference (e.g., cluster bootstrap by interconnection) could be added in revision.
+* Cluster bootstrap over 9 spatial blocks for headline gaps: intervals still exclude 0 (`rev_gap_distribution_cluster_bootstrap.csv`).
+* Missing-data strategies re-scored on common hours (protocol rule 2 restored).
+* Spatial-block LRO (D14) and source-only ACI γ selection (D15) audited for leakage: held-out blocks excluded from fitting, early stopping and calibration; γ chosen on source BAs' VAL-CAL streams only.
+* Non-inferiority margins (1%, 2%) are post hoc and reported as such.
+* Remaining: nested per-horizon tuning not done; spatial dependence handled descriptively only.

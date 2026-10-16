@@ -1,4 +1,4 @@
-**Table 2. Test-period (2024–2025) point accuracy across 48 BAs.**
+**Table 1. Test-period (2024–2025) point accuracy across 48 BAs.**
 
 |   h (h) | Method                                      | nMAE % median [IQR]   |   nRMSE % median |   MASE median |   Bias % median |   Regions |
 |--------:|:--------------------------------------------|:----------------------|-----------------:|--------------:|----------------:|----------:|

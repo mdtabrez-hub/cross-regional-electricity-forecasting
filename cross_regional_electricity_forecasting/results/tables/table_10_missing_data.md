@@ -1,4 +1,4 @@
-**Table 9. Median nMAE (%) of the in-region global model with corrupted inputs (test period; common scored hours).**
+**Table 10. Median nMAE (%) of the in-region global model with corrupted inputs (test period; common scored hours).**
 
 |   h (h) | Scenario   |   Native NaN | LOCF   | Weekly-seasonal   |   MCAR-trained, native |
 |--------:|:-----------|-------------:|:-------|:------------------|-----------------------:|

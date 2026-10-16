@@ -14,7 +14,9 @@ With random folds, zero-shot models are more accurate than local models at intra
 
 Online recalibration with ACI fixes per-BA marginal coverage by construction, so its value lies in the price paid in sharpness. With delayed feedback (24 h), a step that is too large lets $\alpha_t$ overshoot before earlier updates take effect, producing occasional extreme intervals. Choosing $\gamma$ on *other* BAs' validation data avoided this. It gave intervals as sharp as static CQR at 24 h and a few per cent less sharp at 1 h. Conditional coverage remains imperfect at seasonal peaks and in the highest load decile, which matters most for reserves. Aggregated or strongly adaptive variants [@zaffran2022adaptive; @bhatnagar2023improved] and conditional methods are natural next steps.
 
-**Trade-offs (RQ5).** The table below summarises the trade-offs across the regimes studied.
+**Trade-offs (RQ5).** Table {tab:tablecap_rq5} summarises the trade-offs across the regimes studied.
+
+[[TABLECAP:tablecap_rq5|Trade-offs among accuracy, interval reliability, target-data needs and maintenance across the regimes studied (relative accuracy: median per-BA change in nMAE).]]
 
 | Regime | Accuracy (median, relative) | Interval reliability | Target data needed | Compute and maintenance |
 |---|---|---|---|---|

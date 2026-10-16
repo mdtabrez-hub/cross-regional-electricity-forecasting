@@ -1,6 +1,6 @@
 """Run the complete pipeline end to end.
 
-    python -m src.run_all            # full study (~3-4 h on 4 CPU cores)
+    python -m src.run_all            # full study (~8-9 h wall-clock on 4 CPU cores)
     python -m src.run_all --skip-download
 Each stage is idempotent and writes its outputs under data/ and results/.
 """
@@ -24,8 +24,19 @@ STAGES = [
     ["src.robustness_analysis", "ablation"],
     ["src.evaluate_models"],
     ["src.robustness_analysis", "evaluate"],
+    ["src.revision_experiments", "ridge"],
+    ["src.revision_experiments", "excluded"],
+    ["src.revision_experiments", "origins"],
+    ["src.revision_experiments", "spatial"],
+    ["src.revision_evaluate"],
     ["src.generate_tables"],
     ["src.generate_figures"],
+    ["src.manuscript_numbers"],
+    ["src.build_manuscript"],
+    ["src.build_manuscript", "--sections-dir", "manuscript/supplement", "--rendered",
+     "manuscript/supplement_rendered.md", "--out", "manuscript/supplementary_material.docx"],
+    ["src.build_submission_docs"],
+    ["src.qa_checks"],
 ]
 
 

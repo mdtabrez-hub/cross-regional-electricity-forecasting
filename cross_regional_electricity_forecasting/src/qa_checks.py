@@ -61,12 +61,12 @@ def main():
 
     # tables vs metric files (spot check: table 2 median nMAE equals summary CSV)
     try:
-        t2 = pd.read_csv(TABLE_DIR / "table_2_point_accuracy.csv")
+        t2 = pd.read_csv(TABLE_DIR / "table_01_point_accuracy.csv")
         s = pd.read_csv(METRIC_DIR / "point_metrics_summary.csv")
         s = s[~((s.method == "PERS") & (s.h == 24))]  # row omitted in Table 2 (identical to SN24)
         v1 = sorted(round(100 * x, 2) for x in s.nMAE_median)
         v2 = sorted(float(x.split(" ")[0]) for x in t2["nMAE % median [IQR]"])
-        out.append(check("Table 2 matches point_metrics_summary.csv", v1 == v2, f"{len(v1)} values"))
+        out.append(check("Table 1 (point accuracy) matches point_metrics_summary.csv", v1 == v2, f"{len(v1)} values"))
     except FileNotFoundError as e:
         out.append(check("Table 2 consistency", "Requires manual verification", str(e)))
 

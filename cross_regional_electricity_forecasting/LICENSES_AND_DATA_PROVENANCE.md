@@ -9,7 +9,7 @@
 | Retrieved | 2026-10-16 from `https://s3.us-west-2.amazonaws.com/pudl.catalyst.coop/stable/` |
 | Tables | `out_eia930__hourly_operations`, `core_eia930__hourly_operations` (inspection only), `core_eia__codes_balancing_authorities`, `core_pudl__codes_imputation_reasons`, `pudl_parquet_datapackage.json` |
 | Checksums | `data/raw/SHA256SUMS` |
-| PUDL EIA-930 archive DOI (as listed in the PUDL datapackage) | 10.5281/zenodo.22525116 (concept DOI 10.5281/zenodo.10840077) |
+| PUDL EIA-930 archive DOI (as listed in the downloaded PUDL datapackage; not resolved via doi.org, which was unreachable) | 10.5281/zenodo.22525116 (concept DOI 10.5281/zenodo.10840077) |
 | Original licence | U.S. Government work, public domain (as stated in PUDL metadata) |
 | PUDL licence | Creative Commons Attribution 4.0 (CC-BY-4.0) |
 | Attribution | Catalyst Cooperative, PUDL; U.S. Energy Information Administration |
@@ -30,5 +30,5 @@ file into this project's panel format; it was unit-tested on a synthetic file on
 
 ## Software
 
-All dependencies are open source (see `requirements.txt`). Project code: MIT licence
-(`LICENSE`), placeholder pending author confirmation.
+All dependencies are open source (see `requirements.txt`). No licence file has been added for the
+project code: choosing a licence (e.g. MIT) is an author decision [AUTHOR ACTION].

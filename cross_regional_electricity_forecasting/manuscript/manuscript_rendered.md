@@ -12,7 +12,7 @@ title: "Forecasting Electricity Demand in Unseen Regions: A Leave-Regions-Out Be
 
 # Abstract {.unnumbered}
 
-Forecasting models are increasingly expected to serve power systems they were not trained on. We benchmark this on hourly EIA-930 demand of 48 U.S. balancing authorities (2019–2025), using a leakage-resistant protocol frozen before test evaluation. A pooled LightGBM model applied to unseen balancing authorities lost a median 0.5% (day-ahead) to 3.4% (hour-ahead) accuracy relative to in-region training. When whole regions were held out the loss rose to 1.7% (day-ahead) and 8.0% (hour-ahead), yet zero-shot forecasts still matched local models trained on four years of target data. Fine-tuning on one to thirteen weeks of target data degraded accuracy. Static conformal intervals under-covered by more than five points in 20.8–33.3% of systems, whether seen or unseen. Adaptive conformal inference, with its step size chosen on other systems, restored per-system coverage at little cost in sharpness.
+Forecasting models are increasingly expected to serve power systems they were not trained on. We benchmark this on hourly EIA-930 demand of 48 U.S. balancing authorities (2019–2025), using a leakage-resistant protocol frozen before test evaluation. A pooled LightGBM model applied to unseen balancing authorities lost a median 0.5% (day-ahead) to 3.4% (hour-ahead) accuracy relative to in-region training. When whole regions were held out the loss rose to 1.7% (day-ahead) and 8.0% (hour-ahead), yet zero-shot forecasts still matched local models trained on four years of target data. Fine-tuning on one to thirteen weeks of target data degraded accuracy. Conformalised quantile regression intervals under-covered by more than five points in 18.8–33.3% of systems, whether seen or unseen. Adaptive conformal inference, with its step size chosen on other systems, restored per-system coverage at little cost in sharpness.
 
 **Keywords:** load forecasting; distribution shift; transfer learning; conformal prediction; global forecasting models; balancing authorities
 
@@ -87,7 +87,7 @@ The study makes four contributions.
 1. *A leakage-resistant benchmark for cross-region load forecasting with a protocol frozen before test evaluation.* It covers 48 U.S. BAs from EIA Form 930 (2019–2025), spanning three orders of magnitude in size. Its components are: leave-regions-out folds in which held-out BAs are excluded from fitting, early stopping and calibration; past-only input screening independent of the label imputation; a protocol and configuration frozen in version control before test evaluation; and a log of every subsequent amendment.
 2. *A quantification of the geographic generalisation gap for instance-normalised global models.* We compare zero-shot, limited-data adaptation, local and in-region regimes at 1-, 6- and 24-h horizons, with BA-level paired statistics that account for temporal dependence.
 3. *An assessment of interval calibration by shift type.* We evaluate quantile regression, split conformal prediction, conformalised quantile regression, target-calibrated conformal prediction and adaptive conformal inference with horizon-delayed feedback, separately for in-region and unseen-region deployment and by year and season. This includes the sensitivity of ACI to its step size, which we found to be decisive.
-4. *Engineering evidence and an open reproducible pipeline.* We report robustness to missing inputs, the computational cost of each regime, and a comparison with the BAs' own day-ahead forecasts. All code, configurations, predictions and metrics are released.
+4. *Engineering evidence and an open reproducible pipeline.* We report robustness to missing inputs, the computational cost of each regime, and a comparison with the BAs' own day-ahead forecasts. All code, configurations and metrics are released, with compact test predictions as a supplementary archive.
 
 We do not propose a new forecasting algorithm. The contribution is an evaluation framework and the empirical evidence it produces.
 
@@ -637,19 +637,19 @@ What matters is therefore online use of recent target feedback; the particular o
 
 | Setting                 |   h (h) | Method                                     |   Mean cov. % | Min–max cov. %   |   BAs > 5 pp under % |   Median hourly width % |   Median IS % |
 |:------------------------|--------:|:-------------------------------------------|--------------:|:-----------------|---------------------:|------------------------:|--------------:|
-| unseen (random folds)   |       1 | ACI-CQR (gamma=0, expanding pool)          |          88.3 | 70.2–98.6        |                   31 |                    4.75 |          7.21 |
-| unseen (random folds)   |       1 | ACI-CQR (gamma=0.005, pre-registered)      |          90   | 89.9–90.2        |                    0 |                    4.9  |          7.4  |
-| unseen (random folds)   |       1 | ACI-CQR-S (gamma source-selected)          |          90   | 89.8–90.2        |                    0 |                    4.9  |          7.4  |
+| unseen (random folds)   |       1 | ACI-CQR (γ = 0, expanding pool)            |          88.3 | 70.2–98.6        |                   31 |                    4.75 |          7.21 |
+| unseen (random folds)   |       1 | ACI-CQR (γ = 0.005, frozen protocol)       |          90   | 89.9–90.2        |                    0 |                    4.9  |          7.4  |
+| unseen (random folds)   |       1 | ACI-CQR-S (γ selected on source BAs)       |          90   | 89.8–90.2        |                    0 |                    4.9  |          7.4  |
 | unseen (random folds)   |       1 | CQR                                        |          88.1 | 69.2–98.7        |                   33 |                    4.74 |          7.21 |
 | unseen (random folds)   |       1 | SCP-R4 (rolling 4-week target calibration) |          89.9 | 89.5–90.1        |                    0 |                    4.76 |          7.31 |
-| unseen (random folds)   |      24 | ACI-CQR (gamma=0, expanding pool)          |          89.2 | 79.3–97.1        |                   21 |                   18.07 |         28.15 |
-| unseen (random folds)   |      24 | ACI-CQR (gamma=0.005, pre-registered)      |          90   | 89.8–90.2        |                    0 |                   18.6  |         88.55 |
-| unseen (random folds)   |      24 | ACI-CQR-S (gamma source-selected)          |          89.9 | 88.9–90.8        |                    0 |                   17.81 |         28.18 |
+| unseen (random folds)   |      24 | ACI-CQR (γ = 0, expanding pool)            |          89.2 | 79.3–97.1        |                   21 |                   18.07 |         28.15 |
+| unseen (random folds)   |      24 | ACI-CQR (γ = 0.005, frozen protocol)       |          90   | 89.8–90.2        |                    0 |                   18.6  |         88.55 |
+| unseen (random folds)   |      24 | ACI-CQR-S (γ selected on source BAs)       |          89.9 | 88.9–90.8        |                    0 |                   17.81 |         28.18 |
 | unseen (random folds)   |      24 | CQR                                        |          89.2 | 78.6–97.3        |                   21 |                   18.14 |         28.15 |
 | unseen (random folds)   |      24 | SCP-R4 (rolling 4-week target calibration) |          89.2 | 88.4–90.0        |                    0 |                   19.39 |         31.65 |
-| unseen (spatial blocks) |      24 | ACI-CQR (gamma=0, expanding pool)          |          89.6 | 79.5–97.8        |                   19 |                   19.39 |         28.5  |
-| unseen (spatial blocks) |      24 | ACI-CQR (gamma=0.005, pre-registered)      |          90   | 89.8–90.1        |                    0 |                   19.04 |         88.27 |
-| unseen (spatial blocks) |      24 | ACI-CQR-S (gamma source-selected)          |          89.9 | 88.9–91.0        |                    0 |                   18.51 |         28.51 |
+| unseen (spatial blocks) |      24 | ACI-CQR (γ = 0, expanding pool)            |          89.6 | 79.5–97.8        |                   19 |                   19.39 |         28.5  |
+| unseen (spatial blocks) |      24 | ACI-CQR (γ = 0.005, frozen protocol)       |          90   | 89.8–90.1        |                    0 |                   19.04 |         88.27 |
+| unseen (spatial blocks) |      24 | ACI-CQR-S (γ selected on source BAs)       |          89.9 | 88.9–91.0        |                    0 |                   18.51 |         28.51 |
 | unseen (spatial blocks) |      24 | CQR                                        |          89.5 | 78.9–98.0        |                   19 |                   19.39 |         28.5  |
 | unseen (spatial blocks) |      24 | SCP-R4 (rolling 4-week target calibration) |          89.3 | 88.4–90.0        |                    0 |                   19.63 |         31.9  |
 
@@ -694,7 +694,15 @@ With random folds, zero-shot models are more accurate than local models at intra
 
 Online recalibration with ACI fixes per-BA marginal coverage by construction, so its value lies in the price paid in sharpness. With delayed feedback (24 h), a step that is too large lets $\alpha_t$ overshoot before earlier updates take effect, producing occasional extreme intervals. Choosing $\gamma$ on *other* BAs' validation data avoided this. It gave intervals as sharp as static CQR at 24 h and a few per cent less sharp at 1 h. Conditional coverage remains imperfect at seasonal peaks and in the highest load decile, which matters most for reserves. Aggregated or strongly adaptive variants [@zaffran2022adaptive; @bhatnagar2023improved] and conditional methods are natural next steps.
 
-**Trade-offs (RQ5).** The table below summarises the trade-offs across the regimes studied.
+**Trade-offs (RQ5).** Table 9 summarises the trade-offs across the regimes studied.
+
+
+
+::: {custom-style="Table Caption"}
+**Table 9.** Trade-offs among accuracy, interval reliability, target-data needs and maintenance across the regimes studied (relative accuracy: median per-BA change in nMAE).
+:::
+
+
 
 | Regime | Accuracy (median, relative) | Interval reliability | Target data needed | Compute and maintenance |
 |---|---|---|---|---|
@@ -712,7 +720,7 @@ Online recalibration with ACI fixes per-BA marginal coverage by construction, so
 
 ## Missing input observations (RQ4)
 
-Table 9 and Fig. 11 report accuracy when test-period inputs are corrupted while labels are left intact.
+Table 10 and Fig. 11 report accuracy when test-period inputs are corrupted while labels are left intact.
 
 **Day-ahead forecasts degrade modestly.** At $h = 24$ h, with 10% of input hours missing completely at random (MCAR), the median nMAE of G-IN rises from 4.64% to 5.05% with LightGBM's native missing-value handling. It rises to 6.93% when 40% of inputs are missing.
 
@@ -732,7 +740,7 @@ Table 9 and Fig. 11 report accuracy when test-period inputs are corrupted while 
 
 
 ::: {custom-style="Table Caption"}
-**Table 9.** Median nMAE (%) of the in-region global model with corrupted inputs (test period; common scored hours).
+**Table 10.** Median nMAE (%) of the in-region global model with corrupted inputs (test period; common scored hours).
 :::
 
 |   h (h) | Scenario   |   Native NaN | LOCF   | Weekly-seasonal   |   MCAR-trained, native |
@@ -763,7 +771,7 @@ Table 9 and Fig. 11 report accuracy when test-period inputs are corrupted while 
 
 ## Ablations of the zero-shot model
 
-Table 10 and Fig. 12 report ablations for unseen BAs at $h = 24$ h. Each is measured as the median per-BA relative change in nMAE against the full zero-shot model.
+Table 11 and Fig. 12 report ablations for unseen BAs at $h = 24$ h. Each is measured as the median per-BA relative change in nMAE against the full zero-shot model.
 
 **Feature groups.** The changes are:
 
@@ -776,7 +784,7 @@ Table 10 and Fig. 12 report ablations for unseen BAs at $h = 24$ h. Each is meas
 
 
 ::: {custom-style="Table Caption"}
-**Table 10.** Ablations of the zero-shot global model (h = 24 h, unseen BAs).
+**Table 11.** Ablations of the zero-shot global model (h = 24 h, unseen BAs).
 :::
 
 | Variant                                     |   nMAE % median | Median rel. change vs full LRO %   | 95% CI       | Wilcoxon p (Holm)   |
@@ -839,13 +847,13 @@ The selection criteria excluded five BAs that report demand through 2025: HST, S
 - 6.40% for WAUW;
 - 10.29% for SEC;
 - 4.01% for PSEI;
-- 25.30% for SPA, a 22 MW federal power-marketing area.
+- 25.30% for SPA, a federal power-marketing area with a mean demand of 21.9 MW in 2024–2025.
 
 These are comparable to local models trained on the same BAs' own history (Supplementary Table S7) but far above the errors of the study BAs. The headline accuracy figures should therefore not be extrapolated to very small systems.
 
 # Computational complexity
 
-All experiments ran on a 4-core CPU with 15 GB of memory (Table 11; Fig. 13).
+All experiments ran on a 4-core CPU with 15 GB of memory (Table 12; Fig. 13).
 
 **Training time.** At $h = 24$ h the pooled LightGBM model trained in 42.0 s on about 1.7 million rows, with model size 4.64 MB. The 48 local models together took 83.6 s, and ridge regression took 20.6 s.
 
@@ -853,12 +861,12 @@ All experiments ran on a 4-core CPU with 15 GB of memory (Table 11; Fig. 13).
 
 **Adaptation and calibration.** Fine-tuning on four weeks of target data took 0.23 s per BA at 24 h. Conformal calibration and ACI updates are negligible by comparison: a sort of the calibration scores, plus one quantile lookup per forecast.
 
-**Overall cost.** The full study, including all horizons, folds, quantile models and robustness experiments, ran in roughly six hours of wall-clock time. In operation, a single pooled model per horizon replaces dozens of local models and their maintenance.
+**Overall cost.** The full study, including all horizons, folds, quantile models and robustness experiments, ran in roughly six to seven hours of wall-clock time for the main campaign, plus about two hours for the post-review analyses. In operation, a single pooled model per horizon replaces dozens of local models and their maintenance.
 
 
 
 ::: {custom-style="Table Caption"}
-**Table 11.** Computational cost (4-core CPU).
+**Table 12.** Computational cost (4-core CPU).
 :::
 
 | Model                |   h (h) |   Fits |   Mean fit time (s) |   Inference (µs/forecast) |   Model size (MB) |   Trees |   Peak RSS of run (MB) |
@@ -899,7 +907,7 @@ All experiments ran on a 4-core CPU with 15 GB of memory (Table 11; Fig. 13).
 For system operators, market participants and planners, the results translate into five recommendations.
 
 1. **Onboarding a new or data-poor BA.** A pooled, instance-normalised gradient-boosting model trained on other BAs can produce usable forecasts from the first day; it needs only a week of recent observations to compute the scale. In our data its median accuracy was within 0.5% (day-ahead) to 3.4% (hour-ahead), in relative terms, of a model that had seen the BA. Tail risk is material for intraday use, however: at 1 h the gap exceeded 10% for 6.2% of BAs, including one very large BA. A zero-shot model should therefore be monitored against the BA's own data, and replaced or pooled with that data, during the first months. Fine-tuning on a few weeks of data degraded accuracy at every onboarding date we tested and is not recommended with the settings studied here.
-2. **Small BAs.** Small BAs benefit from pooling as much as large ones. Because the gap was only weakly related to size, a single shared model with BA-specific online calibration is a viable service model for many small utilities.
+2. **Small BAs.** Small BAs also benefit from pooling, although less than large ones: the benefit of the global model over local models and the zero-shot gap both depend weakly on size. Very small systems (tens of MW) remain hard to forecast with any method (Section 11.4). A shared model with BA-specific online calibration is a viable service model for many small utilities, provided that its errors are monitored.
 3. **Uncertainty for reserves and risk.** Intervals calibrated once on pooled data under-covered in a substantial share of BAs and drifted over time, so operational use should include online recalibration. ACI on top of CQR is guaranteed to reach the nominal long-run coverage. What matters in practice is its sharpness and its behaviour in the first months on a new system, and both depend on the step size. A step size chosen on *other* BAs' validation data (ACI-CQR-S) gave a median interval score of 28.18% against 28.15% for static CQR at 24 h; Table 8 gives the details. With day-ahead feedback delay, large step sizes should be avoided. A rolling four-week recalibration on the BA's own recent residuals is a simpler alternative that worked comparably for hour-ahead intervals but was less sharp day-ahead.
 4. **Data quality.** Input gaps matter much more for intraday than for day-ahead forecasts. A simple remedy, training with randomly masked inputs, removes most of the intraday degradation at negligible cost on clean data. For long outages, native missing-value handling or seasonal filling is preferable to carrying the last value forward (Section 11).
 5. **Compute.** All models in this study train on a commodity 4-core CPU. A pooled model (one model per horizon) is cheaper to maintain than 48 local models and was more accurate.
@@ -964,11 +972,11 @@ We built a leakage-resistant benchmark, with a protocol frozen before test evalu
 
 # Data availability statement {.unnumbered}
 
-This study uses publicly available data only. The EIA Form 930 hourly balancing-authority data, as processed by the Public Utility Data Liberation project (Catalyst Cooperative), release v2026.10.0, are available from the PUDL public data bucket (`s3://pudl.catalyst.coop/stable/`, retrieved 16 October 2026) and the corresponding Zenodo archive (DOI 10.5281/zenodo.22525116). The original EIA data are a U.S. Government work in the public domain; PUDL outputs are licensed CC-BY-4.0. The download script verifies SHA-256 checksums of the exact files used. Derived predictions, metrics and tables are included in the code repository and supplementary archive. [AUTHOR ACTION: insert the permanent repository/DOI link for the code and derived data, e.g. a Zenodo release of the repository.]
+This study uses publicly available data only. The EIA Form 930 hourly balancing-authority data, as processed by the Public Utility Data Liberation project (Catalyst Cooperative), release v2026.10.0, are available from the PUDL public data bucket (`s3://pudl.catalyst.coop/stable/`, retrieved 16 October 2026) and the corresponding Zenodo archive (DOI 10.5281/zenodo.22525116). The original EIA data are a U.S. Government work in the public domain; PUDL outputs are licensed CC-BY-4.0. The download script verifies SHA-256 checksums of the exact files used. Derived metrics and tables are included in the code repository; compact test-period predictions are provided as a separate archive (predictions_supplement.zip) for deposit with the code release [AUTHOR ACTION]. [AUTHOR ACTION: insert the permanent repository/DOI link for the code and derived data, e.g. a Zenodo release of the repository.]
 
 # Code availability statement {.unnumbered}
 
-All code needed to reproduce every number, table and figure (data download, preprocessing, model training, evaluation, statistics, figures, tables and manuscript assembly) is available at [AUTHOR ACTION: repository URL / DOI]. A single command (`python -m src.run_all`) reproduces the full study on a 4-core CPU in roughly six to seven hours of wall-clock time; the frozen protocol, configuration and decision log are versioned with the code.
+All code needed to reproduce every number, table and figure (data download, preprocessing, model training, evaluation, statistics, figures, tables and manuscript assembly) is available at [AUTHOR ACTION: repository URL / DOI]. The command `python -m src.run_all` reproduces the main and post-review analyses, tables, figures and manuscript on a 4-core CPU in roughly eight to nine hours of wall-clock time (about six to seven hours for the main campaign and two for the post-review analyses); the frozen protocol, configuration and decision log are versioned with the code.
 
 # Funding {.unnumbered}
 

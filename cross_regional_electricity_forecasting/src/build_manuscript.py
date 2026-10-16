@@ -53,7 +53,9 @@ def insert_objects(text: str) -> str:
     fig_ids, tab_ids = {}, {}
 
     # assign numbers in order of first appearance of the directive
-    for kind, name in re.findall(r"\[\[(FIGURE|TABLE):([\w\-]+)\]\]", text):
+    for kind, name in re.findall(r"\[\[(FIGURE|TABLE|TABLECAP):([\w\-]+)", text):
+        if kind == "TABLECAP":
+            kind = "TABLE"
         if kind == "FIGURE" and name not in fig_ids:
             counters["fig"] += 1
             fig_ids[name] = counters["fig"]
@@ -76,6 +78,8 @@ def insert_objects(text: str) -> str:
         cap = re.sub(r"^Table [A-Z]?\d+[a-z]?\.\s*", "", tabman.loc[name, "caption"])
         return (f"\n\n::: {{custom-style=\"Table Caption\"}}\n**Table {tab_ids[name]}.** {cap}\n:::\n\n{md}\n\n")
 
+    text = re.sub(r"\[\[TABLECAP:([\w\-]+)\|([^\]]+)\]\]",
+                  lambda m: f"\n\n::: {{custom-style=\"Table Caption\"}}\n**Table {tab_ids[m.group(1)]}.** {m.group(2)}\n:::\n\n", text)
     text = re.sub(r"\[\[FIGURE:([\w\-]+)\]\]", fig, text)
     text = re.sub(r"\[\[TABLE:([\w\-]+)\]\]", tab, text)
     # cross references: @fig:name / @tab:name -> numbers

@@ -2,7 +2,7 @@
 
 ## Missing input observations (RQ4)
 
-Table {tab:table_9_missing_data} and Fig. {fig:fig11_missing_data} report accuracy when test-period inputs are corrupted while labels are left intact.
+Table {tab:table_10_missing_data} and Fig. {fig:fig11_missing_data} report accuracy when test-period inputs are corrupted while labels are left intact.
 
 **Day-ahead forecasts degrade modestly.** At $h = 24$ h, with 10% of input hours missing completely at random (MCAR), the median nMAE of G-IN rises from {{missing.h24.clean.native.LGB_G_IN.nMAE_median}}% to {{missing.h24.MCAR_10.native.LGB_G_IN.nMAE_median}}% with LightGBM's native missing-value handling. It rises to {{missing.h24.MCAR_40.native.LGB_G_IN.nMAE_median}}% when 40% of inputs are missing.
 
@@ -19,13 +19,13 @@ Table {tab:table_9_missing_data} and Fig. {fig:fig11_missing_data} report accura
 
 **Unscored hours.** In the most severe scenarios the instance scale cannot be computed for some origins, because fewer than 24 of the preceding 168 hours are observed, and no forecast is issued. All strategies within a scenario are scored on the common set of hours where every strategy issued a forecast; in the worst BA and scenario {{missing.min_scored_pct}}% of hours remain. Real EIA-930 gaps are clustered rather than uniformly random, so the MCAR and uniform-outage scenarios are stylised.
 
-[[TABLE:table_9_missing_data]]
+[[TABLE:table_10_missing_data]]
 
 [[FIGURE:fig11_missing_data]]
 
 ## Ablations of the zero-shot model
 
-Table {tab:table_10_ablation} and Fig. {fig:fig12_ablation} report ablations for unseen BAs at $h = 24$ h. Each is measured as the median per-BA relative change in nMAE against the full zero-shot model.
+Table {tab:table_11_ablation} and Fig. {fig:fig12_ablation} report ablations for unseen BAs at $h = 24$ h. Each is measured as the median per-BA relative change in nMAE against the full zero-shot model.
 
 **Feature groups.** The changes are:
 
@@ -35,7 +35,7 @@ Table {tab:table_10_ablation} and Fig. {fig:fig12_ablation} report ablations for
 
 **Source-pool size.** Shrinking the source pool from 40 BAs to 20, 10 or 5 randomly drawn BAs gives median nMAEs of {{ablationpool.20.nMAE_median}}%, {{ablationpool.10.nMAE_median}}% and {{ablationpool.5.nMAE_median}}% (averages over three draws), against {{ablation.LGB_G_LRO.nMAE_median}}% with all 40 sources. Results vary little across draws (with five sources, {{ablationpool.5.nMAE_min}}–{{ablationpool.5.nMAE_max}}%), so the size of the pool, rather than its particular composition, drives the loss.
 
-[[TABLE:table_10_ablation]]
+[[TABLE:table_11_ablation]]
 
 [[FIGURE:fig12_ablation]]
 
@@ -69,13 +69,13 @@ The selection criteria excluded five BAs that report demand through 2025: HST, S
 - {{revexcl.h24.WAUW.nMAE_zero_shot}}% for WAUW;
 - {{revexcl.h24.SEC.nMAE_zero_shot}}% for SEC;
 - {{revexcl.h24.PSEI.nMAE_zero_shot}}% for PSEI;
-- {{revexcl.h24.SPA.nMAE_zero_shot}}% for SPA, a 22 MW federal power-marketing area.
+- {{revexcl.h24.SPA.nMAE_zero_shot}}% for SPA, a federal power-marketing area with a mean demand of {{revexcl.h24.SPA.mean_mw}} MW in 2024–2025.
 
 These are comparable to local models trained on the same BAs' own history (Supplementary Table S7) but far above the errors of the study BAs. The headline accuracy figures should therefore not be extrapolated to very small systems.
 
 # Computational complexity
 
-All experiments ran on a 4-core CPU with 15 GB of memory (Table {tab:table_11_compute}; Fig. {fig:fig13_compute}).
+All experiments ran on a 4-core CPU with 15 GB of memory (Table {tab:table_12_compute}; Fig. {fig:fig13_compute}).
 
 **Training time.** At $h = 24$ h the pooled LightGBM model trained in {{compute.h24.LGB_G_IN.fit_seconds}} s on about 1.7 million rows, with model size {{compute.h24.LGB_G_IN.size_mb}} MB. The 48 local models together took {{compute.h24.LGB_L_48_models.fit_seconds}} s, and ridge regression took {{compute.h24.RIDGE_G_IN.fit_seconds}} s.
 
@@ -83,8 +83,8 @@ All experiments ran on a 4-core CPU with 15 GB of memory (Table {tab:table_11_co
 
 **Adaptation and calibration.** Fine-tuning on four weeks of target data took {{compute.h24.LGB_FT_k4.fit_seconds_per_region}} s per BA at 24 h. Conformal calibration and ACI updates are negligible by comparison: a sort of the calibration scores, plus one quantile lookup per forecast.
 
-**Overall cost.** The full study, including all horizons, folds, quantile models and robustness experiments, ran in roughly six hours of wall-clock time. In operation, a single pooled model per horizon replaces dozens of local models and their maintenance.
+**Overall cost.** The full study, including all horizons, folds, quantile models and robustness experiments, ran in roughly six to seven hours of wall-clock time for the main campaign, plus about two hours for the post-review analyses. In operation, a single pooled model per horizon replaces dozens of local models and their maintenance.
 
-[[TABLE:table_11_compute]]
+[[TABLE:table_12_compute]]
 
 [[FIGURE:fig13_compute]]

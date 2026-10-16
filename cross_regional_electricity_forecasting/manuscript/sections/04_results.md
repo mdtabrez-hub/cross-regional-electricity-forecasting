@@ -4,17 +4,17 @@ All results refer to the 2024–2025 test period unless stated otherwise. They a
 
 ## Point accuracy and the geographic generalisation gap (RQ1)
 
-Table {tab:table_2_point_accuracy} and Fig. {fig:fig05_accuracy} summarise per-BA accuracy.
+Table {tab:table_01_point_accuracy} and Fig. {fig:fig05_accuracy} summarise per-BA accuracy.
 
 **Day-ahead horizon.** At $h = 24$ h the global LightGBM model trained on all BAs (G-IN) attains a median nMAE of {{point.h24.LGB_G_IN.nMAE_median}}% (MASE {{point.h24.LGB_G_IN.MASE_median}}). The same model class with the evaluated BA held out (G-LRO, zero-shot) attains {{point.h24.LGB_G_LRO.nMAE_median}}%, against {{point.h24.LGB_L.nMAE_median}}% for local models trained on four years of each BA's own data, {{point.h24.RIDGE_G_IN.nMAE_median}}% for pooled ridge regression and {{point.h24.SN24.nMAE_median}}% for the 24-h seasonal naive.
 
 **Shorter horizons.** At $h = 6$ h the medians are {{point.h6.LGB_G_IN.nMAE_median}}% (G-IN), {{point.h6.LGB_G_LRO.nMAE_median}}% (G-LRO) and {{point.h6.LGB_L.nMAE_median}}% (local). At $h = 1$ h they are {{point.h1.LGB_G_IN.nMAE_median}}%, {{point.h1.LGB_G_LRO.nMAE_median}}% and {{point.h1.LGB_L.nMAE_median}}%.
 
-[[TABLE:table_2_point_accuracy]]
+[[TABLE:table_01_point_accuracy]]
 
 [[FIGURE:fig05_accuracy]]
 
-**Size of the gap.** The cost of never having seen a BA is small but systematic (Table {tab:table_3_paired_tests}). At $h = 24$ h the median per-BA relative increase in nMAE from G-IN to G-LRO is {{test.h24.nMAE.LGB_G_LRO.LGB_G_IN.median_rel_change}}% (95% bootstrap CI {{test.h24.nMAE.LGB_G_LRO.LGB_G_IN.rel_ci_lo}} to {{test.h24.nMAE.LGB_G_LRO.LGB_G_IN.rel_ci_hi}}%). The held-out model is better in only {{test.h24.nMAE.LGB_G_LRO.LGB_G_IN.share_a_better}}% of BAs. The gap grows as the horizon shrinks: {{test.h6.nMAE.LGB_G_LRO.LGB_G_IN.median_rel_change}}% at 6 h and {{test.h1.nMAE.LGB_G_LRO.LGB_G_IN.median_rel_change}}% at 1 h (CI {{test.h1.nMAE.LGB_G_LRO.LGB_G_IN.rel_ci_lo}} to {{test.h1.nMAE.LGB_G_LRO.LGB_G_IN.rel_ci_hi}}%). The moving-block bootstrap shows that the in-region model is significantly better within {{block.h1.LGB_G_LRO.LGB_G_IN.share_b_better_sig}}% of BAs at 1 h but only {{block.h24.LGB_G_LRO.LGB_G_IN.share_b_better_sig}}% at 24 h.
+**Size of the gap.** The cost of never having seen a BA is small but systematic (Table {tab:table_02_paired_tests}). At $h = 24$ h the median per-BA relative increase in nMAE from G-IN to G-LRO is {{test.h24.nMAE.LGB_G_LRO.LGB_G_IN.median_rel_change}}% (95% bootstrap CI {{test.h24.nMAE.LGB_G_LRO.LGB_G_IN.rel_ci_lo}} to {{test.h24.nMAE.LGB_G_LRO.LGB_G_IN.rel_ci_hi}}%). The held-out model is better in only {{test.h24.nMAE.LGB_G_LRO.LGB_G_IN.share_a_better}}% of BAs. The gap grows as the horizon shrinks: {{test.h6.nMAE.LGB_G_LRO.LGB_G_IN.median_rel_change}}% at 6 h and {{test.h1.nMAE.LGB_G_LRO.LGB_G_IN.median_rel_change}}% at 1 h (CI {{test.h1.nMAE.LGB_G_LRO.LGB_G_IN.rel_ci_lo}} to {{test.h1.nMAE.LGB_G_LRO.LGB_G_IN.rel_ci_hi}}%). The moving-block bootstrap shows that the in-region model is significantly better within {{block.h1.LGB_G_LRO.LGB_G_IN.share_b_better_sig}}% of BAs at 1 h but only {{block.h24.LGB_G_LRO.LGB_G_IN.share_b_better_sig}}% at 24 h.
 
 **Distribution across BAs.** The median hides a tail (Fig. {fig:fig06_regional_errors}).
 
@@ -30,21 +30,21 @@ The gap is weakly related to BA size (correlation with log mean demand {{derived
 
 - **At $h = 1$ h and $h = 6$ h it is more accurate:** median relative change {{test.h1.nMAE.LGB_G_LRO.LGB_L.median_rel_change}}% (CI {{test.h1.nMAE.LGB_G_LRO.LGB_L.rel_ci_lo}} to {{test.h1.nMAE.LGB_G_LRO.LGB_L.rel_ci_hi}}%) and {{test.h6.nMAE.LGB_G_LRO.LGB_L.median_rel_change}}%.
 - **At $h = 24$ h the difference is small and not significant:** {{test.h24.nMAE.LGB_G_LRO.LGB_L.median_rel_change}}% (CI {{test.h24.nMAE.LGB_G_LRO.LGB_L.rel_ci_lo}} to {{test.h24.nMAE.LGB_G_LRO.LGB_L.rel_ci_hi}}%; Holm-adjusted $p$ {{test.h24.nMAE.LGB_G_LRO.LGB_L.p_holm_all}}). With a 1% non-inferiority margin, chosen post hoc, the 90% cluster-bootstrap interval ({{reveq.h24.1.cluster_ci90_lo}} to {{reveq.h24.1.cluster_ci90_hi}}%) supports non-inferiority but not equivalence.
-- **By year at 24 h,** the paired difference is {{revyear.h24.2024.LGB_G_LRO.LGB_L.median_rel_change}}% in 2024 and {{revyear.h24.2025.LGB_G_LRO.LGB_L.median_rel_change}}% in 2025. In 2024 the local models have a marginally lower *median level* across BAs (Table {tab:table_5_temporal}), so the zero-shot model matches rather than beats local models at the day-ahead horizon.
+- **By year at 24 h,** the paired difference is {{revyear.h24.2024.LGB_G_LRO.LGB_L.median_rel_change}}% in 2024 and {{revyear.h24.2025.LGB_G_LRO.LGB_L.median_rel_change}}% in 2025. In 2024 the local models have a marginally lower *median level* across BAs (Table {tab:table_05_temporal}), so the zero-shot model matches rather than beats local models at the day-ahead horizon.
 
 **Linear benchmark.** Relative to ridge regression on the same features, G-IN changes nMAE by a median {{test.h24.nMAE.LGB_G_IN.RIDGE_G_IN.median_rel_change}}% at 24 h and {{test.h1.nMAE.LGB_G_IN.RIDGE_G_IN.median_rel_change}}% at 1 h. Ridge regression's own geographic gap is negligible ({{test.h24.nMAE.RIDGE_G_LRO.RIDGE_G_IN.median_rel_change}}% at 24 h), consistent with a low-capacity model that cannot memorise BA-specific patterns.
 
-[[TABLE:table_3_paired_tests]]
+[[TABLE:table_02_paired_tests]]
 
 [[FIGURE:fig06_regional_errors]]
 
-**Operator reference.** The BAs' own day-ahead forecasts reach a median nMAE of {{ba.h24.BA_DA.nMAE_median}}% on the same hours, against {{ba.h24.LGB_G_IN.nMAE_median}}% for G-IN at 24 h (Table {tab:table_12_ba_reference}). The information sets differ: operators use weather forecasts and other operational information, issue forecasts at undocumented times, and are not restricted to our past-demand features. We therefore do not attribute the difference to any single cause, and the comparison is not like-for-like. For orientation only, the in-region model at $h = 6$ h ({{point.h6.LGB_G_IN.nMAE_median}}%), which has far more recent information than any day-ahead forecast, is more accurate than the operators' day-ahead forecasts.
+**Operator reference.** The BAs' own day-ahead forecasts reach a median nMAE of {{ba.h24.BA_DA.nMAE_median}}% on the same hours, against {{ba.h24.LGB_G_IN.nMAE_median}}% for G-IN at 24 h (Table {tab:table_03_ba_reference}). The information sets differ: operators use weather forecasts and other operational information, issue forecasts at undocumented times, and are not restricted to our past-demand features. We therefore do not attribute the difference to any single cause, and the comparison is not like-for-like. For orientation only, the in-region model at $h = 6$ h ({{point.h6.LGB_G_IN.nMAE_median}}%), which has far more recent information than any day-ahead forecast, is more accurate than the operators' day-ahead forecasts.
 
-[[TABLE:table_12_ba_reference]]
+[[TABLE:table_03_ba_reference]]
 
 ## Limited target-data adaptation (RQ2)
 
-Table {tab:table_4_adaptation} and Fig. {fig:fig07_transfer} compare adaptation strategies for unseen BAs.
+Table {tab:table_04_adaptation} and Fig. {fig:fig07_transfer} compare adaptation strategies for unseen BAs.
 
 **Local models need history.** With little target history, local models are poor. At $h = 24$ h, a local model trained on one week reaches a median nMAE of {{adapt.h24.LGB_L_k1.nMAE_median}}%, on four weeks {{adapt.h24.LGB_L_k4.nMAE_median}}% and on thirteen weeks {{adapt.h24.LGB_L_k13.nMAE_median}}%. All of these are worse than the zero-shot global model ({{adapt.h24.LGB_G_LRO.nMAE_median}}%).
 
@@ -52,27 +52,27 @@ Table {tab:table_4_adaptation} and Fig. {fig:fig07_transfer} compare adaptation 
 
 **The degradation is not specific to a December origin.** We repeated the experiment at three onboarding origins inside the test period: 1 April, 1 July and 1 October 2024, each evaluated over the following year. Fine-tuning remained worse than zero-shot at every origin. Median relative changes ranged from +{{revorigrange.h24.FT.min}}% to +{{revorigrange.h24.FT.max}}% at 24 h, and from +{{revorigrange.h6.FT.min}}% to +{{revorigrange.h6.FT.max}}% at 6 h (Supplementary Table S5). These adaptation settings were fixed a priori; better-regularised adaptation might behave differently.
 
-[[TABLE:table_4_adaptation]]
+[[TABLE:table_04_adaptation]]
 
 [[FIGURE:fig07_transfer]]
 
 ## Temporal distribution shift (RQ4)
 
-**Drift with model age.** Errors of models frozen at the end of 2022 did not grow monotonically with their age (Table {tab:table_5_temporal}; Fig. {fig:fig08_temporal_shift}). At $h = 24$ h the median nMAE of G-IN was {{temporal.h24.year.2023_(validation).LGB_G_IN.nMAE_median}}% in 2023 (validation year, mildly optimistic because it includes the early-stopping weeks), {{temporal.h24.year.2024.LGB_G_IN.nMAE_median}}% in 2024 and {{temporal.h24.year.2025.LGB_G_IN.nMAE_median}}% in 2025. The seasonal naive benchmark follows the same pattern ({{temporal.h24.year.2024.SN24.nMAE_median}}% in 2024 and {{temporal.h24.year.2025.SN24.nMAE_median}}% in 2025), which indicates that 2025 was intrinsically harder to forecast rather than that the models aged. The increase from 2024 to 2025 was largest for local models ({{temporal.h24.year.2024.LGB_L.nMAE_median}}% to {{temporal.h24.year.2025.LGB_L.nMAE_median}}%), compared with the zero-shot model ({{temporal.h24.year.2024.LGB_G_LRO.nMAE_median}}% to {{temporal.h24.year.2025.LGB_G_LRO.nMAE_median}}%) and G-IN.
+**Drift with model age.** Errors of models frozen at the end of 2022 did not grow monotonically with their age (Table {tab:table_05_temporal}; Fig. {fig:fig08_temporal_shift}). At $h = 24$ h the median nMAE of G-IN was {{temporal.h24.year.2023_(validation).LGB_G_IN.nMAE_median}}% in 2023 (validation year, mildly optimistic because it includes the early-stopping weeks), {{temporal.h24.year.2024.LGB_G_IN.nMAE_median}}% in 2024 and {{temporal.h24.year.2025.LGB_G_IN.nMAE_median}}% in 2025. The seasonal naive benchmark follows the same pattern ({{temporal.h24.year.2024.SN24.nMAE_median}}% in 2024 and {{temporal.h24.year.2025.SN24.nMAE_median}}% in 2025), which indicates that 2025 was intrinsically harder to forecast rather than that the models aged. The increase from 2024 to 2025 was largest for local models ({{temporal.h24.year.2024.LGB_L.nMAE_median}}% to {{temporal.h24.year.2025.LGB_L.nMAE_median}}%), compared with the zero-shot model ({{temporal.h24.year.2024.LGB_G_LRO.nMAE_median}}% to {{temporal.h24.year.2025.LGB_G_LRO.nMAE_median}}%) and G-IN.
 
 **Seasonal pattern.** Errors are highest in winter and summer and lowest in autumn: at 24 h, G-IN reaches {{temporal.h24.season.DJF.LGB_G_IN.nMAE_median}}% in DJF, {{temporal.h24.season.JJA.LGB_G_IN.nMAE_median}}% in JJA and {{temporal.h24.season.SON.LGB_G_IN.nMAE_median}}% in SON. This pattern reflects weather-driven heating and cooling load that calendar and lag features cannot anticipate.
 
-**Effect of refitting.** Refitting on data through 2023 and evaluating on 2025 (Table {tab:table_6_refit}) leaves the median nMAE of G-IN essentially unchanged ({{refit.h24.LGB_G_IN.nMAE_median}}% frozen, {{refit.h24.LGB_G_IN_refit.nMAE_median}}% refit), and of local models from {{refit.h24.LGB_L.nMAE_median}}% to {{refit.h24.LGB_L_refit.nMAE_median}}%. The median per-BA relative change is {{testrefit.h24.nMAE.LGB_G_IN_refit.LGB_G_IN.median_rel_change}}% for G-IN (Holm $p$ {{testrefit.h24.nMAE.LGB_G_IN_refit.LGB_G_IN.p_holm}}) and {{testrefit.h24.nMAE.LGB_L_refit.LGB_L.median_rel_change}}% for local models (Holm $p$ {{testrefit.h24.nMAE.LGB_L_refit.LGB_L.p_holm}}). Refitting thus benefits local models, which gain a fifth year of their own data, but not the pooled model, which already has abundant data.
+**Effect of refitting.** Refitting on data through 2023 and evaluating on 2025 (Table {tab:table_06_refit}) leaves the median nMAE of G-IN essentially unchanged ({{refit.h24.LGB_G_IN.nMAE_median}}% frozen, {{refit.h24.LGB_G_IN_refit.nMAE_median}}% refit), and of local models from {{refit.h24.LGB_L.nMAE_median}}% to {{refit.h24.LGB_L_refit.nMAE_median}}%. The median per-BA relative change is {{testrefit.h24.nMAE.LGB_G_IN_refit.LGB_G_IN.median_rel_change}}% for G-IN (Holm $p$ {{testrefit.h24.nMAE.LGB_G_IN_refit.LGB_G_IN.p_holm}}) and {{testrefit.h24.nMAE.LGB_L_refit.LGB_L.median_rel_change}}% for local models (Holm $p$ {{testrefit.h24.nMAE.LGB_L_refit.LGB_L.p_holm}}). Refitting thus benefits local models, which gain a fifth year of their own data, but not the pooled model, which already has abundant data.
 
-[[TABLE:table_5_temporal]]
+[[TABLE:table_05_temporal]]
 
-[[TABLE:table_6_refit]]
+[[TABLE:table_06_refit]]
 
 [[FIGURE:fig08_temporal_shift]]
 
 ## Interval calibration under geographic and temporal shift (RQ3)
 
-Table {tab:table_7_probabilistic} and Fig. {fig:fig09_calibration} report interval calibration.
+Table {tab:table_07_probabilistic} and Fig. {fig:fig09_calibration} report interval calibration.
 
 **Calibration fails BA by BA, not on average.** The static methods are close to nominal *on average* but not *per BA*. At $h = 24$ h and nominal 90%, CQR calibrated on source BAs achieves a mean coverage of {{prob.h24.unseen-region.90.CQR.all.coverage_mean}}% for unseen BAs, yet coverage ranges down to {{prob.h24.unseen-region.90.CQR.all.coverage_min}}%. In {{prob.h24.unseen-region.90.CQR.all.share_regions_undercover_5pp}}% of BAs it is more than 5 percentage points below nominal. Raw quantile regression under-covers more (mean {{prob.h24.unseen-region.90.QR.all.coverage_mean}}%), and symmetric SCP has the widest spread across BAs (minimum {{prob.h24.unseen-region.90.SCP.all.coverage_min}}%).
 
@@ -113,9 +113,9 @@ What matters is therefore online use of recent target feedback; the particular o
 
 **Post-hoc sensitivity.** Supplementary Table S2 gives the test-set sensitivity of ACI to $\gamma$. It was not used for any selection.
 
-[[TABLE:table_7_probabilistic]]
+[[TABLE:table_07_probabilistic]]
 
-[[TABLE:table_8_calibration_revision]]
+[[TABLE:table_08_calibration_revision]]
 
 
 [[FIGURE:fig09_calibration]]

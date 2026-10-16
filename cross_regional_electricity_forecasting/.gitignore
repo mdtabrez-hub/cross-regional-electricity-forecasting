@@ -10,3 +10,5 @@ results/predictions/*.parquet
 manuscript/*.html
 manuscript/supplement_rendered.md
 results/predictions_compact/
+predictions_supplement.zip
+results/logs/final.out

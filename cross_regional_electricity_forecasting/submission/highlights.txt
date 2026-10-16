@@ -1,5 +1,5 @@
 Leakage-resistant benchmark: forecasting 48 U.S. balancing authorities never seen
 Unseen systems cost 0.5–3.4% median accuracy; more if whole regions are new
 Fine-tuning on 1–13 weeks of target data degraded accuracy at every onboarding date
-Static conformal intervals under-covered in 21–33% of systems, seen or unseen
+CQR intervals under-covered in 19–33% of systems, seen or unseen
 Online conformal with a step size tuned on other systems restored coverage

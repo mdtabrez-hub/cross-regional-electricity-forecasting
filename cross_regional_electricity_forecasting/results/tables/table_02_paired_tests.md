@@ -1,4 +1,4 @@
-**Table 3. Key paired comparisons of per-BA nMAE (test period; negative = A more accurate).**
+**Table 2. Key paired comparisons of per-BA nMAE (test period; negative = A more accurate).**
 
 |   h (h) | A vs B                     |   Median rel. change % | 95% CI         |   A better (BAs %) | A sig. better / B sig. better (block bootstrap, BAs %)   | Holm p   |
 |--------:|:---------------------------|-----------------------:|:---------------|-------------------:|:---------------------------------------------------------|:---------|

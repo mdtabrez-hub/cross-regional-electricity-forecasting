@@ -1,4 +1,4 @@
-**Table 10. Ablations of the zero-shot global model (h = 24 h, unseen BAs).**
+**Table 11. Ablations of the zero-shot global model (h = 24 h, unseen BAs).**
 
 | Variant                                     |   nMAE % median | Median rel. change vs full LRO %   | 95% CI       | Wilcoxon p (Holm)   |
 |:--------------------------------------------|----------------:|:-----------------------------------|:-------------|:--------------------|

@@ -60,10 +60,12 @@ def cover_letter():
     for t in [
         f"a pooled, instance-normalised LightGBM model loses a median {N['test.h24.nMAE.LGB_G_LRO.LGB_G_IN.median_rel_change']}% "
         f"(day-ahead) to {N['test.h1.nMAE.LGB_G_LRO.LGB_G_IN.median_rel_change']}% (hour-ahead) relative accuracy on balancing "
-        f"authorities it has never seen ({N['revsptest.h24.LGB_G_LRS.LGB_G_IN.median_rel_change']}% day-ahead when whole regions "
-        "are held out), matching local models day-ahead and beating them intraday, with a tail of larger losses intraday;",
+        f"authorities it has never seen ({N['revsptest.h24.LGB_G_LRS.LGB_G_IN.median_rel_change']}% day-ahead and "
+        f"{N['revsptest.h1.LGB_G_LRS.LGB_G_IN.median_rel_change']}% hour-ahead when whole regions are held out). With random folds it "
+        "matches local models day-ahead and beats them intraday; with whole regions held out it matches local models at both "
+        "horizons. A few systems show much larger intraday losses;",
         "fine-tuning on one to thirteen weeks of target data degraded accuracy at every onboarding date tested;",
-        "static conformal intervals are near-nominal on average but under-cover in a fifth to a third of systems, "
+        "conformalised quantile regression intervals are near-nominal on average but under-cover in a fifth to a third of systems, "
         "whether or not the system was seen in training; and",
         "adaptive conformal inference restores per-system coverage, but its practical value depends on a step size "
         "suited to the feedback delay; choosing it on other systems worked well.",
@@ -72,8 +74,8 @@ def cover_letter():
     para(d, (
         "The contribution is an evaluation framework and empirical evidence rather than a new algorithm, which we "
         "believe fits the journal's interest in forecast evaluation, probabilistic calibration and reproducible energy "
-        "forecasting. All code, the frozen protocol, a decision log of every post-freeze amendment, predictions and "
-        "metrics are openly available [AUTHOR ACTION: repository/DOI]."))
+        "forecasting. All code, the frozen protocol, a decision log of every post-freeze amendment and the "
+        "metrics are openly available, with compact test predictions as a supplementary archive [AUTHOR ACTION: repository/DOI]."))
     para(d, (
         "The manuscript is original, has not been published previously and is not under consideration elsewhere. "
         "All authors approved the submission. [AUTHOR ACTION: confirm; state any preprint posting; declare competing "
@@ -86,13 +88,13 @@ def cover_letter():
 def highlights():
     g24, g1 = N["test.h24.nMAE.LGB_G_LRO.LGB_G_IN.median_rel_change"], N["test.h1.nMAE.LGB_G_LRO.LGB_G_IN.median_rel_change"]
     sp = N["revsptest.h24.LGB_G_LRS.LGB_G_IN.median_rel_change"]
-    u24 = N["prob.h24.unseen-region.90.CQR.all.share_regions_undercover_5pp"]
+    u24 = N["prob.h24.in-region.90.CQR.all.share_regions_undercover_5pp"]
     u1 = N["prob.h1.unseen-region.90.CQR.all.share_regions_undercover_5pp"]
     hl = [
         "Leakage-resistant benchmark: forecasting 48 U.S. balancing authorities never seen",
         f"Unseen systems cost {g24}–{g1}% median accuracy; more if whole regions are new",
         "Fine-tuning on 1–13 weeks of target data degraded accuracy at every onboarding date",
-        f"Static conformal intervals under-covered in {round(float(u24))}–{round(float(u1))}% of systems, seen or unseen",
+        f"CQR intervals under-covered in {round(float(u24))}–{round(float(u1))}% of systems, seen or unseen",
         "Online conformal with a step size tuned on other systems restored coverage",
     ]
     d = doc()
