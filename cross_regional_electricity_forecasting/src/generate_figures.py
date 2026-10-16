@@ -175,6 +175,9 @@ def fig_accuracy():
             p.set_facecolor(C[m])
             p.set_linewidth(0.6)
         ax.set_yscale("log")
+        ax.yaxis.set_major_locator(matplotlib.ticker.FixedLocator([0.5, 1, 2, 3, 5, 10, 20]))
+        ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:g}"))
+        ax.yaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
         ax.set_title(f"h = {h} h", loc="left")
         ax.set_xticks(range(1, len(order) + 1), [LAB[m] for m in order], rotation=60, ha="right", fontsize=7.5)
     axes[0].set_ylabel("nMAE per BA (%, log scale)")
@@ -192,21 +195,25 @@ def fig_regions():
     piv = pr[pr.h == h].pivot(index="region", columns="method", values="nMAE") * 100
     ax = axes[0]
     mx = np.nanmax(piv[["LGB_G_IN", "LGB_G_LRO"]].to_numpy()) * 1.1
-    ax.scatter(piv.LGB_G_IN, piv.LGB_G_LRO, s=14, c=np.log10(reg.loc[piv.index, "mean_demand_mw"]), cmap="viridis")
+    sc = ax.scatter(piv.LGB_G_IN, piv.LGB_G_LRO, s=14, c=np.log10(reg.loc[piv.index, "mean_demand_mw"]), cmap="viridis")
+    cb = fig.colorbar(sc, ax=ax, fraction=0.05, pad=0.02)
+    cb.set_label("log$_{10}$ mean demand (MW)")
     ax.plot([0, mx], [0, mx], "k--", lw=0.7)
     ax.set_xlabel("nMAE, global in-region (%)")
     ax.set_ylabel("nMAE, global unseen region (%)")
     ax.set_title("h = 24 h", loc="left")
-    for r in piv.index:
-        if piv.loc[r, "LGB_G_LRO"] / piv.loc[r, "LGB_G_IN"] > 1.15 or piv.loc[r, "LGB_G_IN"] > np.nanpercentile(piv.LGB_G_IN, 92):
-            ax.annotate(r, (piv.loc[r, "LGB_G_IN"], piv.loc[r, "LGB_G_LRO"]), fontsize=7, xytext=(3, 2),
-                        textcoords="offset points")
+    top = piv.LGB_G_IN.sort_values().index[-3:]
+    for k, r in enumerate(top):
+        ax.annotate(r, (piv.loc[r, "LGB_G_IN"], piv.loc[r, "LGB_G_LRO"]), fontsize=7, xytext=(-28, 6 + 4 * k),
+                    textcoords="offset points", arrowprops=dict(arrowstyle="-", lw=0.4))
     panel_label(ax, "(a)")
     ax = axes[1]
     for hh, mk in zip(sorted(pr.h.unique()), ["o", "s", "^"]):
         p = pr[pr.h == hh].pivot(index="region", columns="method", values="nMAE")
         gap = (p.LGB_G_LRO / p.LGB_G_IN - 1) * 100
         ax.scatter(reg.loc[p.index, "mean_demand_mw"], gap, s=12, marker=mk, label=f"h = {hh} h", alpha=0.8)
+        for r in gap.index[gap > 15]:
+            ax.annotate(r, (reg.loc[r, "mean_demand_mw"], gap[r]), fontsize=7, xytext=(4, -2), textcoords="offset points")
     ax.axhline(0, color="k", lw=0.7)
     ax.set_xscale("log")
     ax.set_xlabel("Mean demand (MW, log scale)")
@@ -236,11 +243,14 @@ def fig_temporal():
     panel_label(axes[0], "(a)")
     se = s[(s.by == "season") & (s.h == 24)]
     seasons = ["DJF", "MAM", "JJA", "SON"]
-    for i, m in enumerate(["LGB_L", "LGB_G_IN", "LGB_G_LRO"]):
+    for i, (m, mk) in enumerate(zip(["LGB_L", "LGB_G_IN", "LGB_G_LRO"], ["s", "o", "^"])):
         d = se[se.method == m].set_index("period").reindex(seasons)
-        axes[1].bar(np.arange(4) + (i - 1) * 0.26, d.nMAE_median * 100, width=0.26, color=C[m], label=LAB[m])
+        axes[1].plot(np.arange(4) + (i - 1) * 0.12, d.nMAE_median * 100, ls="none", marker=mk, ms=6,
+                     color=C[m], label=LAB[m])
     axes[1].set_xticks(range(4), seasons)
+    axes[1].set_xlim(-0.5, 3.5)
     axes[1].set_title("Season, h = 24 h", loc="left")
+    axes[1].legend(frameon=False, fontsize=7, loc="lower left")
     panel_label(axes[1], "(b)")
     hs = sorted(r.h.unique())
     x = np.arange(len(hs))
@@ -251,7 +261,8 @@ def fig_temporal():
         axes[2].bar(x + (i - 1.5) * 0.2, d.nMAE_median * 100, width=0.2, color=c, label=lab)
     axes[2].set_xticks(x, [f"{h} h" for h in hs])
     axes[2].set_title("Refit on 2025", loc="left")
-    axes[2].legend(frameon=False, fontsize=7)
+    axes[2].set_ylim(0, 6.2)
+    axes[2].legend(frameon=False, fontsize=6.5, ncol=2, loc="upper left")
     panel_label(axes[2], "(c)")
     fig.tight_layout()
     save(fig, "fig07_temporal_shift", "Temporal distribution shift: (a) median nMAE by year for models trained on "
@@ -301,7 +312,7 @@ def fig_calibration():
             ax.plot([i - 0.3, i + 0.3], [v.mean()] * 2, color="k", lw=1.2)
         ax.axhline(90, color="#D55E00", ls="--", lw=0.9)
         ax.set_xticks(range(len(meths)), meths, rotation=45, ha="right")
-        ax.set_title(f"{setting}, h = 24 h", loc="left", fontsize=10)
+        ax.set_title(f"{setting}, h = 24 h", loc="right", fontsize=9.5)
     axes[0].set_ylabel("Empirical coverage of 90% interval (%)")
     lo = min(axes[0].get_ylim()[0], axes[1].get_ylim()[0])
     for ax in axes[:2]:
@@ -315,7 +326,8 @@ def fig_calibration():
         ax.plot(pd.PeriodIndex(d.month, freq="M").to_timestamp(), d.coverage * 100, color=c, lw=1, label=m)
     ax.axhline(90, color="#D55E00", ls="--", lw=0.9)
     ax.set_ylabel("Pooled monthly coverage (%)")
-    ax.set_title("unseen-region, by month", loc="left", fontsize=10)
+    ax.set_title("unseen-region, by month", loc="right", fontsize=9.5)
+    ax.xaxis.set_major_locator(matplotlib.dates.MonthLocator(bymonth=[1, 7]))
     ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter("%b\n%Y"))
     ax.legend(frameon=False, fontsize=6.5, ncol=2)
     panel_label(ax, "(c)")
@@ -375,7 +387,8 @@ def fig_missing():
             dd = d[(d.method == m) & ((d.strategy == st) | (d.scenario == "clean"))]
             dd = dd.assign(r=dd.scenario.map(rates)).sort_values("r").drop_duplicates("r")
             lab = {"LGB_G_IN": "global in", "LGB_G_IN_AUG": "global in, MCAR-trained", "LGB_G_LRO": "global unseen"}[m]
-            ax.plot(dd.r, dd.nMAE_median * 100, color=c, ls=ls, marker="o", ms=3, label=f"{lab}, {st}")
+            stl = {"native": "native NaN", "locf": "LOCF imputation", "seasonal": "weekly-seasonal imputation"}[st]
+            ax.plot(dd.r, dd.nMAE_median * 100, color=c, ls=ls, marker="o", ms=3, label=f"{lab}, {stl}")
         for sc, mk in (("BLOCK_24h", "x"), ("BLOCK_168h", "+")):
             b = s[(s.h == h) & (s.scenario == sc) & (s.method == "LGB_G_IN") & (s.strategy == "native")]
             if len(b):
@@ -405,7 +418,9 @@ def fig_ablation():
     ax.errorbar(rest.median_rel_change * 100, y, xerr=[(rest.median_rel_change - rest.rel_ci_lo) * 100,
                                                        (rest.rel_ci_hi - rest.median_rel_change) * 100],
                 fmt="none", color="k", lw=0.8, capsize=2)
-    ax.set_yticks(y, rest.method.str.replace("_", " ").str.replace("LGB G IN", "in-region (reference)"))
+    names = {"no_calendar": "no calendar features", "no_weekly_lags": "no weekly lags",
+             "recent_lags_0_3_only": "recent lags 0–3 h only", "LGB_G_IN": "in-region model (reference)"}
+    ax.set_yticks(y, [names.get(m, m) for m in rest.method])
     ax.axvline(0, color="k", lw=0.7)
     ax.set_xlabel("Median change in nMAE vs full zero-shot model (%)")
     panel_label(ax, "(a)")
@@ -417,6 +432,7 @@ def fig_ablation():
     ax.scatter([40], [base], color="#0072B2", s=30, marker="D", label="all 40 sources")
     ax.set_xscale("log")
     ax.set_xticks([5, 10, 20, 40], ["5", "10", "20", "40"])
+    ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
     ax.set_xlabel("Number of source BAs")
     ax.set_ylabel("Median nMAE (%)")
     ax.legend(frameon=False, fontsize=7)
@@ -435,7 +451,7 @@ def fig_compute():
     a = pd.read_csv(LOG_DIR / "compute_costs_adapt.csv")
     fig, axes = plt.subplots(1, 2, figsize=(W2, 2.7))
     models = ["RIDGE_G_IN", "LGB_L (48 models)", "LGB_G_IN", "LGB_G_LRO"]
-    labels = ["Ridge global", "LightGBM local\n(48 models)", "LightGBM global", "LightGBM global\n(per LRO fold)"]
+    labels = ["Ridge\nglobal", "LightGBM\nlocal (48)", "LightGBM\nglobal", "LightGBM\nLRO (per fold)"]
     hs = sorted(g.h.unique())
     for i, h in enumerate(hs):
         d = g[g.h == h].set_index("model").reindex(models)
@@ -453,8 +469,9 @@ def fig_compute():
     panel_label(axes[0], "(a)")
     panel_label(axes[1], "(b)")
     fig.tight_layout()
-    save(fig, "fig13_compute", "Computational cost on a 4-core CPU: (a) training time; (b) model size (ridge size not "
-         "measured).", "results/logs/compute_costs_point.csv; results/logs/compute_costs_adapt.csv")
+    save(fig, "fig13_compute", "Computational cost on a 4-core CPU: (a) wall-clock training time; (b) serialised model "
+         "size (ridge size not measured). The h = 6 h in-region fit coincided with a concurrent evaluation job and its time "
+         "is inflated by CPU contention; LRO fits at h = 6 h are representative.", "results/logs/compute_costs_point.csv; results/logs/compute_costs_adapt.csv")
 
 
 def main():

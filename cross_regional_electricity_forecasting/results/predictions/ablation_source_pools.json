@@ -1,0 +1,956 @@
+[
+  {
+    "variant": "pool_5_rep0",
+    "fold": 0,
+    "sources": [
+      "IPCO",
+      "PGE",
+      "GCPD",
+      "TIDC",
+      "NWMT"
+    ]
+  },
+  {
+    "variant": "pool_5_rep0",
+    "fold": 1,
+    "sources": [
+      "NEVP",
+      "TEPC",
+      "CPLW",
+      "EPE",
+      "PNM"
+    ]
+  },
+  {
+    "variant": "pool_5_rep0",
+    "fold": 2,
+    "sources": [
+      "TEC",
+      "SOCO",
+      "ERCO",
+      "AVA",
+      "BPAT"
+    ]
+  },
+  {
+    "variant": "pool_5_rep0",
+    "fold": 3,
+    "sources": [
+      "TVA",
+      "CISO",
+      "AZPS",
+      "FMPP",
+      "LDWP"
+    ]
+  },
+  {
+    "variant": "pool_5_rep0",
+    "fold": 4,
+    "sources": [
+      "NYIS",
+      "JEA",
+      "CPLE",
+      "FMPP",
+      "IID"
+    ]
+  },
+  {
+    "variant": "pool_5_rep0",
+    "fold": 5,
+    "sources": [
+      "PSCO",
+      "FPL",
+      "TVA",
+      "PNM",
+      "BANC"
+    ]
+  },
+  {
+    "variant": "pool_5_rep1",
+    "fold": 0,
+    "sources": [
+      "IID",
+      "NEVP",
+      "CPLW",
+      "LDWP",
+      "TVA"
+    ]
+  },
+  {
+    "variant": "pool_5_rep1",
+    "fold": 1,
+    "sources": [
+      "SRP",
+      "BANC",
+      "IID",
+      "WACM",
+      "FMPP"
+    ]
+  },
+  {
+    "variant": "pool_5_rep1",
+    "fold": 2,
+    "sources": [
+      "FPL",
+      "SRP",
+      "TIDC",
+      "ERCO",
+      "ISNE"
+    ]
+  },
+  {
+    "variant": "pool_5_rep1",
+    "fold": 3,
+    "sources": [
+      "AECI",
+      "WACM",
+      "NYIS",
+      "NWMT",
+      "BANC"
+    ]
+  },
+  {
+    "variant": "pool_5_rep1",
+    "fold": 4,
+    "sources": [
+      "DOPD",
+      "PNM",
+      "IPCO",
+      "BPAT",
+      "CHPD"
+    ]
+  },
+  {
+    "variant": "pool_5_rep1",
+    "fold": 5,
+    "sources": [
+      "LGEE",
+      "PJM",
+      "FPC",
+      "TEPC",
+      "AECI"
+    ]
+  },
+  {
+    "variant": "pool_5_rep2",
+    "fold": 0,
+    "sources": [
+      "AECI",
+      "AZPS",
+      "SCEG",
+      "CPLE",
+      "SCL"
+    ]
+  },
+  {
+    "variant": "pool_5_rep2",
+    "fold": 1,
+    "sources": [
+      "TEC",
+      "PSCO",
+      "AZPS",
+      "LDWP",
+      "TEPC"
+    ]
+  },
+  {
+    "variant": "pool_5_rep2",
+    "fold": 2,
+    "sources": [
+      "DOPD",
+      "SC",
+      "GVL",
+      "SRP",
+      "SCL"
+    ]
+  },
+  {
+    "variant": "pool_5_rep2",
+    "fold": 3,
+    "sources": [
+      "FPC",
+      "WALC",
+      "PNM",
+      "NYIS",
+      "SCEG"
+    ]
+  },
+  {
+    "variant": "pool_5_rep2",
+    "fold": 4,
+    "sources": [
+      "GVL",
+      "DUK",
+      "DOPD",
+      "PGE",
+      "TEC"
+    ]
+  },
+  {
+    "variant": "pool_5_rep2",
+    "fold": 5,
+    "sources": [
+      "IID",
+      "NEVP",
+      "ISNE",
+      "AECI",
+      "TVA"
+    ]
+  },
+  {
+    "variant": "pool_10_rep0",
+    "fold": 0,
+    "sources": [
+      "FPL",
+      "PGE",
+      "TIDC",
+      "SC",
+      "BPAT",
+      "IPCO",
+      "NWMT",
+      "DOPD",
+      "PACW",
+      "LDWP"
+    ]
+  },
+  {
+    "variant": "pool_10_rep0",
+    "fold": 1,
+    "sources": [
+      "TIDC",
+      "SCL",
+      "TPWR",
+      "JEA",
+      "CHPD",
+      "PGE",
+      "PNM",
+      "IPCO",
+      "SOCO",
+      "NYIS"
+    ]
+  },
+  {
+    "variant": "pool_10_rep0",
+    "fold": 2,
+    "sources": [
+      "CHPD",
+      "CISO",
+      "IID",
+      "WACM",
+      "CPLE",
+      "TEPC",
+      "AZPS",
+      "ISNE",
+      "MISO",
+      "SC"
+    ]
+  },
+  {
+    "variant": "pool_10_rep0",
+    "fold": 3,
+    "sources": [
+      "LDWP",
+      "PACW",
+      "PNM",
+      "BANC",
+      "SCL",
+      "FMPP",
+      "BPAT",
+      "GCPD",
+      "TVA",
+      "SCEG"
+    ]
+  },
+  {
+    "variant": "pool_10_rep0",
+    "fold": 4,
+    "sources": [
+      "PACE",
+      "LDWP",
+      "FMPP",
+      "PACW",
+      "WACM",
+      "CPLE",
+      "NYIS",
+      "NEVP",
+      "TAL",
+      "GCPD"
+    ]
+  },
+  {
+    "variant": "pool_10_rep0",
+    "fold": 5,
+    "sources": [
+      "LDWP",
+      "GCPD",
+      "ISNE",
+      "AVA",
+      "EPE",
+      "IID",
+      "FPL",
+      "AECI",
+      "NEVP",
+      "BANC"
+    ]
+  },
+  {
+    "variant": "pool_10_rep1",
+    "fold": 0,
+    "sources": [
+      "IID",
+      "AZPS",
+      "AECI",
+      "TIDC",
+      "TAL",
+      "DOPD",
+      "TEC",
+      "TVA",
+      "PACE",
+      "DUK"
+    ]
+  },
+  {
+    "variant": "pool_10_rep1",
+    "fold": 1,
+    "sources": [
+      "SCL",
+      "FPC",
+      "TAL",
+      "BANC",
+      "PACE",
+      "AVA",
+      "MISO",
+      "PGE",
+      "AZPS",
+      "NEVP"
+    ]
+  },
+  {
+    "variant": "pool_10_rep1",
+    "fold": 2,
+    "sources": [
+      "SC",
+      "AECI",
+      "PACW",
+      "GCPD",
+      "TEC",
+      "MISO",
+      "WACM",
+      "GVL",
+      "PGE",
+      "TIDC"
+    ]
+  },
+  {
+    "variant": "pool_10_rep1",
+    "fold": 3,
+    "sources": [
+      "LDWP",
+      "WALC",
+      "AECI",
+      "BANC",
+      "SRP",
+      "NYIS",
+      "CISO",
+      "GVL",
+      "PNM",
+      "EPE"
+    ]
+  },
+  {
+    "variant": "pool_10_rep1",
+    "fold": 4,
+    "sources": [
+      "TEC",
+      "BPAT",
+      "FPC",
+      "WACM",
+      "CHPD",
+      "DOPD",
+      "CPLW",
+      "PACW",
+      "NWMT",
+      "TAL"
+    ]
+  },
+  {
+    "variant": "pool_10_rep1",
+    "fold": 5,
+    "sources": [
+      "NWMT",
+      "SOCO",
+      "TIDC",
+      "NYIS",
+      "PACW",
+      "PNM",
+      "SRP",
+      "IPCO",
+      "SC",
+      "LDWP"
+    ]
+  },
+  {
+    "variant": "pool_10_rep2",
+    "fold": 0,
+    "sources": [
+      "SCEG",
+      "CISO",
+      "TEPC",
+      "CPLW",
+      "FPL",
+      "PGE",
+      "TEC",
+      "DUK",
+      "AZPS",
+      "IID"
+    ]
+  },
+  {
+    "variant": "pool_10_rep2",
+    "fold": 1,
+    "sources": [
+      "AVA",
+      "IID",
+      "MISO",
+      "TEPC",
+      "NYIS",
+      "WACM",
+      "SC",
+      "EPE",
+      "TIDC",
+      "JEA"
+    ]
+  },
+  {
+    "variant": "pool_10_rep2",
+    "fold": 2,
+    "sources": [
+      "SOCO",
+      "GVL",
+      "FPL",
+      "NWMT",
+      "TPWR",
+      "AVA",
+      "MISO",
+      "WALC",
+      "AZPS",
+      "BPAT"
+    ]
+  },
+  {
+    "variant": "pool_10_rep2",
+    "fold": 3,
+    "sources": [
+      "CHPD",
+      "FPL",
+      "PACW",
+      "TEC",
+      "NYIS",
+      "JEA",
+      "SRP",
+      "LGEE",
+      "FPC",
+      "TEPC"
+    ]
+  },
+  {
+    "variant": "pool_10_rep2",
+    "fold": 4,
+    "sources": [
+      "IPCO",
+      "SC",
+      "LDWP",
+      "TAL",
+      "NYIS",
+      "PACW",
+      "IID",
+      "NEVP",
+      "FMPP",
+      "FPC"
+    ]
+  },
+  {
+    "variant": "pool_10_rep2",
+    "fold": 5,
+    "sources": [
+      "SRP",
+      "EPE",
+      "IID",
+      "ISNE",
+      "SC",
+      "SCEG",
+      "TIDC",
+      "DUK",
+      "CHPD",
+      "AECI"
+    ]
+  },
+  {
+    "variant": "pool_20_rep0",
+    "fold": 0,
+    "sources": [
+      "TIDC",
+      "LDWP",
+      "PNM",
+      "TAL",
+      "AVA",
+      "TVA",
+      "SCL",
+      "PGE",
+      "PJM",
+      "AECI",
+      "PACW",
+      "PSCO",
+      "SRP",
+      "SCEG",
+      "WALC",
+      "NWMT",
+      "BPAT",
+      "LGEE",
+      "SWPP",
+      "GCPD"
+    ]
+  },
+  {
+    "variant": "pool_20_rep0",
+    "fold": 1,
+    "sources": [
+      "CISO",
+      "CPLE",
+      "LGEE",
+      "SCL",
+      "TIDC",
+      "CHPD",
+      "EPE",
+      "SRP",
+      "AECI",
+      "WALC",
+      "PGE",
+      "WACM",
+      "ISNE",
+      "AVA",
+      "MISO",
+      "PACE",
+      "TEPC",
+      "NYIS",
+      "SC",
+      "LDWP"
+    ]
+  },
+  {
+    "variant": "pool_20_rep0",
+    "fold": 2,
+    "sources": [
+      "NWMT",
+      "GVL",
+      "TVA",
+      "FPL",
+      "CISO",
+      "DOPD",
+      "JEA",
+      "SCEG",
+      "AZPS",
+      "GCPD",
+      "TIDC",
+      "CPLW",
+      "IID",
+      "ISNE",
+      "MISO",
+      "SC",
+      "NEVP",
+      "TEPC",
+      "AVA",
+      "DUK"
+    ]
+  },
+  {
+    "variant": "pool_20_rep0",
+    "fold": 3,
+    "sources": [
+      "CPLE",
+      "NWMT",
+      "GCPD",
+      "FPC",
+      "BPAT",
+      "ISNE",
+      "TEC",
+      "ERCO",
+      "IPCO",
+      "PNM",
+      "PACE",
+      "AZPS",
+      "DOPD",
+      "WACM",
+      "PACW",
+      "BANC",
+      "LGEE",
+      "CISO",
+      "SOCO",
+      "TVA"
+    ]
+  },
+  {
+    "variant": "pool_20_rep0",
+    "fold": 4,
+    "sources": [
+      "BANC",
+      "PACE",
+      "PACW",
+      "JEA",
+      "GCPD",
+      "FMPP",
+      "PJM",
+      "TVA",
+      "SC",
+      "AVA",
+      "DUK",
+      "MISO",
+      "FPC",
+      "CPLE",
+      "SCEG",
+      "LGEE",
+      "GVL",
+      "NEVP",
+      "CPLW",
+      "EPE"
+    ]
+  },
+  {
+    "variant": "pool_20_rep0",
+    "fold": 5,
+    "sources": [
+      "SOCO",
+      "TEPC",
+      "IPCO",
+      "NEVP",
+      "BANC",
+      "FPL",
+      "BPAT",
+      "LGEE",
+      "TVA",
+      "DUK",
+      "AECI",
+      "SC",
+      "CISO",
+      "CPLW",
+      "SCL",
+      "DOPD",
+      "PNM",
+      "TIDC",
+      "LDWP",
+      "TPWR"
+    ]
+  },
+  {
+    "variant": "pool_20_rep1",
+    "fold": 0,
+    "sources": [
+      "NEVP",
+      "BPAT",
+      "IID",
+      "CPLE",
+      "AZPS",
+      "AVA",
+      "GVL",
+      "SRP",
+      "PJM",
+      "FPL",
+      "TVA",
+      "DUK",
+      "JEA",
+      "LDWP",
+      "PGE",
+      "SWPP",
+      "PACW",
+      "AECI",
+      "DOPD",
+      "EPE"
+    ]
+  },
+  {
+    "variant": "pool_20_rep1",
+    "fold": 1,
+    "sources": [
+      "DUK",
+      "TIDC",
+      "IPCO",
+      "AZPS",
+      "PNM",
+      "LGEE",
+      "SOCO",
+      "CISO",
+      "SRP",
+      "AECI",
+      "BANC",
+      "NEVP",
+      "TPWR",
+      "JEA",
+      "IID",
+      "EPE",
+      "WACM",
+      "NYIS",
+      "SWPP",
+      "CPLE"
+    ]
+  },
+  {
+    "variant": "pool_20_rep1",
+    "fold": 2,
+    "sources": [
+      "FMPP",
+      "WALC",
+      "NWMT",
+      "FPC",
+      "PACW",
+      "MISO",
+      "TEC",
+      "SRP",
+      "AZPS",
+      "TVA",
+      "CPLW",
+      "DUK",
+      "ISNE",
+      "AECI",
+      "CHPD",
+      "WACM",
+      "AVA",
+      "TPWR",
+      "SWPP",
+      "GVL"
+    ]
+  },
+  {
+    "variant": "pool_20_rep1",
+    "fold": 3,
+    "sources": [
+      "SCL",
+      "PNM",
+      "GCPD",
+      "AZPS",
+      "FPC",
+      "TEC",
+      "SOCO",
+      "TVA",
+      "PJM",
+      "SCEG",
+      "CPLE",
+      "WACM",
+      "PACW",
+      "AECI",
+      "SWPP",
+      "SRP",
+      "LDWP",
+      "NWMT",
+      "WALC",
+      "TAL"
+    ]
+  },
+  {
+    "variant": "pool_20_rep1",
+    "fold": 4,
+    "sources": [
+      "GVL",
+      "PACE",
+      "CPLE",
+      "PACW",
+      "PNM",
+      "TPWR",
+      "ISNE",
+      "DOPD",
+      "AZPS",
+      "TAL",
+      "LGEE",
+      "EPE",
+      "JEA",
+      "SOCO",
+      "NEVP",
+      "WALC",
+      "GCPD",
+      "TEC",
+      "TVA",
+      "MISO"
+    ]
+  },
+  {
+    "variant": "pool_20_rep1",
+    "fold": 5,
+    "sources": [
+      "MISO",
+      "SC",
+      "IID",
+      "LDWP",
+      "PGE",
+      "AVA",
+      "PJM",
+      "SOCO",
+      "FMPP",
+      "SCL",
+      "DUK",
+      "NEVP",
+      "CPLW",
+      "PNM",
+      "TAL",
+      "CHPD",
+      "TEPC",
+      "TIDC",
+      "IPCO",
+      "SRP"
+    ]
+  },
+  {
+    "variant": "pool_20_rep2",
+    "fold": 0,
+    "sources": [
+      "GCPD",
+      "NWMT",
+      "SCL",
+      "PACW",
+      "ERCO",
+      "IID",
+      "MISO",
+      "TEC",
+      "DOPD",
+      "TIDC",
+      "LGEE",
+      "NEVP",
+      "BPAT",
+      "JEA",
+      "TAL",
+      "SRP",
+      "WALC",
+      "CPLE",
+      "AECI",
+      "EPE"
+    ]
+  },
+  {
+    "variant": "pool_20_rep2",
+    "fold": 1,
+    "sources": [
+      "DUK",
+      "FMPP",
+      "WALC",
+      "TPWR",
+      "IPCO",
+      "CHPD",
+      "EPE",
+      "FPC",
+      "TEC",
+      "SCL",
+      "TAL",
+      "MISO",
+      "WACM",
+      "ISNE",
+      "JEA",
+      "GVL",
+      "PNM",
+      "LGEE",
+      "CISO",
+      "CPLE"
+    ]
+  },
+  {
+    "variant": "pool_20_rep2",
+    "fold": 2,
+    "sources": [
+      "TPWR",
+      "MISO",
+      "NWMT",
+      "GCPD",
+      "BANC",
+      "ISNE",
+      "SCL",
+      "CPLW",
+      "AVA",
+      "ERCO",
+      "SOCO",
+      "NEVP",
+      "DOPD",
+      "DUK",
+      "AECI",
+      "CISO",
+      "IID",
+      "TEC",
+      "FPL",
+      "JEA"
+    ]
+  },
+  {
+    "variant": "pool_20_rep2",
+    "fold": 3,
+    "sources": [
+      "GVL",
+      "PJM",
+      "CISO",
+      "TEPC",
+      "SOCO",
+      "JEA",
+      "LDWP",
+      "CHPD",
+      "TPWR",
+      "DOPD",
+      "PACE",
+      "SCL",
+      "ERCO",
+      "PACW",
+      "GCPD",
+      "TIDC",
+      "NYIS",
+      "TEC",
+      "NWMT",
+      "SWPP"
+    ]
+  },
+  {
+    "variant": "pool_20_rep2",
+    "fold": 4,
+    "sources": [
+      "PGE",
+      "NEVP",
+      "DOPD",
+      "SOCO",
+      "CPLE",
+      "FMPP",
+      "LGEE",
+      "PACW",
+      "MISO",
+      "TAL",
+      "IID",
+      "DUK",
+      "ERCO",
+      "GCPD",
+      "SCEG",
+      "PNM",
+      "AVA",
+      "JEA",
+      "TVA",
+      "CHPD"
+    ]
+  },
+  {
+    "variant": "pool_20_rep2",
+    "fold": 5,
+    "sources": [
+      "AVA",
+      "DOPD",
+      "PNM",
+      "SCEG",
+      "NYIS",
+      "SCL",
+      "AECI",
+      "BPAT",
+      "SC",
+      "PGE",
+      "ERCO",
+      "PSCO",
+      "CISO",
+      "PJM",
+      "TAL",
+      "SRP",
+      "NWMT",
+      "FPL",
+      "FPC",
+      "TIDC"
+    ]
+  }
+]

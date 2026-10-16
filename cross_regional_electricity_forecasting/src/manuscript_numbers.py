@@ -123,6 +123,18 @@ def main():
         aa = pd.read_csv(a)
         for _, r in aa.iterrows():
             N[f"compute.h{int(r.h)}.{r.model}.fit_seconds_per_region"] = f"{r.fit_seconds_per_region:.2f}"
+    f = m / "missing_data_summary.csv"
+    if f.exists():
+        N["missing.min_scored_pct"] = f"{100 * pd.read_csv(f).min_coverage_of_eval_hours.min():.1f}"
+    f = m / "ablation_results.csv"
+    if f.exists():
+        ab = pd.read_csv(f)
+        pool = ab[ab.method.str.startswith("pool_")].copy()
+        pool["n"] = pool.method.str.extract(r"pool_(\d+)_")[0].astype(int)
+        for n, g in pool.groupby("n"):
+            N[f"ablationpool.{n}.nMAE_median"] = f"{100 * g.nMAE_median.mean():.2f}"
+            N[f"ablationpool.{n}.nMAE_min"] = f"{100 * g.nMAE_median.min():.2f}"
+            N[f"ablationpool.{n}.nMAE_max"] = f"{100 * g.nMAE_median.max():.2f}"
     # derived: share of BAs where unseen-region model is worse than in-region (h=24)
     pr = m / "point_metrics_by_region.csv"
     if pr.exists():

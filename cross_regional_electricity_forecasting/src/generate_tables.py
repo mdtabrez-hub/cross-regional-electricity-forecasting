@@ -46,7 +46,8 @@ def t_point():
     s = s.sort_values(["h", "order"])
     t = pd.DataFrame({"h (h)": s.h, "Method": s.method.map(LABEL), "nMAE % median [IQR]": fmt_iqr(s, "nMAE"),
                       "nRMSE % median": (100 * s.nRMSE_median).round(2), "MASE median": s.MASE_median.round(3),
-                      "Bias % median": (100 * s.bias_pct_median).round(2), "Regions": s.n_regions})
+                      "Bias % median": (100 * s.bias_pct_median).map(lambda v: f"{v:.2f}".replace("-0.00", "0.00")),
+                      "Regions": s.n_regions})
     save(t, "table_2_point_accuracy", "Table 2. Test-period (2024–2025) point accuracy across 48 BAs.",
          "results/metrics/point_metrics_summary.csv")
 
@@ -145,10 +146,24 @@ def t_missing():
          "results/metrics/missing_data_summary.csv")
 
 
+ABL = {"no_calendar": "Without calendar features", "no_weekly_lags": "Without weekly lags (168, 336 h)",
+       "recent_lags_0_3_only": "Recent lags 0–3 h only (drop lags 4–23 h)"}
+
+
+def abl_label(m):
+    if m.startswith("pool_"):
+        _, n, rep = m.split("_")
+        return f"{n} random source BAs (draw {int(rep[3:]) + 1})"
+    return ABL.get(m, LABEL.get(m, m))
+
+
 def t_ablation():
     s = pd.read_csv(METRIC_DIR / "ablation_results.csv")
-    t = pd.DataFrame({"Variant": s.method.map(lambda m: LABEL.get(m, m)), "nMAE % median": (100 * s.nMAE_median).round(2),
-                      "Median rel. change vs full LRO %": (100 * s.median_rel_change).round(1),
+    s["o"] = s.method.map(lambda m: (0 if m == "LGB_G_LRO" else 1 if m == "LGB_G_IN" else 2 if m in ABL else
+                                     3 + int(m.split("_")[1]) if m.startswith("pool_") else 9))
+    s = s.sort_values(["o", "method"])
+    t = pd.DataFrame({"Variant": s.method.map(abl_label), "nMAE % median": (100 * s.nMAE_median).round(2),
+                      "Median rel. change vs full LRO %": (100 * s.median_rel_change).map(lambda v: "reference" if pd.isna(v) else f"{v:.1f}"),
                       "95% CI": s.apply(lambda r: "" if pd.isna(r.rel_ci_lo) else f"[{100*r.rel_ci_lo:.1f}, {100*r.rel_ci_hi:.1f}]", axis=1),
                       "Wilcoxon p (Holm)": s.p_holm.map(lambda p: "" if pd.isna(p) else f"{p:.2g}")})
     save(t, "table_9_ablation", "Table 9. Ablations of the zero-shot global model (h = 24 h, unseen BAs).",

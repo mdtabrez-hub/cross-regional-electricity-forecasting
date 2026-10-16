@@ -5,7 +5,7 @@ For system operators, market participants and planners, the results translate in
 1. **Onboarding a new or data-poor BA.** A pooled, instance-normalised gradient-boosting model trained on other BAs can be deployed from the first day. It needs only a week of recent observations to compute the scale. In our data, its accuracy is within about 1–3% (relative) of a model that has seen the BA. Fine-tuning on a few weeks of data was counter-productive and should be avoided until a full seasonal cycle is available.
 2. **Small BAs.** Small BAs benefit from pooling as much as large ones. Because the gap was only weakly related to size, a single shared model with BA-specific online calibration is a viable service model for many small utilities.
 3. **Uncertainty for reserves and risk.** Intervals calibrated once on pooled data will under-cover in a substantial share of BAs and drift over time, so operational use should include online recalibration. ACI on top of CQR, with a step size selected on held-out systems and periods, delivered near-nominal coverage per BA at both horizons without wider typical intervals. When feedback is delayed (day-ahead), the step size must be conservative.
-4. **Data quality.** Native missing-value handling or simple causal imputation keeps accuracy close to the clean case at realistic missingness rates (Section 11). Data gaps are therefore a smaller operational risk than calibration drift.
+4. **Data quality.** Input gaps matter much more for intraday than for day-ahead forecasts. A simple remedy, training with randomly masked inputs, removes most of the intraday degradation at negligible cost on clean data. For long outages, native missing-value handling or seasonal filling is preferable to carrying the last value forward (Section 11).
 5. **Compute.** All models in this study train on a commodity 4-core CPU. A pooled model (one model per horizon) is cheaper to maintain than 48 local models and was more accurate.
 
 # Limitations
@@ -43,7 +43,7 @@ We built a leakage-resistant, pre-registered benchmark for forecasting hourly el
 1. **Zero-shot transfer works.** A pooled, instance-normalised LightGBM model transfers to unseen BAs with a small but systematic accuracy loss of about {{test.h24.nMAE.LGB_G_LRO.LGB_G_IN.median_rel_change}}% (24 h) to {{test.h1.nMAE.LGB_G_LRO.LGB_G_IN.median_rel_change}}% (1 h) relative to in-region training. It is no worse than local models trained on four years of target data.
 2. **Short-window adaptation does not help.** Fine-tuning or local training on one to thirteen weeks of target data mostly made forecasts worse.
 3. **Interval calibration is the binding problem, and it is temporal and BA-specific rather than geographic.** Static conformal intervals under-covered in a fifth to a half of BAs, whether or not the BA had been seen in training. Online adaptive conformal inference restored per-BA coverage, but only with a step size matched to the feedback delay.
-4. **Infrastructure is cheap.** Missing inputs at realistic rates and computational cost were minor concerns.
+4. **Data gaps matter mainly intraday, and compute is cheap.** Missing inputs degraded hour-ahead forecasts substantially but day-ahead forecasts only modestly, and training with masked inputs largely removed the hour-ahead penalty. Computational cost was a minor concern.
 
 **Future work.** Several extensions follow directly:
 

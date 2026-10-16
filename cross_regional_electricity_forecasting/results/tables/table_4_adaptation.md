@@ -1,0 +1,34 @@
+**Table 4. Limited target-data adaptation for unseen BAs (test 2024–2025).**
+
+|   h (h) | Method                                      | nMAE % median [IQR]   |   MASE median |
+|--------:|:--------------------------------------------|:----------------------|--------------:|
+|       1 | Seasonal naive (24 h)                       | 5.48 [4.57, 6.81]     |         1.009 |
+|       1 | LightGBM, global (unseen region, zero-shot) | 1.17 [0.90, 1.55]     |         0.201 |
+|       1 | LightGBM local, 1 wk target data            | 5.35 [4.74, 7.09]     |         1.004 |
+|       1 | Global fine-tuned, 1 wk target data         | 1.24 [0.99, 1.59]     |         0.212 |
+|       1 | LightGBM local, 4 wk target data            | 3.87 [3.21, 4.72]     |         0.679 |
+|       1 | Global fine-tuned, 4 wk target data         | 1.21 [0.94, 1.56]     |         0.205 |
+|       1 | LightGBM local, 13 wk target data           | 2.09 [1.81, 2.45]     |         0.345 |
+|       1 | Global fine-tuned, 13 wk target data        | 1.16 [0.89, 1.51]     |         0.197 |
+|       1 | LightGBM, local                             | 1.28 [1.01, 1.61]     |         0.22  |
+|       1 | LightGBM, global (in-region)                | 1.14 [0.87, 1.51]     |         0.194 |
+|       6 | Seasonal naive (24 h)                       | 5.48 [4.57, 6.81]     |         1.009 |
+|       6 | LightGBM, global (unseen region, zero-shot) | 3.66 [3.03, 4.40]     |         0.654 |
+|       6 | LightGBM local, 1 wk target data            | 8.92 [7.04, 11.55]    |         1.587 |
+|       6 | Global fine-tuned, 1 wk target data         | 4.01 [3.44, 5.21]     |         0.753 |
+|       6 | LightGBM local, 4 wk target data            | 7.79 [5.93, 10.58]    |         1.449 |
+|       6 | Global fine-tuned, 4 wk target data         | 3.93 [3.17, 4.89]     |         0.719 |
+|       6 | LightGBM local, 13 wk target data           | 5.45 [4.73, 6.67]     |         1.023 |
+|       6 | Global fine-tuned, 13 wk target data        | 3.70 [3.06, 4.67]     |         0.675 |
+|       6 | LightGBM, local                             | 3.78 [3.13, 4.60]     |         0.676 |
+|       6 | LightGBM, global (in-region)                | 3.50 [2.95, 4.35]     |         0.627 |
+|      24 | Seasonal naive (24 h)                       | 5.48 [4.57, 6.81]     |         1.009 |
+|      24 | LightGBM, global (unseen region, zero-shot) | 4.75 [3.91, 5.91]     |         0.888 |
+|      24 | LightGBM local, 1 wk target data            | 9.21 [7.57, 11.18]    |         1.728 |
+|      24 | Global fine-tuned, 1 wk target data         | 5.37 [4.43, 6.90]     |         1.057 |
+|      24 | LightGBM local, 4 wk target data            | 8.07 [6.50, 9.65]     |         1.462 |
+|      24 | Global fine-tuned, 4 wk target data         | 5.26 [4.42, 7.09]     |         1.029 |
+|      24 | LightGBM local, 13 wk target data           | 5.77 [5.06, 7.30]     |         1.13  |
+|      24 | Global fine-tuned, 13 wk target data        | 5.00 [4.16, 6.43]     |         0.969 |
+|      24 | LightGBM, local                             | 4.72 [3.94, 5.94]     |         0.893 |
+|      24 | LightGBM, global (in-region)                | 4.64 [3.88, 5.87]     |         0.884 |

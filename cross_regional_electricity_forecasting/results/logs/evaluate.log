@@ -14,3 +14,14 @@
 2026-10-16 09:11:55,620 evaluate INFO h=1 unseen-region probabilistic done
 2026-10-16 09:15:34,477 evaluate INFO h=24 in-region probabilistic done
 2026-10-16 09:17:22,923 evaluate INFO h=24 unseen-region probabilistic done
+2026-10-16 10:41:57,291 evaluate INFO h=1 test rows=842112 common-mask rows=838570 (0.9958)
+2026-10-16 10:42:06,410 evaluate INFO h=6 test rows=842112 common-mask rows=838570 (0.9958)
+2026-10-16 10:42:12,680 evaluate INFO h=24 test rows=842112 common-mask rows=838570 (0.9958)
+2026-10-16 12:47:50,430 evaluate INFO h=1 test rows=842112 common-mask rows=838570 (0.9958)
+2026-10-16 12:47:59,551 evaluate INFO h=6 test rows=842112 common-mask rows=838570 (0.9958)
+2026-10-16 12:48:05,830 evaluate INFO h=24 test rows=842112 common-mask rows=838570 (0.9958)
+2026-10-16 12:52:06,074 evaluate INFO h=1 in-region probabilistic done
+2026-10-16 12:53:57,444 evaluate INFO h=1 unseen-region probabilistic done
+2026-10-16 12:57:34,003 evaluate INFO h=24 in-region probabilistic done
+2026-10-16 12:59:21,733 evaluate INFO h=24 unseen-region probabilistic done
+2026-10-16 13:02:39,913 evaluate INFO evaluation complete

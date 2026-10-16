@@ -1,0 +1,9 @@
+2026-10-16 05:59:17,826 train INFO h=24 global in-region done
+2026-10-16 06:00:50,494 train INFO h=24 local done
+2026-10-16 06:04:15,345 train INFO h=24 LRO fold 0 done
+2026-10-16 06:07:26,875 train INFO h=24 LRO fold 1 done
+2026-10-16 06:10:56,674 train INFO h=24 LRO fold 2 done
+2026-10-16 06:14:31,434 train INFO h=24 LRO fold 3 done
+2026-10-16 06:18:16,278 train INFO h=24 LRO fold 4 done
+2026-10-16 06:21:53,790 train INFO h=24 LRO fold 5 done
+2026-10-16 06:21:55,102 train INFO h=24 saved predictions (1262592 rows)

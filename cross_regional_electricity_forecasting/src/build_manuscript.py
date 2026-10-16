@@ -58,6 +58,9 @@ def insert_objects(text: str) -> str:
             counters["fig"] += 1
             fig_ids[name] = counters["fig"]
         if kind == "TABLE" and name not in tab_ids:
+            if name.startswith("table_A"):
+                tab_ids[name] = name.split("_")[1]  # appendix tables keep their own label (A1, A2, ...)
+                continue
             counters["tab"] += 1
             tab_ids[name] = counters["tab"]
 
@@ -82,15 +85,30 @@ def insert_objects(text: str) -> str:
 
 
 def reference_doc(path: Path):
-    d = Document()
-    st = d.styles
-    for name in ("Normal", "Body Text", "First Paragraph", "Compact", "Bibliography"):
+    """Start from pandoc's default reference.docx (keeps its table/list styles) and set fonts."""
+    with open(path, "wb") as fh:
+        subprocess.run(["pandoc", "--print-default-data-file", "reference.docx"], stdout=fh, check=True)
+    d = Document(path)
+    for name in ("Normal", "Body Text", "First Paragraph", "Compact", "Bibliography", "Title", "Abstract",
+                 "Heading 1", "Heading 2", "Heading 3", "Table Caption", "Image Caption"):
         try:
-            s = st[name]
+            s = d.styles[name]
         except KeyError:
             continue
         s.font.name = FONT
-        s.font.size = Pt(12)
+        s.font.color.rgb = RGBColor(0, 0, 0)
+        rpr = s.element.get_or_add_rPr()
+        rf = rpr.find(qn("w:rFonts"))
+        if rf is None:
+            rf = OxmlElement("w:rFonts")
+            rpr.insert(0, rf)
+        for a in ("w:ascii", "w:hAnsi", "w:cs", "w:eastAsia"):
+            rf.set(qn(a), FONT)
+        for a in ("w:asciiTheme", "w:hAnsiTheme", "w:cstheme", "w:eastAsiaTheme"):
+            if rf.get(qn(a)) is not None:
+                del rf.attrib[qn(a)]
+        if name in ("Normal", "Body Text", "First Paragraph", "Compact"):
+            s.font.size = Pt(12)
     d.save(path)
 
 
@@ -130,6 +148,8 @@ def style_table(t):
     t.alignment = WD_TABLE_ALIGNMENT.CENTER
     t.autofit = True
     tblPr = t._element.tblPr
+    for old in tblPr.findall(qn("w:tblBorders")):
+        tblPr.remove(old)
     borders = OxmlElement("w:tblBorders")
     for edge in ("top", "bottom", "insideH"):
         el = OxmlElement(f"w:{edge}")
@@ -137,7 +157,14 @@ def style_table(t):
         el.set(qn("w:sz"), "4")
         el.set(qn("w:color"), "000000")
         borders.append(el)
-    tblPr.append(borders)
+    # schema order: ... tblW, jc, tblCellSpacing, tblInd, tblBorders, shd, tblLayout, tblCellMar, tblLook
+    anchor = tblPr.find(qn("w:tblLayout"))
+    if anchor is None:
+        anchor = tblPr.find(qn("w:tblLook"))
+    if anchor is not None:
+        anchor.addprevious(borders)
+    else:
+        tblPr.append(borders)
     ncols = len(t.columns)
     size = 9 if ncols <= 6 else 8
     for i, row in enumerate(t.rows):
@@ -152,9 +179,10 @@ def style_table(t):
                     set_run_font(r, size, bold=True if i == 0 else None)
     # repeat header row on page breaks
     trPr = t.rows[0]._tr.get_or_add_trPr()
-    h = OxmlElement("w:tblHeader")
-    h.set(qn("w:val"), "true")
-    trPr.append(h)
+    if trPr.find(qn("w:tblHeader")) is None:
+        h = OxmlElement("w:tblHeader")
+        h.set(qn("w:val"), "true")
+        trPr.append(h)
 
 
 def format_docx(path: Path):
@@ -220,9 +248,43 @@ def format_docx(path: Path):
     d.save(path)
 
 
-def to_pdf(docx: Path):
-    subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", str(docx.parent), str(docx)],
-                   check=True, capture_output=True, timeout=600)
+PDF_CSS = """
+@page { size: A4; margin: 2.54cm; @bottom-center { content: counter(page); font-family: 'Times New Roman',
+        'Liberation Serif', serif; font-size: 10pt; } }
+body { font-family: 'Times New Roman', 'Liberation Serif', serif; font-size: 12pt; line-height: 1.5;
+       text-align: justify; color: #000; max-width: none; margin: 0; }
+h1.title { font-size: 16pt; text-align: center; line-height: 1.3; }
+h1 { font-size: 14pt; margin: 14pt 0 6pt; } h2 { font-size: 12pt; margin: 12pt 0 6pt; }
+h3 { font-size: 12pt; font-style: italic; }
+h1, h2, h3 { page-break-after: avoid; break-after: avoid; text-align: left; }
+p { margin: 0 0 6pt; } figure { margin: 8pt 0; text-align: center; page-break-inside: avoid; }
+img { max-width: 100%; }
+table { border-collapse: collapse; margin: 4pt auto 10pt; font-size: 8.5pt; line-height: 1.15;
+        border-top: 1px solid #000; border-bottom: 1px solid #000; page-break-inside: auto; }
+th, td { padding: 1.5pt 4pt; text-align: left; vertical-align: top; } thead th { border-bottom: 1px solid #000; }
+tr { page-break-inside: avoid; }
+div[data-custom-style="Figure Caption"] p, div[data-custom-style="Table Caption"] p { font-size: 10pt;
+        line-height: 1.2; margin-bottom: 8pt; } div[data-custom-style="Table Caption"] { page-break-after: avoid; }
+div[data-custom-style="Author"] p { text-align: center; }
+.csl-entry { font-size: 11pt; line-height: 1.2; margin-bottom: 4pt; text-align: left; padding-left: 1.5em;
+             text-indent: -1.5em; }
+math { font-size: 1.05em; }
+"""
+CHROME = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome"
+
+
+def to_pdf(rmd: Path, out_pdf: Path, csl: str):
+    """PDF for visual inspection, rendered from the same Markdown via pandoc (MathML) + headless
+    Chromium, because LibreOffice's headless export drops inline OMML equations."""
+    css = MS / "styles" / "print.css"
+    css.write_text(PDF_CSS)
+    html = MS / "manuscript_print.html"
+    subprocess.run(["pandoc", str(rmd), "-f", "markdown+tex_math_dollars+pipe_tables+fenced_divs", "--citeproc",
+                    "--bibliography", str(ROOT / "literature" / "verified_references.bib"), "--csl", csl,
+                    "--number-sections", "--mathml", "--standalone", "--embed-resources", "--css", str(css),
+                    "--resource-path", str(ROOT), "--metadata", "lang=en", "-o", str(html)], check=True)
+    subprocess.run([CHROME, "--headless", "--no-sandbox", "--disable-gpu", "--no-pdf-header-footer",
+                    f"--print-to-pdf={out_pdf}", html.as_uri()], check=True, capture_output=True, timeout=600)
 
 
 def main(argv=None):
@@ -247,7 +309,7 @@ def main(argv=None):
                     "--reference-doc", str(ref), "--resource-path", str(ROOT), "--number-sections", "-o", str(out)], check=True)
     format_docx(out)
     if not a.no_pdf:
-        to_pdf(out)
+        to_pdf(rmd, out.with_suffix(".pdf"), a.csl)
     print(f"wrote {out}")
 
 

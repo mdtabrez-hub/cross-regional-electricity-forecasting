@@ -1,0 +1,28 @@
+**Table 2. Test-period (2024–2025) point accuracy across 48 BAs.**
+
+|   h (h) | Method                                      | nMAE % median [IQR]   |   nRMSE % median |   MASE median |   Bias % median |   Regions |
+|--------:|:--------------------------------------------|:----------------------|-----------------:|--------------:|----------------:|----------:|
+|       1 | Seasonal naive (24 h)                       | 5.48 [4.57, 6.81]     |             7.81 |         1.009 |           -0.02 |        48 |
+|       1 | Seasonal naive (168 h)                      | 9.12 [8.17, 11.40]    |            12.84 |         1.731 |           -0.04 |        48 |
+|       1 | Persistence                                 | 3.49 [3.12, 4.23]     |             4.42 |         0.626 |            0    |        48 |
+|       1 | Ridge, global (in-region)                   | 1.42 [1.16, 1.71]     |             2.16 |         0.246 |            0    |        48 |
+|       1 | Ridge, global (unseen region)               | 1.40 [1.16, 1.69]     |             2.16 |         0.245 |            0    |        48 |
+|       1 | LightGBM, local                             | 1.28 [1.01, 1.61]     |             1.84 |         0.22  |            0.02 |        48 |
+|       1 | LightGBM, global (in-region)                | 1.14 [0.87, 1.51]     |             1.63 |         0.194 |            0.01 |        48 |
+|       1 | LightGBM, global (unseen region, zero-shot) | 1.17 [0.90, 1.55]     |             1.67 |         0.201 |            0.01 |        48 |
+|       6 | Seasonal naive (24 h)                       | 5.48 [4.57, 6.81]     |             7.81 |         1.009 |           -0.02 |        48 |
+|       6 | Seasonal naive (168 h)                      | 9.12 [8.17, 11.40]    |            12.84 |         1.731 |           -0.04 |        48 |
+|       6 | Persistence                                 | 15.80 [14.16, 19.89]  |            19.71 |         2.817 |           -0.01 |        48 |
+|       6 | Ridge, global (in-region)                   | 4.16 [3.44, 5.13]     |             5.95 |         0.758 |            0.01 |        48 |
+|       6 | Ridge, global (unseen region)               | 4.17 [3.44, 5.13]     |             5.96 |         0.759 |            0.02 |        48 |
+|       6 | LightGBM, local                             | 3.78 [3.13, 4.60]     |             5.4  |         0.676 |           -0.01 |        48 |
+|       6 | LightGBM, global (in-region)                | 3.50 [2.95, 4.35]     |             5.12 |         0.627 |            0.03 |        48 |
+|       6 | LightGBM, global (unseen region, zero-shot) | 3.66 [3.03, 4.40]     |             5.29 |         0.654 |           -0.01 |        48 |
+|      24 | Seasonal naive (24 h)                       | 5.48 [4.57, 6.81]     |             7.81 |         1.009 |           -0.02 |        48 |
+|      24 | Seasonal naive (168 h)                      | 9.12 [8.17, 11.40]    |            12.84 |         1.731 |           -0.04 |        48 |
+|      24 | Persistence                                 | 5.48 [4.57, 6.81]     |             7.81 |         1.009 |           -0.02 |        48 |
+|      24 | Ridge, global (in-region)                   | 5.05 [4.17, 6.21]     |             7.12 |         0.932 |            0.07 |        48 |
+|      24 | Ridge, global (unseen region)               | 5.06 [4.17, 6.21]     |             7.13 |         0.933 |            0.08 |        48 |
+|      24 | LightGBM, local                             | 4.72 [3.94, 5.94]     |             6.85 |         0.893 |           -0.19 |        48 |
+|      24 | LightGBM, global (in-region)                | 4.64 [3.88, 5.87]     |             6.92 |         0.884 |           -0.1  |        48 |
+|      24 | LightGBM, global (unseen region, zero-shot) | 4.75 [3.91, 5.91]     |             6.93 |         0.888 |           -0.1  |        48 |

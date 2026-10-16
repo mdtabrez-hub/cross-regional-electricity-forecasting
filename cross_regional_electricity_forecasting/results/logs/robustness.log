@@ -1,1 +1,26 @@
 2026-10-16 10:29:56,220 robustness INFO h=1 scenario clean done
+2026-10-16 10:45:54,746 robustness INFO h=1 scenario MCAR_5 done
+2026-10-16 11:01:45,406 robustness INFO h=1 scenario MCAR_10 done
+2026-10-16 11:18:39,280 robustness INFO h=1 scenario MCAR_20 done
+2026-10-16 11:35:14,492 robustness INFO h=1 scenario MCAR_40 done
+2026-10-16 11:51:06,300 robustness INFO h=1 scenario BLOCK_24h done
+2026-10-16 12:07:03,819 robustness INFO h=1 scenario BLOCK_168h done
+2026-10-16 12:08:47,181 robustness INFO h=24 scenario clean done
+2026-10-16 12:09:42,461 robustness INFO h=24 scenario MCAR_5 done
+2026-10-16 12:10:41,058 robustness INFO h=24 scenario MCAR_10 done
+2026-10-16 12:11:44,751 robustness INFO h=24 scenario MCAR_20 done
+2026-10-16 12:12:47,356 robustness INFO h=24 scenario MCAR_40 done
+2026-10-16 12:13:48,555 robustness INFO h=24 scenario BLOCK_24h done
+2026-10-16 12:14:47,107 robustness INFO h=24 scenario BLOCK_168h done
+2026-10-16 12:28:50,403 robustness INFO ablation no_calendar done
+2026-10-16 12:32:37,847 robustness INFO ablation no_weekly_lags done
+2026-10-16 12:34:54,918 robustness INFO ablation recent_lags_0_3_only done
+2026-10-16 12:35:47,051 robustness INFO ablation pool_5_rep0 done
+2026-10-16 12:36:41,626 robustness INFO ablation pool_5_rep1 done
+2026-10-16 12:37:26,483 robustness INFO ablation pool_5_rep2 done
+2026-10-16 12:39:02,794 robustness INFO ablation pool_10_rep0 done
+2026-10-16 12:40:23,445 robustness INFO ablation pool_10_rep1 done
+2026-10-16 12:41:33,813 robustness INFO ablation pool_10_rep2 done
+2026-10-16 12:43:34,420 robustness INFO ablation pool_20_rep0 done
+2026-10-16 12:45:37,732 robustness INFO ablation pool_20_rep1 done
+2026-10-16 12:47:28,445 robustness INFO ablation pool_20_rep2 done

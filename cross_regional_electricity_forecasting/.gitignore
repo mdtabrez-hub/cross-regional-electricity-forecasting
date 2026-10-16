@@ -6,3 +6,5 @@ __pycache__/
 *.pyc
 .pytest_cache/
 *.part
+results/predictions/*.parquet
+manuscript/manuscript_print.html

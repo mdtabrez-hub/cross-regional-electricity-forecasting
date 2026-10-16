@@ -1,0 +1,48 @@
+2026-10-16 09:19:06,032 train INFO h=6 global in-region done
+2026-10-16 09:22:19,187 train INFO h=6 local done
+2026-10-16 09:23:46,205 train INFO h=6 LRO fold 0 done
+2026-10-16 09:26:01,325 train INFO h=6 LRO fold 1 done
+2026-10-16 09:28:00,839 train INFO h=6 LRO fold 2 done
+2026-10-16 09:29:43,866 train INFO h=6 LRO fold 3 done
+2026-10-16 09:31:48,183 train INFO h=6 LRO fold 4 done
+2026-10-16 09:34:21,941 train INFO h=6 LRO fold 5 done
+2026-10-16 09:34:22,869 train INFO h=6 saved predictions (1262592 rows)
+2026-10-16 09:38:18,421 train INFO h=1 adaptation k=1 done
+2026-10-16 09:42:15,088 train INFO h=1 adaptation k=4 done
+2026-10-16 09:46:37,811 train INFO h=1 adaptation k=13 done
+2026-10-16 09:48:00,063 train INFO h=6 adaptation k=1 done
+2026-10-16 09:49:25,442 train INFO h=6 adaptation k=4 done
+2026-10-16 09:51:04,557 train INFO h=6 adaptation k=13 done
+2026-10-16 09:51:44,438 train INFO h=24 adaptation k=1 done
+2026-10-16 09:52:26,079 train INFO h=24 adaptation k=4 done
+2026-10-16 09:53:12,946 train INFO h=24 adaptation k=13 done
+2026-10-16 10:10:51,873 train INFO h=1 refit done
+2026-10-16 10:15:56,638 train INFO h=6 refit done
+2026-10-16 10:18:52,857 train INFO h=24 refit done
+2026-10-16 10:29:56,220 robustness INFO h=1 scenario clean done
+2026-10-16 10:45:54,746 robustness INFO h=1 scenario MCAR_5 done
+2026-10-16 11:01:45,406 robustness INFO h=1 scenario MCAR_10 done
+2026-10-16 11:18:39,280 robustness INFO h=1 scenario MCAR_20 done
+2026-10-16 11:35:14,492 robustness INFO h=1 scenario MCAR_40 done
+2026-10-16 11:51:06,300 robustness INFO h=1 scenario BLOCK_24h done
+2026-10-16 12:07:03,819 robustness INFO h=1 scenario BLOCK_168h done
+2026-10-16 12:08:47,181 robustness INFO h=24 scenario clean done
+2026-10-16 12:09:42,461 robustness INFO h=24 scenario MCAR_5 done
+2026-10-16 12:10:41,058 robustness INFO h=24 scenario MCAR_10 done
+2026-10-16 12:11:44,751 robustness INFO h=24 scenario MCAR_20 done
+2026-10-16 12:12:47,356 robustness INFO h=24 scenario MCAR_40 done
+2026-10-16 12:13:48,555 robustness INFO h=24 scenario BLOCK_24h done
+2026-10-16 12:14:47,107 robustness INFO h=24 scenario BLOCK_168h done
+2026-10-16 12:28:50,403 robustness INFO ablation no_calendar done
+2026-10-16 12:32:37,847 robustness INFO ablation no_weekly_lags done
+2026-10-16 12:34:54,918 robustness INFO ablation recent_lags_0_3_only done
+2026-10-16 12:35:47,051 robustness INFO ablation pool_5_rep0 done
+2026-10-16 12:36:41,626 robustness INFO ablation pool_5_rep1 done
+2026-10-16 12:37:26,483 robustness INFO ablation pool_5_rep2 done
+2026-10-16 12:39:02,794 robustness INFO ablation pool_10_rep0 done
+2026-10-16 12:40:23,445 robustness INFO ablation pool_10_rep1 done
+2026-10-16 12:41:33,813 robustness INFO ablation pool_10_rep2 done
+2026-10-16 12:43:34,420 robustness INFO ablation pool_20_rep0 done
+2026-10-16 12:45:37,732 robustness INFO ablation pool_20_rep1 done
+2026-10-16 12:47:28,445 robustness INFO ablation pool_20_rep2 done
+CAMPAIGN_DONE
