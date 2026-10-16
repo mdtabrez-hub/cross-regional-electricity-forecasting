@@ -77,6 +77,13 @@ lightgbm:
     num_leaves: [31, 127]
     min_data_in_leaf: [20, 100]
   quantiles: [0.05, 0.25, 0.5, 0.75, 0.95]
+  # Amendment D13 (compute budget, decided before any h=1/h=6 test evaluation): at h=1 the
+  # lr=0.05 model hit the 3000-tree cap (16 min/fit). All LightGBM models at h in {1, 6}
+  # use lr=0.2; probabilistic experiments run at h in {1, 24}.
+  horizon_overrides:
+    1: {learning_rate: 0.2}
+    6: {learning_rate: 0.2}
+  quantile_horizons: [1, 24]
 
 ridge:
   alpha: 1.0

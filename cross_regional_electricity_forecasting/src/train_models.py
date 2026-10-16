@@ -70,10 +70,12 @@ def truncate(booster):
     return b
 
 
-def chosen_params(kind="global"):
+def chosen_params(kind="global", h: int | None = None, cfg: dict | None = None):
     path = LOG_DIR / "selected_hyperparameters.json"
-    sel = json.load(open(path))
-    return sel[kind]
+    sel = json.load(open(path))[kind]
+    if h is not None and cfg is not None and kind in ("global", "local"):
+        sel = {**sel, **cfg["lightgbm"].get("horizon_overrides", {}).get(h, {})}
+    return sel
 
 
 def record(costs, name, h, model, df_pred, cols, extra=None):
@@ -146,11 +148,11 @@ def base_frame(df_part, split):
 
 def run_point(cfg, horizons, quantile_horizons):
     fb, reg = load_builder(cfg)
-    gp, lp = chosen_params("global"), chosen_params("local")
     folds = chosen_params("lro_folds")
     costs = []
     for h in horizons:
         set_seed(cfg["seed"])
+        gp, lp = chosen_params("global", h, cfg), chosen_params("local", h, cfg)
         df = fb.build(h)
         cols = feature_columns(df)
         tr, va_es, va_cal, te = split_frames(df, cfg)
@@ -224,7 +226,11 @@ def run_point(cfg, horizons, quantile_horizons):
             log.info("h=%d LRO fold %d done", h, f)
         pd.concat(src_cal, ignore_index=True).to_parquet(PRED_DIR / f"lro_source_calibration_h{h}.parquet")
         out.to_parquet(PRED_DIR / f"point_h{h}.parquet")
-        pd.DataFrame(costs).to_csv(LOG_DIR / "compute_costs_point.csv", index=False)
+        cpath = LOG_DIR / "compute_costs_point.csv"
+        prev = pd.read_csv(cpath) if cpath.exists() else pd.DataFrame(columns=["h"])
+        cur = pd.DataFrame(costs)
+        prev = prev[~prev.h.isin(cur.h.unique())]
+        pd.concat([prev, cur], ignore_index=True).to_csv(cpath, index=False)
         log.info("h=%d saved predictions (%d rows)", h, len(out))
 
 
@@ -271,9 +277,9 @@ def run_adapt(cfg, horizons):
 # --------------------------------------------------------------------------- E3 refit
 def run_refit(cfg, horizons):
     fb, _ = load_builder(cfg)
-    gp, lp = chosen_params("global"), chosen_params("local")
     for h in horizons:
         set_seed(cfg["seed"])
+        gp, lp = chosen_params("global", h, cfg), chosen_params("local", h, cfg)
         df = fb.build(h)
         cols = feature_columns(df)
         tr, va_es, _, te = split_frames(df, cfg, prefix="refit_")
@@ -302,7 +308,7 @@ def main(argv=None):
     if a.stage == "select":
         run_select(cfg)
     elif a.stage == "point":
-        run_point(cfg, hs, a.quantile_h if a.quantile_h is not None else hs)
+        run_point(cfg, hs, a.quantile_h if a.quantile_h is not None else cfg["lightgbm"]["quantile_horizons"])
     elif a.stage == "adapt":
         run_adapt(cfg, hs)
     elif a.stage == "refit":

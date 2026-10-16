@@ -340,7 +340,7 @@ def fig_intervals(cfg, region=None):
     zl, zu = (g.LGB_G_LRO_q05 / g.scale).to_numpy(), (g.LGB_G_LRO_q95 / g.scale).to_numpy()
     cs = cqr_scores(cf.z.to_numpy(), cf.zq05.to_numpy(), cf.zq95.to_numpy())
     q = conformal_quantile(cs, 0.1)
-    qa, _ = aci_intervals(cs, cqr_scores((g.y / g.scale).to_numpy(), zl, zu), 0.1, cfg["probabilistic"]["aci_gamma"], h)
+    qa, _, _ = aci_intervals(cs, cqr_scores((g.y / g.scale).to_numpy(), zl, zu), 0.1, cfg["probabilistic"]["aci_gamma"], h)
     s = g.scale.to_numpy()
     w = (g.time_utc >= "2024-07-15") & (g.time_utc < "2024-07-29")
     fig, ax = plt.subplots(figsize=(W2, 2.8))

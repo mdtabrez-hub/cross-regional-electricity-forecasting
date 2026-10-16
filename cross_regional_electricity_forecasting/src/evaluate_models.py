@@ -204,6 +204,8 @@ def evaluate_refit(cfg, scales, horizons):
 def _interval_rows(d, lo, hi, alpha, label, h, setting):
     rows = []
     tmp = d.assign(lo=lo, hi=hi)
+    if not (np.isfinite(tmp.lo).all() and np.isfinite(tmp.hi).all()):
+        raise ValueError(f"non-finite interval bounds for {label}/{setting}/h={h}")
     start = tmp.time_utc - pd.Timedelta("1h")  # hour-ending timestamps -> interval start
     tmp["year"] = start.dt.year
     tmp["month"] = start.dt.to_period("M").astype(str)
@@ -213,6 +215,7 @@ def _interval_rows(d, lo, hi, alpha, label, h, setting):
         base = {"region": r, "method": label, "setting": setting, "h": h, "alpha": alpha}
         rows.append({**base, "period": "all", "coverage": M.coverage(y, g.lo, g.hi),
                      "width_norm": float(np.mean(g.hi - g.lo) / ybar),
+                     "width_norm_p50": float(np.median(g.hi - g.lo) / ybar),
                      "interval_score_norm": M.interval_score(y, g.lo.to_numpy(), g.hi.to_numpy(), alpha) / ybar,
                      "n": len(g)})
         for yr, gy in g.groupby("year"):
@@ -227,8 +230,29 @@ def _interval_rows(d, lo, hi, alpha, label, h, setting):
     return rows, mrows
 
 
+def select_gamma_validation(p, cal_lro, h, alpha, lo_q, hi_q, gammas=(0.001, 0.002, 0.005, 0.01)):
+    """Choose the ACI step size on the 2023 validation year of held-out BAs (unseen-region
+    setting), whose data were never used by the leave-regions-out models. Criterion: mean
+    normalised interval score across BAs. Test data are not touched."""
+    v = p[p.split.isin(["val_es", "val_cal"]) & p.eval_ok & np.isfinite(p[f"LGB_G_LRO_q{lo_q:02d}"])
+          & np.isfinite(p[f"LGB_G_LRO_q{hi_q:02d}"])].sort_values(["region", "time_utc"])
+    score = {g: [] for g in gammas}
+    for r, g in v.groupby("region", observed=True):
+        cf = cal_lro[cal_lro.fold == int(g.fold.iloc[0])]
+        cs = cqr_scores(cf.z.to_numpy(), cf[f"zq{lo_q:02d}"].to_numpy(), cf[f"zq{hi_q:02d}"].to_numpy())
+        zl, zu = (g[f"LGB_G_LRO_q{lo_q:02d}"] / g.scale).to_numpy(), (g[f"LGB_G_LRO_q{hi_q:02d}"] / g.scale).to_numpy()
+        st = cqr_scores((g.y / g.scale).to_numpy(), zl, zu)
+        for gm in gammas:
+            q, _, _ = aci_intervals(cs, st, alpha, gm, h)
+            score[gm].append(M.interval_score(g.y.to_numpy(), (zl - q) * g.scale.to_numpy(),
+                                              (zu + q) * g.scale.to_numpy(), alpha) / g.y.mean())
+    means = {gm: float(np.mean(v_)) for gm, v_ in score.items()}
+    return min(means, key=means.get), means
+
+
 def evaluate_probabilistic(cfg, horizons):
-    rows, mrows, pin_rows = [], [], []
+    rows, mrows, pin_rows, aci_caps = [], [], [], []
+    gamma_sel, gsel_rows = {}, []
     test_start = pd.Timestamp(cfg["splits"]["test"][0])
     gamma = cfg["probabilistic"]["aci_gamma"]
     tw = cfg["probabilistic"]["target_calibration_weeks"]
@@ -252,6 +276,11 @@ def evaluate_probabilistic(cfg, horizons):
                 pin_rows.append({"region": r, "setting": setting, "h": h, "pinball_norm": float(np.mean(losses)) / ybar})
             for alpha in cfg["probabilistic"]["alphas"]:
                 lo_q, hi_q = (5, 95) if alpha == 0.1 else (25, 75)
+                gkey = (h, alpha)
+                if gkey not in gamma_sel:
+                    gamma_sel[gkey] = select_gamma_validation(p, cal_lro, h, alpha, lo_q, hi_q)
+                    gsel_rows.append({"h": h, "alpha": alpha, "gamma_selected": gamma_sel[gkey][0],
+                                      **{f"val_IS_gamma_{k}": v for k, v in gamma_sel[gkey][1].items()}})
                 s = te.scale.to_numpy()
                 zh, zl, zu = zhat[te_m].to_numpy(), zq[lo_q][te_m].to_numpy(), zq[hi_q][te_m].to_numpy()
                 # --- QR (raw quantile regression)
@@ -294,16 +323,19 @@ def evaluate_probabilistic(cfg, horizons):
                 r_, m_ = _interval_rows(te, (zh - qt) * s, (zh + qt) * s, alpha, "SCP-T4", h, setting)
                 rows += r_; mrows += m_
                 # --- ACI on CQR scores, online per region with delay h
-                lo_a, hi_a = np.empty(len(te)), np.empty(len(te))
-                ordered = te.assign(_i=np.arange(len(te))).sort_values(["region", "time_utc"])
-                for r, g in ordered.groupby("region", observed=True):
-                    ii = g._i.to_numpy()
-                    key = None if setting == "in-region" else int(p.loc[g.index[0], "fold"])
-                    stream = cqr_scores((g.y / g.scale).to_numpy(), zl[ii], zu[ii])
-                    qa, _ = aci_intervals(cqr_cal_scores[key], stream, alpha, gamma, delay=h)
-                    lo_a[ii], hi_a[ii] = (zl[ii] - qa) * s[ii], (zu[ii] + qa) * s[ii]
-                r_, m_ = _interval_rows(te, lo_a, hi_a, alpha, "ACI-CQR", h, setting)
-                rows += r_; mrows += m_
+                for label, gm in (("ACI-CQR", gamma), ("ACI-CQR-V", gamma_sel[gkey][0])):
+                    lo_a, hi_a = np.empty(len(te)), np.empty(len(te))
+                    ordered = te.assign(_i=np.arange(len(te))).sort_values(["region", "time_utc"])
+                    for r, g in ordered.groupby("region", observed=True):
+                        ii = g._i.to_numpy()
+                        key = None if setting == "in-region" else int(p.loc[g.index[0], "fold"])
+                        stream = cqr_scores((g.y / g.scale).to_numpy(), zl[ii], zu[ii])
+                        qa, _, cap = aci_intervals(cqr_cal_scores[key], stream, alpha, gm, delay=h)
+                        lo_a[ii], hi_a[ii] = (zl[ii] - qa) * s[ii], (zu[ii] + qa) * s[ii]
+                        aci_caps.append({"h": h, "setting": setting, "alpha": alpha, "method": label, "gamma": gm,
+                                         "region": r, "capped_share": float(cap.mean())})
+                    r_, m_ = _interval_rows(te, lo_a, hi_a, alpha, label, h, setting)
+                    rows += r_; mrows += m_
             log.info("h=%d %s probabilistic done", h, setting)
     if not rows:
         return
@@ -315,7 +347,8 @@ def evaluate_probabilistic(cfg, horizons):
         coverage_mean=("coverage", "mean"), coverage_median=("coverage", "median"),
         coverage_min=("coverage", "min"), coverage_max=("coverage", "max"),
         mean_abs_cov_dev=("abs_cov_dev", "mean"), share_regions_undercover_5pp=("coverage", lambda s: np.nan),
-        width_norm_median=("width_norm", "median"), interval_score_norm_mean=("interval_score_norm", "mean"),
+        width_norm_median=("width_norm", "median"), width_hour_median_norm_median=("width_norm_p50", "median"),
+        interval_score_norm_mean=("interval_score_norm", "mean"),
         interval_score_norm_median=("interval_score_norm", "median"), n_regions=("region", "nunique")
     ).reset_index().to_csv(METRIC_DIR / "probabilistic_summary.csv", index=False)
     # fill the under-coverage share properly
@@ -326,10 +359,48 @@ def evaluate_probabilistic(cfg, horizons):
                                                            on=["h", "setting", "alpha", "method", "period"])
     s.to_csv(METRIC_DIR / "probabilistic_summary.csv", index=False)
     pd.DataFrame(mrows).to_csv(METRIC_DIR / "probabilistic_monthly_coverage.csv", index=False)
+    pd.DataFrame(aci_caps).to_csv(METRIC_DIR / "aci_capped_share_by_region.csv", index=False)
+    pd.DataFrame(gsel_rows).to_csv(METRIC_DIR / "aci_gamma_selected_on_validation.csv", index=False)
     pin = pd.DataFrame(pin_rows)
     pin.to_csv(METRIC_DIR / "pinball_by_region.csv", index=False)
     pin.groupby(["h", "setting"]).pinball_norm.agg(["median", "mean"]).reset_index().to_csv(
         METRIC_DIR / "pinball_summary.csv", index=False)
+
+
+def aci_sensitivity(cfg, horizons, gammas=(0.001, 0.002, 0.005, 0.01)):
+    """POST-HOC sensitivity of ACI-CQR (90%) to the step size gamma (protocol fixed 0.005).
+    Labelled as post hoc in DECISION_LOG.md; not used to select a method."""
+    rows = []
+    for h in horizons:
+        p = pd.read_parquet(PRED_DIR / f"point_h{h}.parquet")
+        if "LGB_G_LRO_q05" not in p:
+            continue
+        cal = pd.read_parquet(PRED_DIR / f"lro_source_calibration_h{h}.parquet")
+        te = p[(p.split == "test") & p.eval_ok & np.isfinite(p.LGB_G_LRO_q05) & np.isfinite(p.LGB_G_LRO_q95)]
+        for r, g in te.sort_values(["region", "time_utc"]).groupby("region", observed=True):
+            f = int(g.fold.iloc[0])
+            cf = cal[cal.fold == f]
+            cs = cqr_scores(cf.z.to_numpy(), cf.zq05.to_numpy(), cf.zq95.to_numpy())
+            zl, zu = (g.LGB_G_LRO_q05 / g.scale).to_numpy(), (g.LGB_G_LRO_q95 / g.scale).to_numpy()
+            st = cqr_scores((g.y / g.scale).to_numpy(), zl, zu)
+            y, s, ybar = g.y.to_numpy(), g.scale.to_numpy(), g.y.mean()
+            for gm in gammas:
+                q, _, cap = aci_intervals(cs, st, 0.1, gm, h)
+                lo, hi = (zl - q) * s, (zu + q) * s
+                rows.append({"h": h, "region": r, "gamma": gm, "coverage": M.coverage(y, lo, hi),
+                             "width_norm": float(np.mean(hi - lo) / ybar),
+                             "width_norm_p50": float(np.median(hi - lo) / ybar),
+                             "interval_score_norm": M.interval_score(y, lo, hi, 0.1) / ybar,
+                             "capped_share": float(cap.mean())})
+    if rows:
+        d = pd.DataFrame(rows)
+        d.to_csv(METRIC_DIR / "aci_gamma_sensitivity_by_region.csv", index=False)
+        d.groupby(["h", "gamma"]).agg(coverage_mean=("coverage", "mean"), coverage_min=("coverage", "min"),
+                                      width_norm_median=("width_norm", "median"),
+                                      width_hour_median_norm_median=("width_norm_p50", "median"),
+                                      interval_score_norm_median=("interval_score_norm", "median"),
+                                      capped_share_mean=("capped_share", "mean")).reset_index().to_csv(
+            METRIC_DIR / "aci_gamma_sensitivity_summary.csv", index=False)
 
 
 def main():
@@ -341,6 +412,7 @@ def main():
     evaluate_adapt(cfg, scales, hs)
     evaluate_refit(cfg, scales, hs)
     evaluate_probabilistic(cfg, hs)
+    aci_sensitivity(cfg, hs)
     log.info("evaluation complete")
 
 

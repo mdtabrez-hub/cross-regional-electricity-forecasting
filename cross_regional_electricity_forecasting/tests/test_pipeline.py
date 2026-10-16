@@ -125,7 +125,8 @@ def test_aci_recovers_coverage_under_shift():
     rng = np.random.default_rng(0)
     cal = np.abs(rng.normal(size=500))
     stream = np.abs(rng.normal(scale=2.0, size=6000))  # scores inflate after calibration
-    q, _ = aci_intervals(cal, stream, alpha=0.1, gamma=0.01, delay=24)
+    q, _, capped = aci_intervals(cal, stream, alpha=0.1, gamma=0.01, delay=24)
+    assert np.all(np.isfinite(q))
     cov_static = np.mean(stream <= conformal_quantile(cal, 0.1))
     cov_aci = np.mean(stream[1000:] <= q[1000:])
     assert cov_static < 0.75
@@ -135,7 +136,7 @@ def test_aci_recovers_coverage_under_shift():
 def test_aci_respects_delay():
     cal = np.ones(50)
     stream = np.r_[np.full(10, 100.0), np.ones(10)]
-    q, a = aci_intervals(cal, stream, alpha=0.1, gamma=0.05, delay=5)
+    q, a, _ = aci_intervals(cal, stream, alpha=0.1, gamma=0.05, delay=5)
     # alpha cannot change before the first outcome is revealed at t = delay
     assert np.all(a[:5] == 0.1)
     assert a[5] < 0.1

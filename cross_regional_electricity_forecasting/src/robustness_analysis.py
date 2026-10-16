@@ -72,11 +72,11 @@ def scenarios(cfg):
 def run_missing(cfg):
     fb, _ = load_builder(cfg)
     folds = chosen_params("lro_folds")
-    gp = chosen_params("global")
     md = cfg["missing_data"]
     test_mask = period(pd.DataFrame({"time_utc": fb.times}), cfg["splits"]["test"]).to_numpy()
     for h in md["horizons"]:
         set_seed(cfg["seed"])
+        gp = chosen_params("global", h, cfg)
         g_in = lgb.Booster(model_file=str(MODEL_DIR / f"LGB_G_IN_h{h}.txt"))
         lro = {f: lgb.Booster(model_file=str(MODEL_DIR / f"LGB_G_LRO_f{f}_h{h}.txt")) for f in set(folds.values())}
         # model trained with MCAR augmentation of its inputs (in-region setting)
@@ -115,7 +115,7 @@ def run_ablation(cfg):
     h = cfg["ablation"]["horizon"]
     fb, _ = load_builder(cfg)
     folds = chosen_params("lro_folds")
-    gp = chosen_params("global")
+    gp = chosen_params("global", h, cfg)
     df = fb.build(h)
     full = feature_columns(df)
     tr, va_es, _, te = split_frames(df, cfg)

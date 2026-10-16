@@ -34,21 +34,26 @@ def cqr_scores(z, qlo, qhi):
 
 
 def aci_intervals(scores_cal: np.ndarray, scores_stream: np.ndarray, alpha: float, gamma: float,
-                  delay: int) -> tuple[np.ndarray, np.ndarray]:
+                  delay: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Online ACI over a chronologically ordered stream for one region.
 
-    Returns per-step thresholds q_t and effective alpha_t. At step t the threshold is the
-    (1 - alpha_t) empirical quantile of the calibration scores plus all stream scores whose
-    outcomes are already observed (index <= t - delay). alpha_t is updated with the
-    miscoverage indicator of step t - delay (outcome known at time t).
+    Returns per-step thresholds q_t, effective alpha_t and a boolean mask of capped steps.
+    At step t the threshold is the (1 - alpha_t) empirical quantile of the calibration
+    scores plus all stream scores whose outcomes are already observed (index <= t - delay).
+    alpha_t is updated with the miscoverage indicator of step t - delay (outcome known at
+    time t). When alpha_t leaves (0, 1) the exact ACI interval is the whole real line
+    (alpha_t <= 0) or empty (alpha_t >= 1); we cap the threshold at the largest / smallest
+    score seen so far so that widths and interval scores stay finite, and report the share
+    of capped steps. The miscoverage update uses the capped threshold actually issued.
     """
+    import bisect
+
     n = len(scores_stream)
     q = np.empty(n)
     a_hist = np.empty(n)
+    capped = np.zeros(n, bool)
     alpha_t = alpha
     hist = list(np.sort(scores_cal[np.isfinite(scores_cal)]))
-    import bisect
-
     for t in range(n):
         j = t - delay
         if j >= 0:
@@ -59,11 +64,11 @@ def aci_intervals(scores_cal: np.ndarray, scores_stream: np.ndarray, alpha: floa
                 bisect.insort(hist, s_j)
         a_hist[t] = alpha_t
         m = len(hist)
-        if alpha_t <= 0:
-            q[t] = np.inf
-        elif alpha_t >= 1:
-            q[t] = -np.inf
+        k = int(np.ceil((m + 1) * (1 - alpha_t))) if 0 < alpha_t < 1 else (m + 1 if alpha_t <= 0 else 0)
+        if k > m:
+            q[t], capped[t] = hist[-1], True
+        elif k < 1:
+            q[t], capped[t] = hist[0], True
         else:
-            k = int(np.ceil((m + 1) * (1 - alpha_t)))
-            q[t] = np.inf if k > m else hist[max(k, 1) - 1]
-    return q, a_hist
+            q[t] = hist[k - 1]
+    return q, a_hist, capped

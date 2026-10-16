@@ -50,3 +50,12 @@ evaluated on the test period.
 3. Negative and null results are reported.
 4. BA-DA has a different information set (issued day-ahead with weather forecasts,
    issuance time unknown) and is reported as an operational reference only.
+
+## Amendments after the freeze (see DECISION_LOG D9–D12)
+
+* ACI thresholds are capped at the most extreme score seen when α_t ∉ (0,1); the share of
+  capped hours is reported.
+* ACI-CQR-V: ACI with γ chosen on the 2023 validation year of held-out BAs, added after the
+  pre-registered γ = 0.005 was seen to produce very wide intervals on the test set. Reported
+  alongside, not instead of, the pre-registered variant.
+* Median-hour interval width added as a sharpness metric.
