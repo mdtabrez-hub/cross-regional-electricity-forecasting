@@ -1,0 +1,2 @@
+2026-10-16 05:38:12,696 preprocess INFO selected 48 regions: ['AECI', 'AVA', 'AZPS', 'BANC', 'BPAT', 'CHPD', 'CISO', 'CPLE', 'CPLW', 'DOPD', 'DUK', 'EPE', 'ERCO', 'FMPP', 'FPC', 'FPL', 'GCPD', 'GVL', 'IID', 'IPCO', 'ISNE', 'JEA', 'LDWP', 'LGEE', 'MISO', 'NEVP', 'NWMT', 'NYIS', 'PACE', 'PACW', 'PGE', 'PJM', 'PNM', 'PSCO', 'SC', 'SCEG', 'SCL', 'SOCO', 'SRP', 'SWPP', 'TAL', 'TEC', 'TEPC', 'TIDC', 'TPWR', 'TVA', 'WACM', 'WALC']
+2026-10-16 05:38:16,466 preprocess INFO panel rows=2945664, eval_ok share=0.9945, input NaN share=0.0033

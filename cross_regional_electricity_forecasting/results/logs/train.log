@@ -1,0 +1,8 @@
+2026-10-16 05:46:11,997 train INFO global grid {'num_leaves': 63, 'min_data_in_leaf': 100, 'best_iter': 460, 'fit_seconds': 50.37190576699982, 'val_es_median_nmae': 0.04725200636060291}
+2026-10-16 05:47:23,198 train INFO global grid {'num_leaves': 63, 'min_data_in_leaf': 500, 'best_iter': 693, 'fit_seconds': 68.43619967899986, 'val_es_median_nmae': 0.04728247426004385}
+2026-10-16 05:48:03,486 train INFO global grid {'num_leaves': 255, 'min_data_in_leaf': 100, 'best_iter': 192, 'fit_seconds': 38.678078786000015, 'val_es_median_nmae': 0.04688656243519313}
+2026-10-16 05:48:54,195 train INFO global grid {'num_leaves': 255, 'min_data_in_leaf': 500, 'best_iter': 255, 'fit_seconds': 48.472214787999974, 'val_es_median_nmae': 0.0469735225955059}
+2026-10-16 05:49:52,436 train INFO local grid {'num_leaves': 31, 'min_data_in_leaf': 20, 'median_best_iter': 134.0, 'val_es_median_nmae': 0.04680625368817372}
+2026-10-16 05:50:45,820 train INFO local grid {'num_leaves': 31, 'min_data_in_leaf': 100, 'median_best_iter': 149.5, 'val_es_median_nmae': 0.0462935800809467}
+2026-10-16 05:52:52,923 train INFO local grid {'num_leaves': 127, 'min_data_in_leaf': 20, 'median_best_iter': 107.5, 'val_es_median_nmae': 0.046782373722285886}
+2026-10-16 05:54:17,611 train INFO local grid {'num_leaves': 127, 'min_data_in_leaf': 100, 'median_best_iter': 99.0, 'val_es_median_nmae': 0.04614135698665245}

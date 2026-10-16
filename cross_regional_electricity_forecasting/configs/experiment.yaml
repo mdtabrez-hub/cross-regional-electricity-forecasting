@@ -1,0 +1,104 @@
+# Frozen experimental configuration (see docs/experimental_protocol.md).
+# Changing any value after the protocol freeze must be logged in DECISION_LOG.md.
+
+seed: 20261016
+
+data:
+  source: pudl_eia930
+  pudl_release: v2026.10.0
+  pudl_base_url: https://s3.us-west-2.amazonaws.com/pudl.catalyst.coop/stable
+  files:
+    out_eia930__hourly_operations.parquet: dc2aa201946674425b53fdc3038f5f29a0b3f36f092dc39b46b7ec381550f6cc
+    core_eia__codes_balancing_authorities.parquet: null
+    core_pudl__codes_imputation_reasons.parquet: null
+  # datetime_utc in EIA-930 is hour-ending; the study window is inclusive of hour-ending
+  # 2019-01-01 01:00 UTC to 2026-01-01 00:00 UTC.
+  start_utc: "2019-01-01 01:00"
+  end_utc: "2026-01-01 00:00"
+
+region_selection:
+  exclude_generation_only: true
+  interconnects: [eastern, western, ercot]
+  min_reported_coverage: 0.97     # share of hours with non-null reported demand
+  max_flagged_share: 0.05         # share of hours flagged by PUDL screening (any code)
+  allow_bad_year: false
+  min_mean_demand_mw: 200.0
+  must_be_active_until: "2026-01-01"
+
+input_cleaning:                    # causal (past-only) screening of model INPUTS
+  nonpositive_to_nan: true
+  spike_window_h: 168
+  spike_min_periods: 24
+  spike_high_ratio: 2.5
+  spike_low_ratio: 0.25
+
+splits:
+  train: ["2019-01-01 01:00", "2023-01-01 00:00"]
+  valid: ["2023-01-01 01:00", "2024-01-01 00:00"]
+  test:  ["2024-01-01 01:00", "2026-01-01 00:00"]
+  # rolling-origin refit: second origin, train through 2023, validate on 2024, test 2025
+  refit_train: ["2019-01-01 01:00", "2024-01-01 00:00"]
+  refit_valid: ["2024-01-01 01:00", "2025-01-01 00:00"]
+  refit_test:  ["2025-01-01 01:00", "2026-01-01 00:00"]
+
+horizons: [1, 6, 24]
+
+features:
+  n_recent_lags: 24
+  scale_window_h: 168
+  scale_min_obs: 24
+  weekly_lags: [168, 336]
+  calendar: true
+
+lro:
+  n_folds: 6
+
+adaptation:
+  weeks: [1, 4, 13]
+  finetune_extra_trees: 200
+  finetune_learning_rate: 0.02
+
+lightgbm:
+  # hyper-parameter grid evaluated on the validation year only (global in-region, h=24)
+  grid:
+    num_leaves: [63, 255]
+    min_data_in_leaf: [100, 500]
+  fixed:
+    learning_rate: 0.05
+    feature_fraction: 0.8
+    bagging_fraction: 0.8
+    bagging_freq: 1
+    lambda_l2: 1.0
+    n_estimators: 3000
+    early_stopping_rounds: 100
+    num_threads: 4
+    verbose: -1
+  local_grid:
+    num_leaves: [31, 127]
+    min_data_in_leaf: [20, 100]
+  quantiles: [0.05, 0.25, 0.5, 0.75, 0.95]
+
+ridge:
+  alpha: 1.0
+
+probabilistic:
+  alphas: [0.1, 0.5]          # miscoverage -> 90% and 50% central intervals
+  aci_gamma: 0.005
+  target_calibration_weeks: 4
+
+missing_data:
+  mcar_rates: [0.05, 0.1, 0.2, 0.4]
+  block_lengths_h: [24, 168]
+  block_rate: 0.1             # expected share of input hours removed by blocks
+  augment_train_rate: 0.1
+  horizons: [1, 24]
+
+ablation:
+  horizon: 24
+  source_pool_sizes: [5, 10, 20]
+  source_pool_repeats: 3
+
+statistics:
+  bootstrap_reps: 1000
+  block_length_h: 168
+  alpha: 0.05

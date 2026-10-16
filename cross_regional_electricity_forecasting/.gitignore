@@ -1,0 +1,8 @@
+data/raw/*.parquet
+data/raw/opsd/
+data/processed/*.parquet
+results/models/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.part
