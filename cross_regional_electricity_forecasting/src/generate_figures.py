@@ -290,7 +290,7 @@ def fig_transfer():
 def fig_calibration():
     pr = pd.read_csv(METRIC_DIR / "probabilistic_by_region.csv")
     mon = pd.read_csv(METRIC_DIR / "probabilistic_monthly_coverage.csv")
-    meths = ["QR", "SCP", "CQR", "SCP-T4", "ACI-CQR"]
+    meths = ["QR", "SCP", "CQR", "SCP-T4", "ACI-CQR", "ACI-CQR-V"]
     fig, axes = plt.subplots(1, 3, figsize=(W2, 3.0), gridspec_kw={"width_ratios": [1.1, 1.1, 1.2]})
     d0 = pr[(pr.alpha == 0.1) & (pr.period == "all") & (pr.h == 24)]
     rng = np.random.default_rng(0)
@@ -310,7 +310,7 @@ def fig_calibration():
     panel_label(axes[1], "(b)")
     ax = axes[2]
     mm = mon[(mon.alpha == 0.1) & (mon.h == 24) & (mon.setting == "unseen-region")]
-    for m, c in zip(meths, ["#999999", "#CC79A7", "#0072B2", "#E69F00", "#009E73"]):
+    for m, c in zip(meths, ["#999999", "#CC79A7", "#0072B2", "#E69F00", "#56B4E9", "#009E73"]):
         d = mm[mm.method == m].sort_values("month")
         ax.plot(pd.PeriodIndex(d.month, freq="M").to_timestamp(), d.coverage * 100, color=c, lw=1, label=m)
     ax.axhline(90, color="#D55E00", ls="--", lw=0.9)
@@ -340,13 +340,15 @@ def fig_intervals(cfg, region=None):
     zl, zu = (g.LGB_G_LRO_q05 / g.scale).to_numpy(), (g.LGB_G_LRO_q95 / g.scale).to_numpy()
     cs = cqr_scores(cf.z.to_numpy(), cf.zq05.to_numpy(), cf.zq95.to_numpy())
     q = conformal_quantile(cs, 0.1)
-    qa, _, _ = aci_intervals(cs, cqr_scores((g.y / g.scale).to_numpy(), zl, zu), 0.1, cfg["probabilistic"]["aci_gamma"], h)
+    gsel = pd.read_csv(METRIC_DIR / "aci_gamma_selected_on_validation.csv")
+    gam = float(gsel[(gsel.h == h) & (gsel.alpha == 0.1)].gamma_selected.iloc[0])
+    qa, _, _ = aci_intervals(cs, cqr_scores((g.y / g.scale).to_numpy(), zl, zu), 0.1, gam, h)
     s = g.scale.to_numpy()
     w = (g.time_utc >= "2024-07-15") & (g.time_utc < "2024-07-29")
     fig, ax = plt.subplots(figsize=(W2, 2.8))
     t = g.time_utc[w]
     ax.fill_between(t, ((zl - q) * s)[w] / 1000, ((zu + q) * s)[w] / 1000, color="#56B4E9", alpha=0.35, label="CQR 90%")
-    ax.plot(t, ((zl - qa) * s)[w] / 1000, color="#009E73", lw=0.7, label="ACI-CQR 90% bounds")
+    ax.plot(t, ((zl - qa) * s)[w] / 1000, color="#009E73", lw=0.7, label=f"ACI-CQR-V 90% bounds (γ = {gam:g})")
     ax.plot(t, ((zu + qa) * s)[w] / 1000, color="#009E73", lw=0.7)
     ax.plot(t, g.LGB_G_LRO[w] / 1000, color="#0072B2", lw=0.9, label="median forecast")
     ax.plot(t, g.y[w] / 1000, color="k", lw=0.8, label="observed")

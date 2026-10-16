@@ -90,6 +90,15 @@ def main():
         p = pd.read_csv(f)
         p["nominal"] = (100 * (1 - p.alpha)).round().astype(int)
         flatten(p.drop(columns="alpha"), "prob", ["h", "setting", "nominal", "method", "period"], N)
+    f = m / "aci_capped_share_by_region.csv"
+    if f.exists():
+        a = pd.read_csv(f)
+        for (h, st, al, me), g in a.groupby(["h", "setting", "alpha", "method"]):
+            N[f"acicap.h{h}.{st}.{int(round(100 * (1 - al)))}.{me}"] = f"{100 * g.capped_share.mean():.1f}"
+    f = m / "aci_gamma_selected_on_validation.csv"
+    if f.exists():
+        for _, r in pd.read_csv(f).iterrows():
+            N[f"gamma.h{int(r.h)}.{int(round(100 * (1 - r.alpha)))}"] = f"{r.gamma_selected:g}"
     for fname, pref in (("paired_tests_point.csv", "test"), ("paired_tests_adaptation.csv", "testadapt"),
                         ("paired_tests_refit.csv", "testrefit")):
         f = m / fname

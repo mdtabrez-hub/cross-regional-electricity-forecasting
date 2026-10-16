@@ -108,7 +108,7 @@ def t_temporal():
 def t_prob():
     s = pd.read_csv(METRIC_DIR / "probabilistic_summary.csv")
     s = s[s.period == "all"]
-    order = ["QR", "SCP", "CQR", "SCP-T4", "ACI-CQR"]
+    order = ["QR", "SCP", "CQR", "SCP-T4", "ACI-CQR", "ACI-CQR-V"]
     s["o"] = s.method.map({m: i for i, m in enumerate(order)})
     s = s.sort_values(["alpha", "h", "setting", "o"])
     t = pd.DataFrame({"Nominal": (100 * (1 - s.alpha)).round(0).astype(int).astype(str) + "%", "h (h)": s.h,
@@ -117,10 +117,22 @@ def t_prob():
                       "Min–max coverage %": s.apply(lambda r: f"{100*r.coverage_min:.1f}–{100*r.coverage_max:.1f}", axis=1),
                       "Mean |cov. dev.| pp": (100 * s.mean_abs_cov_dev).round(1),
                       "BAs under-covered >5 pp": (100 * s.share_regions_undercover_5pp).round(0),
-                      "Median width % of mean load": (100 * s.width_norm_median).round(2),
-                      "Mean interval score %": (100 * s.interval_score_norm_mean).round(2)})
+                      "Median hourly width %": (100 * s.width_hour_median_norm_median).round(2),
+                      "Mean width %": (100 * s.width_norm_median).round(2),
+                      "Median interval score %": (100 * s.interval_score_norm_median).round(2)})
     save(t, "table_7_probabilistic", "Table 7. Interval calibration on the test period (48 BAs).",
          "results/metrics/probabilistic_summary.csv")
+
+
+def t_aci_sens():
+    s = pd.read_csv(METRIC_DIR / "aci_gamma_sensitivity_summary.csv")
+    t = pd.DataFrame({"h (h)": s.h, "γ": s.gamma, "Mean coverage %": (100 * s.coverage_mean).round(1),
+                      "Min coverage %": (100 * s.coverage_min).round(1),
+                      "Median hourly width % of mean load": (100 * s.width_hour_median_norm_median).round(2),
+                      "Median interval score %": (100 * s.interval_score_norm_median).round(2),
+                      "Capped hours %": (100 * s.capped_share_mean).round(2)})
+    save(t, "table_7b_aci_sensitivity", "Table 7b. POST-HOC test-set sensitivity of ACI-CQR (90%, unseen BAs) to the "
+         "step size γ (not used for any selection).", "results/metrics/aci_gamma_sensitivity_summary.csv")
 
 
 def t_missing():
@@ -171,7 +183,7 @@ def t_ba():
 
 
 def main():
-    for fn in (t_regions, t_point, t_tests, t_adapt, t_temporal, t_prob, t_missing, t_ablation, t_compute, t_ba):
+    for fn in (t_regions, t_point, t_tests, t_adapt, t_temporal, t_prob, t_aci_sens, t_missing, t_ablation, t_compute, t_ba):
         try:
             fn()
         except FileNotFoundError as e:

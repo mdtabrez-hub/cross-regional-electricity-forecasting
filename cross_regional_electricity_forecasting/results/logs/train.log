@@ -6,3 +6,49 @@
 2026-10-16 05:50:45,820 train INFO local grid {'num_leaves': 31, 'min_data_in_leaf': 100, 'median_best_iter': 149.5, 'val_es_median_nmae': 0.0462935800809467}
 2026-10-16 05:52:52,923 train INFO local grid {'num_leaves': 127, 'min_data_in_leaf': 20, 'median_best_iter': 107.5, 'val_es_median_nmae': 0.046782373722285886}
 2026-10-16 05:54:17,611 train INFO local grid {'num_leaves': 127, 'min_data_in_leaf': 100, 'median_best_iter': 99.0, 'val_es_median_nmae': 0.04614135698665245}
+2026-10-16 05:59:17,826 train INFO h=24 global in-region done
+2026-10-16 06:00:50,494 train INFO h=24 local done
+2026-10-16 06:04:15,345 train INFO h=24 LRO fold 0 done
+2026-10-16 06:07:26,875 train INFO h=24 LRO fold 1 done
+2026-10-16 06:10:56,674 train INFO h=24 LRO fold 2 done
+2026-10-16 06:14:31,434 train INFO h=24 LRO fold 3 done
+2026-10-16 06:18:16,278 train INFO h=24 LRO fold 4 done
+2026-10-16 06:21:53,790 train INFO h=24 LRO fold 5 done
+2026-10-16 06:21:55,102 train INFO h=24 saved predictions (1262592 rows)
+2026-10-16 07:09:18,272 train INFO h=1 global in-region done
+2026-10-16 07:22:06,551 train INFO h=1 local done
+2026-10-16 07:33:21,772 train INFO h=1 LRO fold 0 done
+2026-10-16 07:44:06,937 train INFO h=1 LRO fold 1 done
+2026-10-16 07:56:24,060 train INFO h=1 LRO fold 2 done
+2026-10-16 08:06:57,585 train INFO h=1 LRO fold 3 done
+2026-10-16 08:18:23,775 train INFO h=1 LRO fold 4 done
+2026-10-16 08:29:51,486 train INFO h=1 LRO fold 5 done
+2026-10-16 08:29:53,232 train INFO h=1 saved predictions (1262592 rows)
+2026-10-16 08:32:40,343 train INFO h=6 global in-region done
+2026-10-16 08:35:59,451 train INFO h=6 local done
+2026-10-16 08:37:25,781 train INFO h=6 LRO fold 0 done
+2026-10-16 08:39:46,453 train INFO h=6 LRO fold 1 done
+2026-10-16 08:41:51,639 train INFO h=6 LRO fold 2 done
+2026-10-16 08:43:44,719 train INFO h=6 LRO fold 3 done
+2026-10-16 08:46:03,343 train INFO h=6 LRO fold 4 done
+2026-10-16 09:19:06,032 train INFO h=6 global in-region done
+2026-10-16 09:22:19,187 train INFO h=6 local done
+2026-10-16 09:23:46,205 train INFO h=6 LRO fold 0 done
+2026-10-16 09:26:01,325 train INFO h=6 LRO fold 1 done
+2026-10-16 09:28:00,839 train INFO h=6 LRO fold 2 done
+2026-10-16 09:29:43,866 train INFO h=6 LRO fold 3 done
+2026-10-16 09:31:48,183 train INFO h=6 LRO fold 4 done
+2026-10-16 09:34:21,941 train INFO h=6 LRO fold 5 done
+2026-10-16 09:34:22,869 train INFO h=6 saved predictions (1262592 rows)
+2026-10-16 09:38:18,421 train INFO h=1 adaptation k=1 done
+2026-10-16 09:42:15,088 train INFO h=1 adaptation k=4 done
+2026-10-16 09:46:37,811 train INFO h=1 adaptation k=13 done
+2026-10-16 09:48:00,063 train INFO h=6 adaptation k=1 done
+2026-10-16 09:49:25,442 train INFO h=6 adaptation k=4 done
+2026-10-16 09:51:04,557 train INFO h=6 adaptation k=13 done
+2026-10-16 09:51:44,438 train INFO h=24 adaptation k=1 done
+2026-10-16 09:52:26,079 train INFO h=24 adaptation k=4 done
+2026-10-16 09:53:12,946 train INFO h=24 adaptation k=13 done
+2026-10-16 10:10:51,873 train INFO h=1 refit done
+2026-10-16 10:15:56,638 train INFO h=6 refit done
+2026-10-16 10:18:52,857 train INFO h=24 refit done

@@ -152,7 +152,7 @@ def evaluate_adapt(cfg, scales, horizons):
             continue
         a = pd.read_parquet(f)
         p = pd.read_parquet(PRED_DIR / f"point_h{h}.parquet")
-        p = p[p.split == "test"][["region", "time_utc", "LGB_L", "LGB_G_IN", "LGB_G_LRO", "seasonal_naive_24"]]
+        p = p[p.split == "test"][["region", "time_utc", "LGB_L", "LGB_G_IN", "LGB_G_LRO"]]
         d = a.merge(p, on=["region", "time_utc"], how="left").rename(columns=RENAME)
         methods = ["SN24", "LGB_G_LRO"] + [c for c in d.columns if c.startswith(("LGB_L_k", "LGB_FT_k"))] + ["LGB_L", "LGB_G_IN"]
         d = d[common_mask(d, methods)]
