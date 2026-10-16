@@ -30,7 +30,8 @@ def fmt_iqr(df, m, scale=100, nd=2):
 def t_regions():
     r = pd.read_csv(DATA_PROCESSED / "regions.csv", index_col=0).sort_values("mean_demand_mw", ascending=False)
     folds = pd.read_json(LOG_DIR / "selected_hyperparameters.json", typ="series")["lro_folds"]
-    t = pd.DataFrame({"BA": r.index, "Name": r.label.str.replace("_", " "), "Interconnect": r.interconnect_code_eia,
+    t = pd.DataFrame({"BA": r.index, "Name": r.label.str.replace("_", " ").str.replace("tuscon", "tucson").str.replace("pugent", "puget")
+                      .str.title().str.replace(" Iso", " ISO").str.replace(" And ", " and ").str.replace(" Of ", " of "), "Interconnect": r.interconnect_code_eia,
                       "Mean demand (MW)": r.mean_demand_mw.round(0).astype(int),
                       "Reported coverage (%)": (100 * r.reported_coverage).round(2),
                       "PUDL-flagged (%)": (100 * r.flagged_share).round(2),
@@ -43,6 +44,7 @@ def t_point():
     s = pd.read_csv(METRIC_DIR / "point_metrics_summary.csv")
     order = ["SN24", "SN168", "PERS", "RIDGE_G_IN", "RIDGE_G_LRO", "LGB_L", "LGB_G_IN", "LGB_G_LRO"]
     s["order"] = s.method.map({m: i for i, m in enumerate(order)})
+    s = s[~((s.method == "PERS") & (s.h == 24))]  # identical to SN24 at h = 24 by construction
     s = s.sort_values(["h", "order"])
     t = pd.DataFrame({"h (h)": s.h, "Method": s.method.map(LABEL), "nMAE % median [IQR]": fmt_iqr(s, "nMAE"),
                       "nRMSE % median": (100 * s.nRMSE_median).round(2), "MASE median": s.MASE_median.round(3),
@@ -64,8 +66,8 @@ def t_tests():
     out = out.merge(pd.DataFrame({"h (h)": blk.h, "A": blk.method_a.map(LABEL), "B": blk.method_b.map(LABEL),
                                   "BAs with A sig. better (block bootstrap)": blk.share_a_better_sig.round(2),
                                   "BAs with B sig. better": blk.share_b_better_sig.round(2)}),
-                    on=["h (h)", "A", "B"], how="left")
-    save(out, "table_3_paired_tests", "Table 3. Paired comparisons of per-BA nMAE (test period).",
+                    on=["h (h)", "A", "B"], how="left").fillna("–")
+    save(out, "table_S4_paired_tests_full", "Table S4. All paired comparisons of per-BA nMAE (test period).",
          "results/metrics/paired_tests_point.csv; results/metrics/block_bootstrap_summary.csv")
 
 
@@ -121,7 +123,7 @@ def t_prob():
                       "Median hourly width %": (100 * s.width_hour_median_norm_median).round(2),
                       "Mean width %": (100 * s.width_norm_median).round(2),
                       "Median interval score %": (100 * s.interval_score_norm_median).round(2)})
-    save(t, "table_7_probabilistic", "Table 7. Interval calibration on the test period (48 BAs).",
+    save(t, "table_S1_probabilistic_full", "Table S1. Interval calibration on the test period, all settings (48 BAs).",
          "results/metrics/probabilistic_summary.csv")
 
 
@@ -132,7 +134,7 @@ def t_aci_sens():
                       "Median hourly width % of mean load": (100 * s.width_hour_median_norm_median).round(2),
                       "Median interval score %": (100 * s.interval_score_norm_median).round(2),
                       "Capped hours %": (100 * s.capped_share_mean).round(2)})
-    save(t, "table_7b_aci_sensitivity", "Table 7b. POST-HOC test-set sensitivity of ACI-CQR (90%, unseen BAs) to the "
+    save(t, "table_S2_aci_sensitivity", "Table S2. POST-HOC test-set sensitivity of ACI-CQR (90%, unseen BAs) to the "
          "step size γ (not used for any selection).", "results/metrics/aci_gamma_sensitivity_summary.csv")
 
 
@@ -142,7 +144,7 @@ def t_missing():
                       "Input missing %": (100 * s.input_missing_share).round(1),
                       "nMAE % median": (100 * s.nMAE_median).round(2), "nMAE % mean": (100 * s.nMAE_mean).round(2),
                       "Min. scored share of hours": s.min_coverage_of_eval_hours.round(3)})
-    save(t, "table_8_missing_data", "Table 8. Robustness to missing input observations (test period).",
+    save(t, "table_S3_missing_data_full", "Table S3. Robustness to missing input observations, all scenarios (test period; common scored hours).",
          "results/metrics/missing_data_summary.csv")
 
 
@@ -166,7 +168,7 @@ def t_ablation():
                       "Median rel. change vs full LRO %": (100 * s.median_rel_change).map(lambda v: "reference" if pd.isna(v) else f"{v:.1f}"),
                       "95% CI": s.apply(lambda r: "" if pd.isna(r.rel_ci_lo) else f"[{100*r.rel_ci_lo:.1f}, {100*r.rel_ci_hi:.1f}]", axis=1),
                       "Wilcoxon p (Holm)": s.p_holm.map(lambda p: "" if pd.isna(p) else f"{p:.2g}")})
-    save(t, "table_9_ablation", "Table 9. Ablations of the zero-shot global model (h = 24 h, unseen BAs).",
+    save(t, "table_10_ablation", "Table 10. Ablations of the zero-shot global model (h = 24 h, unseen BAs).",
          "results/metrics/ablation_results.csv")
 
 
@@ -182,10 +184,10 @@ def t_compute():
                       "Model size (MB)": (g.size_mb / 1e6).round(2), "Trees": g.trees.round(0),
                       "Peak RSS of run (MB)": g.peak_rss.round(0)})
     a = LOG_DIR / "compute_costs_adapt.csv"
-    save(t, "table_10_compute", "Table 10. Computational cost (4-core CPU).", "results/logs/compute_costs_point.csv")
+    save(t, "table_11_compute", "Table 11. Computational cost (4-core CPU).", "results/logs/compute_costs_point.csv")
     if a.exists():
         aa = pd.read_csv(a)
-        save(aa.round(3), "table_10b_compute_adaptation", "Table 10b. Adaptation fit time per target BA (s).",
+        save(aa.round(3), "table_S10_compute_adaptation", "Table 10b. Adaptation fit time per target BA (s).",
              "results/logs/compute_costs_adapt.csv")
 
 
@@ -193,12 +195,119 @@ def t_ba():
     s = pd.read_csv(METRIC_DIR / "ba_dayahead_summary.csv")
     t = pd.DataFrame({"h (h)": s.h, "Method": s.method.map(LABEL), "nMAE % median [IQR]": fmt_iqr(s, "nMAE"),
                       "Bias % median": (100 * s.bias_pct_median).round(2), "Regions": s.n_regions})
-    save(t, "table_11_ba_reference", "Table 11. Comparison with BA-reported day-ahead forecasts (hours where available).",
+    save(t, "table_12_ba_reference", "Table 12. Comparison with BA-reported day-ahead forecasts (hours where available).",
          "results/metrics/ba_dayahead_summary.csv")
 
 
+def t_tests_main():
+    t = pd.read_csv(METRIC_DIR / "paired_tests_point.csv")
+    t = t[(t.metric == "nMAE")]
+    keep = [("LGB_G_LRO", "LGB_G_IN"), ("LGB_G_IN", "LGB_L"), ("LGB_G_LRO", "LGB_L"), ("LGB_G_LRO", "SN24")]
+    t = t[[(a, b) in keep for a, b in zip(t.method_a, t.method_b)]]
+    blk = pd.read_csv(METRIC_DIR / "block_bootstrap_summary.csv")
+    t = t.merge(blk[["h", "method_a", "method_b", "share_a_better_sig", "share_b_better_sig"]], on=["h", "method_a", "method_b"], how="left")
+    short = {"LGB_G_LRO": "G-LRO (zero-shot)", "LGB_G_IN": "G-IN", "LGB_L": "Local", "SN24": "SN24"}
+    out = pd.DataFrame({"h (h)": t.h, "A vs B": t.method_a.map(short) + " vs " + t.method_b.map(short),
+                        "Median rel. change %": (100 * t.median_rel_change).round(1),
+                        "95% CI": t.apply(lambda r: f"[{100*r.rel_ci_lo:.1f}, {100*r.rel_ci_hi:.1f}]", axis=1),
+                        "A better (BAs %)": (100 * t.share_a_better).round(0),
+                        "A sig. better / B sig. better (block bootstrap, BAs %)": t.apply(
+                            lambda r: f"{100*r.share_a_better_sig:.0f} / {100*r.share_b_better_sig:.0f}", axis=1),
+                        "Holm p": t.p_holm_all.map(lambda p: f"{p:.1g}" if p >= 1e-4 else "<1e-4")})
+    save(out.sort_values(["h (h)"]), "table_3_paired_tests",
+         "Table 3. Key paired comparisons of per-BA nMAE (test period; negative = A more accurate).",
+         "results/metrics/paired_tests_point.csv; results/metrics/block_bootstrap_summary.csv")
+
+
+def t_prob_main():
+    s = pd.read_csv(METRIC_DIR / "probabilistic_summary.csv")
+    s = s[(s.period == "all") & (s.alpha == 0.1) & (s.setting == "unseen-region")]
+    order = ["QR", "SCP", "CQR", "SCP-T4", "ACI-CQR", "ACI-CQR-V"]
+    s = s[s.method.isin(order)].assign(o=lambda d: d.method.map({m: i for i, m in enumerate(order)})).sort_values(["h", "o"])
+    lab = {"ACI-CQR": "ACI-CQR (γ = 0.005, frozen protocol)", "ACI-CQR-V": "ACI-CQR-V (γ on held-out BAs' 2023 data; exploratory)"}
+    t = pd.DataFrame({"h (h)": s.h, "Method": s.method.map(lambda m: lab.get(m, m)),
+                      "Mean cov. %": (100 * s.coverage_mean).round(1),
+                      "Min–max cov. %": s.apply(lambda r: f"{100*r.coverage_min:.1f}–{100*r.coverage_max:.1f}", axis=1),
+                      "BAs > 5 pp under %": (100 * s.share_regions_undercover_5pp).round(0),
+                      "Median hourly width %": (100 * s.width_hour_median_norm_median).round(2),
+                      "Median IS %": (100 * s.interval_score_norm_median).round(2)})
+    save(t, "table_7_probabilistic", "Table 7. Calibration of nominal 90% intervals for unseen BAs (random folds, test "
+         "period). Widths and interval scores (IS) are in % of mean load.", "results/metrics/probabilistic_summary.csv")
+
+
+def t_rev_calibration():
+    f = METRIC_DIR / "rev_calibration_summary.csv"
+    if not f.exists():
+        return
+    s = pd.read_csv(f)
+    t = pd.DataFrame({"Setting": s.setting, "h (h)": s.h, "Method": s.method,
+                      "Mean cov. %": (100 * s.coverage_mean).round(1),
+                      "Min–max cov. %": s.apply(lambda r: f"{100*r.coverage_min:.1f}–{100*r.coverage_max:.1f}", axis=1),
+                      "BAs > 5 pp under %": (100 * s.share_under_5pp).round(0),
+                      "Median hourly width %": (100 * s.width_p50_median).round(2),
+                      "Median IS %": (100 * s.IS_median).round(2)})
+    save(t, "table_8_calibration_revision", "Table 8. Online and source-only calibration of 90% intervals for unseen BAs, "
+         "including spatially blocked folds (post-review analyses; γ selected on source BAs only for ACI-CQR-S).",
+         "results/metrics/rev_calibration_summary.csv")
+
+
+def t_missing_main():
+    s = pd.read_csv(METRIC_DIR / "missing_data_summary.csv")
+    s = s[s.method.isin(["LGB_G_IN", "LGB_G_IN_AUG"]) & s.scenario.isin(["clean", "MCAR_10", "MCAR_40", "BLOCK_24h", "BLOCK_168h"])]
+    s["col"] = s.apply(lambda r: "MCAR-trained, native" if r.method == "LGB_G_IN_AUG" else
+                       {"native": "Native NaN", "locf": "LOCF", "seasonal": "Weekly-seasonal"}[r.strategy], axis=1)
+    piv = s.pivot_table(index=["h", "scenario"], columns="col", values="nMAE_median").mul(100).round(2).reset_index()
+    order = {"clean": 0, "MCAR_10": 1, "MCAR_40": 2, "BLOCK_24h": 3, "BLOCK_168h": 4}
+    piv = piv.sort_values(["h", "scenario"], key=lambda c: c.map(order) if c.name == "scenario" else c)
+    piv = piv.rename(columns={"h": "h (h)", "scenario": "Scenario"})
+    cols = ["h (h)", "Scenario", "Native NaN", "LOCF", "Weekly-seasonal", "MCAR-trained, native"]
+    save(piv[[c for c in cols if c in piv]].fillna("–"), "table_9_missing_data",
+         "Table 9. Median nMAE (%) of the in-region global model with corrupted inputs (test period; common scored hours).",
+         "results/metrics/missing_data_summary.csv")
+
+
+def t_supplementary_revision():
+    f = METRIC_DIR / "rev_adapt_origins_summary.csv"
+    if f.exists():
+        s = pd.read_csv(f)
+        piv = s.pivot_table(index=["h", "origin"], columns="method", values="nMAE_median").mul(100).round(2).reset_index()
+        save(piv, "table_S5_adaptation_origins", "Table S5. Median nMAE (%) for unseen BAs at three additional onboarding "
+             "origins (evaluation: the following 365 days).", "results/metrics/rev_adapt_origins_summary.csv")
+    f = METRIC_DIR / "rev_spatial_summary.csv"
+    if f.exists():
+        s = pd.read_csv(f)
+        t = pd.DataFrame({"h (h)": s.h, "Method": s.method.map(lambda m: LABEL.get(m, "LightGBM, global (spatially blocked, zero-shot)" if m == "LGB_G_LRS" else m)),
+                          "nMAE % median [IQR]": fmt_iqr(s, "nMAE"), "MASE median": s.MASE_median.round(3)})
+        save(t, "table_S6_spatial", "Table S6. Point accuracy with spatially blocked leave-region-out folds (test period).",
+             "results/metrics/rev_spatial_summary.csv")
+    f = METRIC_DIR / "rev_excluded_bas.csv"
+    if f.exists():
+        s = pd.read_csv(f)
+        t = pd.DataFrame({"h (h)": s.h, "BA": s.region, "Mean MW": s.mean_mw.round(0), "Zero-shot nMAE %": (100 * s.nMAE_zero_shot).round(2),
+                          "Local nMAE %": (100 * s.nMAE_local).round(2), "SN24 nMAE %": (100 * s.nMAE_SN24).round(2)})
+        save(t, "table_S7_excluded_bas", "Table S7. Zero-shot forecasts for the five BAs excluded by the selection criteria.",
+             "results/metrics/rev_excluded_bas.csv")
+    f = METRIC_DIR / "rev_conditional_coverage.csv"
+    if f.exists():
+        s = pd.read_csv(f)
+        s = s[s.method.str.startswith(("CQR", "ACI-CQR-S"))]
+        t = pd.DataFrame({"Setting": s.setting, "h (h)": s.h, "Method": s.method, "Conditioning": s.by, "Level": s.level,
+                          "Mean cov. over BAs %": (100 * s.coverage_mean_over_BAs).round(1),
+                          "Min cov. over BAs %": (100 * s.coverage_min_over_BAs).round(1)})
+        save(t, "table_S8_conditional_coverage", "Table S8. Conditional coverage of 90% intervals by season and by "
+             "within-BA load decile (0 = lowest).", "results/metrics/rev_conditional_coverage.csv")
+    f = LOG_DIR / "ridge_alpha_grid_validation.csv"
+    if f.exists():
+        s = pd.read_csv(f)
+        save(s.assign(val_es_median_nmae=(100 * s.val_es_median_nmae).round(3)).rename(
+            columns={"alpha": "Ridge penalty λ", "val_es_median_nmae": "Validation median nMAE %"}),
+             "table_S9_ridge_grid", "Table S9. Ridge penalty grid on the validation (odd ISO) weeks, h = 24 h.",
+             "results/logs/ridge_alpha_grid_validation.csv")
+
+
 def main():
-    for fn in (t_regions, t_point, t_tests, t_adapt, t_temporal, t_prob, t_aci_sens, t_missing, t_ablation, t_compute, t_ba):
+    for fn in (t_regions, t_point, t_tests, t_tests_main, t_adapt, t_temporal, t_prob, t_prob_main, t_rev_calibration,
+               t_aci_sens, t_missing, t_missing_main, t_ablation, t_compute, t_ba, t_supplementary_revision):
         try:
             fn()
         except FileNotFoundError as e:

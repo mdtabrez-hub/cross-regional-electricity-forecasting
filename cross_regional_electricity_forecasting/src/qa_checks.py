@@ -63,6 +63,7 @@ def main():
     try:
         t2 = pd.read_csv(TABLE_DIR / "table_2_point_accuracy.csv")
         s = pd.read_csv(METRIC_DIR / "point_metrics_summary.csv")
+        s = s[~((s.method == "PERS") & (s.h == 24))]  # row omitted in Table 2 (identical to SN24)
         v1 = sorted(round(100 * x, 2) for x in s.nMAE_median)
         v2 = sorted(float(x.split(" ")[0]) for x in t2["nMAE % median [IQR]"])
         out.append(check("Table 2 matches point_metrics_summary.csv", v1 == v2, f"{len(v1)} values"))
@@ -123,12 +124,16 @@ def main():
         txt = "\n".join(p.text for p in d.paragraphs)
         unresolved = re.findall(r"\?\?|\[@[^\]]+\]|\{\{|\[\[|TODO|XXX", txt)
         out.append(check("No unresolved citations/placeholders in DOCX", not unresolved, f"{unresolved[:10]}"))
+        aa = re.findall(r"\[AUTHOR ACTION[^\]]*\]", txt)
+        out.append(check("Author-specific placeholders (intentional)", "Requires manual verification" if aa else True,
+                         f"{len(aa)} [AUTHOR ACTION] placeholders: names/affiliations, funding, CRediT, COI, AI disclosure, repository DOI"))
         out.append(check("DOCX embeds figures", len(d.inline_shapes) == len(figs),
                          f"inline images={len(d.inline_shapes)}, referenced={len(figs)}"))
         out.append(check("DOCX tables", len(d.tables) >= len(tabs), f"tables={len(d.tables)}"))
     except Exception as e:  # noqa: BLE001
         out.append(check("DOCX inspection", False, repr(e)))
-    out.append(check("PDF rendered", (MS / "manuscript_final.pdf").exists(), "LibreOffice headless"))
+    out.append(check("PDF rendered", (MS / "manuscript_final.pdf").exists(),
+                     "pandoc (MathML) + headless Chromium; LibreOffice export drops inline OMML equations"))
 
     # tests
     r = subprocess.run([sys.executable, "-m", "pytest", "-q", str(ROOT / "tests")], capture_output=True, text=True)

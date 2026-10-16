@@ -29,7 +29,7 @@
 ### Justification
 
 **Direction A.**
-- *Novelty (3).* Every component has precedent: transfer [tzortzis2024transfer; yuan2026adaptive], global vs local [montero2021principles; ahmadi2025globalization], ACI and online conformal on electricity series [gibbs2021adaptive; zaffran2022adaptive; angelopoulos2023conformal; areces2025online], and adaptive probabilistic load [devilmarest2024adaptive]. The searches found nothing that combines leave-regions-out evaluation, conformal coverage separated by shift type, and an operator benchmark across tens of BAs. Novelty lies in the combination and the evaluation, not in any method. It scores 3, not 4, because the possibly overlapping building-level paper [crossbuilding2026reliability] could not be verified.
+- *Novelty (3).* Every component has precedent: transfer [tzortzis2024transfer; yuan2026adaptive], global vs local [montero2021principles; ahmadi2025globalization], ACI and online conformal on electricity series [gibbs2021adaptive; zaffran2022adaptive; angelopoulos2023conformal; areces2025online], and adaptive probabilistic load [devilmarest2024adaptive]. The searches found nothing that combines leave-regions-out evaluation, conformal coverage separated by shift type, and an operator benchmark across tens of BAs. Novelty lies in the combination and the evaluation, not in any method. It scores 3, not 4, because a building-level study (Applied Sciences 2026, DOI 10.3390/app16167984, matrix key crossbuilding2026reliability, do not cite until authors verified) already evaluates LightGBM residual models and conformal coverage on unseen buildings and future years with sensor missingness.
 - *Importance (4).* It answers a practical question the field leaves open: whether calibrated intervals stay valid when a model is applied to a new system.
 - *Practical relevance (5).* It speaks directly to onboarding small or new BAs and to operators' interest in reliable intervals.
 - *Dataset suitability (5).* EIA-930 is the only public, consistent hourly BA-level source with many regions and operator forecasts [hong2026benchmarking; eia930about].
@@ -55,13 +55,13 @@
 ## 3. Closest prior work (ranked by overlap with A)
 
 1. **Tzortzis et al. 2024** [tzortzis2024transfer]. Held-out-country transfer on 27 European national series. *Difference:* A is probabilistic with conformal coverage, uses U.S. BAs (more and more heterogeneous units), uses pooled GBMs plus residual correction rather than NN warm-start, and adds an operator benchmark.
-2. **Yuan et al. 2026, STaRNet** [yuan2026adaptive]. Meta-learning for unseen regions under regional shift. *Difference:* A uses 40-60 regions rather than 4, puts calibration first, and benchmarks simple methods rather than proposing an architecture. *Caveat:* venue unverified.
+2. **Yuan et al. 2026, STaRNet** [yuan2026adaptive]. Meta-learning for unseen regions under regional shift. *Difference:* A uses 40-60 regions rather than 4, puts calibration first, and benchmarks simple methods rather than proposing an architecture. Published in Engineering Applications of Artificial Intelligence 164:113104 (2026).
 3. **Ahmadi et al. 2025** [ahmadi2025globalization]. Global vs local, including LightGBM, with zero-shot regional forecasts in Alberta. *Difference:* A has independent BAs across interconnections, conformal coverage under shift, limited-target adaptation and an operator comparison. *Caveat:* we did not see their full results tables.
 4. **de Vilmarest et al. 2024** [devilmarest2024adaptive]. Adaptive probabilistic load forecasting under temporal shift (GB and U.S. cities). *Difference:* A adds geographic shift and conformal guarantees, and separates temporal from geographic miscoverage.
 5. **Hong, Lee and Shi 2026** [hong2026benchmarking]. Deep-model benchmark on EIA-930. *Difference:* A covers cross-BA generalisation, calibration and operator comparison.
-6. **Online conformal on electricity** [gibbs2021adaptive; zaffran2022adaptive; angelopoulos2023conformal; areces2025online] and **cross-building reliability** [crossbuilding2026reliability, unverified]. *Difference:* these cover temporal shift on a few series, or building-level shift. A covers system-level geographic shift at scale.
+6. **Online conformal on electricity** [gibbs2021adaptive; zaffran2022adaptive; angelopoulos2023conformal; areces2025online] and **cross-building reliability** (Applied Sciences 2026, DOI 10.3390/app16167984; do not cite until authors verified). *Difference:* these cover temporal shift on a few series, or building-level shift. A covers system-level geographic shift at scale.
 
-**Plain statement of overlap.** If [crossbuilding2026reliability] turns out to evaluate conformal coverage on unseen buildings with leave-units-out evaluation, then the *conceptual* design of A (coverage under unit-level shift) has a building-level precedent. A's distinctiveness would then rest on system-level BA data, the separation of geographic and temporal shift, limited-target adaptation, and the operator benchmark. A must not be presented as the first study of conformal coverage under cross-unit load shift.
+**Plain statement of overlap (revised after re-verification).** Search summaries indicate that the Applied Sciences 2026 study *does* evaluate conformal coverage on unseen buildings, using building-isolated five-fold splits, a LightGBM residual model, future-year scenarios and sensor missingness. The *conceptual* design of A (coverage under unit-level shift, with GBMs and missingness) therefore has a building-level precedent. A's distinctiveness would then rest on system-level BA data, the separation of geographic and temporal shift, limited-target adaptation, and the operator benchmark. A must not be presented as the first study of conformal coverage under cross-unit load shift.
 
 ## 4. Recommended gap statement (conservative)
 
@@ -95,6 +95,7 @@ The contribution type is an **evaluation framework, benchmark and empirical find
 
 ## 7. Open risks
 
-- [crossbuilding2026reliability] and [yuan2026adaptive] could not be fully verified and may overlap more than abstracts suggest. Read both in full.
+- The Applied Sciences 2026 cross-building study (authors unverified; do not cite until confirmed) and [yuan2026adaptive] (now verified: Eng. Appl. Artif. Intell. 164:113104) must be read in full. The former overlaps substantially in design.
+- PUDL v2026.10.0 was not found on Zenodo by search (latest seen v2026.7.2). Confirm the exact release used and its DOI.
 - Recent arXiv preprints (2025-2026) appear quickly in this area. Repeat the search immediately before submission.
 - The full results of [ahmadi2025globalization] (zero-shot table) were not seen, so its overlap with A may be larger than estimated.

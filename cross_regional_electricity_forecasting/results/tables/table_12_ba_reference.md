@@ -1,4 +1,4 @@
-**Table 11. Comparison with BA-reported day-ahead forecasts (hours where available).**
+**Table 12. Comparison with BA-reported day-ahead forecasts (hours where available).**
 
 |   h (h) | Method                                      | nMAE % median [IQR]   |   Bias % median |   Regions |
 |--------:|:--------------------------------------------|:----------------------|----------------:|----------:|

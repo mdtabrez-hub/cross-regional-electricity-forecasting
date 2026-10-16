@@ -35,7 +35,7 @@ Two features of this literature matter for the planned study:
 
 ## 3. Global versus local forecasting models
 
-Montero-Manso and Hyndman [montero2021principles] give the theoretical basis for "global" models, meaning one model fitted across many series. They show that global models can be as expressive as local ones without assuming the series are similar, and that they are competitive or better empirically. The M5 competition [makridakis2022m5] made pooled models a mainstream choice for large hierarchical collections. LightGBM [ke2017lightgbm] is the efficient gradient-boosting implementation that is commonly used for this kind of pooled model.
+Montero-Manso and Hyndman [montero2021principles] give the theoretical basis for "global" models, meaning one model fitted across many series. They show that global models can be as expressive as local ones without assuming the series are similar, and that they are competitive or better empirically. The M5 competition [makridakis2022m5] made pooled models a mainstream choice for large hierarchical collections. A simulation study by Hewamalage et al. [hewamalage2022global] finds that RNNs and LightGBM remain competitive under heterogeneous, short-series conditions. Deep global probabilistic models such as DeepAR [salinas2020deepar] and N-BEATS [oreshkin2020nbeats] are the standard neural counterparts. LightGBM [ke2017lightgbm] is the efficient gradient-boosting implementation that is commonly used for this kind of pooled model.
 
 In electricity load specifically:
 
@@ -51,9 +51,10 @@ This last point matters for the planned design. In a leave-regions-out test the 
 Cross-region transfer for load is an established topic, so the planned study cannot claim it is new.
 
 - **Tzortzis et al.** [tzortzis2024transfer] is the closest European analogue to the planned design. They take 27 European national day-ahead demand series of the kind distributed by ENTSO-E/OPSD, train a feed-forward network on source countries, and adapt it to a held-out target country (warm start plus fine-tuning, with and without clustering). Transfer beats per-country training, especially with clustering. The evaluation is point accuracy only and there is no calibration analysis.
-- **Yuan et al.** [yuan2026adaptive] (venue and full author list not verified) frame the problem explicitly as *regional distribution shift*. Their STaRNet uses Reptile meta-learning to learn an initialisation that adapts quickly to unseen regions, evaluated on four German TSO areas. They report a 10.79% lower 24-hour MAE than the strongest baseline in the heterogeneous-transfer scenario. This is the most explicit "unseen region" load paper found. It is again point-only and uses four regions.
+- **Yuan et al.** [yuan2026adaptive] (Engineering Applications of Artificial Intelligence, 2026) frame the problem explicitly as *regional distribution shift*. Their STaRNet uses Reptile meta-learning to learn an initialisation that adapts quickly to unseen regions, evaluated on four German TSO areas. They report a 10.79% lower 24-hour MAE than the strongest baseline in the heterogeneous-transfer scenario. This is the most explicit "unseen region" load paper found. It is again point-only and uses four regions.
 - **Antoniadis, Gaucher and Goude** [antoniadis2024hierarchical] study transfer *within* a hierarchy (fine-scale to national) using stacked GAM-random forest models and online aggregation of quantile experts.
 - **Tsoumplekas et al.** [tsoumplekas2025fewshot] apply MAML to few-shot forecasting for individual consumers.
+- **Early cross-building transfer:** Ribeiro et al. [ribeiro2018transfer] merged data from similar buildings with seasonal and trend adjustment.
 - **Building level:** BuildingsBench [emami2023buildingsbench] built the reference benchmark for zero-shot and fine-tuned forecasting on *unseen* buildings. It pretrains on 900K simulated buildings and evaluates on more than 1,900 real ones. Synthetic pretraining transferred to real commercial buildings, and fine-tuning helped most targets.
 
 Taken together, cross-region and cross-unit transfer with limited target data is well studied for point forecasts. The questions with less coverage are whether transfer gains survive in *probabilistic* terms, and whether simple approaches (pooled gradient boosting plus a local residual correction) are competitive with meta-learning at the scale of 40-60 heterogeneous BAs. Only a handful of countries or TSO areas appear in [tzortzis2024transfer] and [yuan2026adaptive].
@@ -112,7 +113,9 @@ Conformal prediction [vovk2005algorithmic] gives finite-sample marginal coverage
 
 ### 7.3 Conformal in load forecasting applications
 
-Matulin et al. [matulin2023cqr] apply CQR to Croatian TSO load and report higher coverage with narrower intervals than conventional methods. A 2026 Applied Sciences article [crossbuilding2026reliability] appears, from its title and one search snippet, to evaluate cross-building load forecasting under distribution shift and sensor missingness, and reports that coverage declines for unseen buildings. Its authors and full content could not be retrieved. It must be read in full before any novelty claim is made, because it may be the closest analogue at building level.
+Matulin et al. [matulin2023cqr] apply CQR to Croatian TSO load and report higher coverage with narrower intervals than conventional methods. A 2026 Applied Sciences article (DOI 10.3390/app16167984; matrix key crossbuilding2026reliability, marked **unverified – do not cite** because its authors could not be established from a publisher page) appears to be the closest design analogue found. According to search summaries, it uses a building-isolated five-fold cross-building design on 55 buildings of the HEEW dataset. It finds that a LightGBM residual-on-persistence model reduces NMAE by 11.3% in an unseen-building, future-year scenario, and that losing half of the auxiliary load history roughly doubles NMAE. It also reports that conformal intervals keep coverage on seen buildings but lose it on unseen buildings. This is a building-level, 1-hour-ahead precedent for exactly the 'unseen unit x future period x missingness x conformal coverage' design. It must be read in full and properly attributed before submission.
+
+Two further methods are directly relevant. Weighted conformal prediction under covariate shift [tibshirani2019conformal] re-weights calibration scores by a likelihood ratio, which offers a principled way to tilt source-region calibration toward a target region. Strongly adaptive online conformal prediction [bhatnagar2023improved] improves on ACI-style updates when regimes change.
 
 ### 7.4 Gap
 
@@ -148,13 +151,13 @@ The online-conformal papers use a few electricity series as illustrations: one I
 | Closest work | What it already does | What it does not do (relative to the planned study) |
 |---|---|---|
 | Tzortzis et al. 2024 [tzortzis2024transfer] | Cross-country transfer to held-out European national series; clustering | No probabilistic forecasts or calibration; NN only; Europe only |
-| Yuan et al. 2026 [yuan2026adaptive] | Explicit regional distribution shift; meta-learning adaptation to unseen regions | 4 regions; point MAE; no calibration; metadata partially verified |
+| Yuan et al. 2026 [yuan2026adaptive] | Explicit regional distribution shift; meta-learning adaptation to unseen regions | 4 regions; point MAE; no calibration |
 | Ahmadi et al. 2025 [ahmadi2025globalization] | Global vs local incl. LightGBM; zero-shot regional and system forecasting | Single province; no conformal coverage analysis evident; preprint |
 | de Vilmarest et al. 2024 [devilmarest2024adaptive] | Adaptive *probabilistic* load forecasting; includes U.S. city demand | Temporal adaptation only; quantile regression, not conformal; no unseen regions |
 | Hong, Lee and Shi 2026 [hong2026benchmarking] | EIA-930 BA-level benchmark of deep models | Per-grid training; no cross-BA transfer; no calibration; no operator benchmark |
 | Simeone 2026 [simeone2026tsfm]; BuildingsBench [emami2023buildingsbench] | Zero-shot forecasting with calibration (ERCOT) / unseen buildings | One system / building level; no conformal recalibration across regions |
 | Online conformal on electricity [gibbs2021adaptive; zaffran2022adaptive; angelopoulos2023conformal; areces2025online] | Coverage under temporal shift on a few electricity series | Not about geographic shift; few series; no operator comparison |
-| Cross-building reliability 2026 [crossbuilding2026reliability] | Apparently: coverage under cross-building shift and missingness | Building level; **unverified** and must be read |
+| Cross-building reliability 2026 (Applied Sciences, DOI 10.3390/app16167984; do not cite until authors verified) | Unseen-building x future-year splits, LightGBM residual model, sensor missingness, conformal coverage loss on unseen buildings | Building level, 1-h ahead; no operator benchmark; no adaptive conformal or few-week target adaptation reported in summaries |
 
 **What remains open.** The searches found no published study that combines all of the following on system-level hourly load:
 

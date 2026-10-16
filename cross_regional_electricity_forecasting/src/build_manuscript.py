@@ -58,7 +58,7 @@ def insert_objects(text: str) -> str:
             counters["fig"] += 1
             fig_ids[name] = counters["fig"]
         if kind == "TABLE" and name not in tab_ids:
-            if name.startswith("table_A"):
+            if re.match(r"table_[A-Z]\d", name):
                 tab_ids[name] = name.split("_")[1]  # appendix tables keep their own label (A1, A2, ...)
                 continue
             counters["tab"] += 1
@@ -278,7 +278,7 @@ def to_pdf(rmd: Path, out_pdf: Path, csl: str):
     Chromium, because LibreOffice's headless export drops inline OMML equations."""
     css = MS / "styles" / "print.css"
     css.write_text(PDF_CSS)
-    html = MS / "manuscript_print.html"
+    html = out_pdf.with_suffix(".html")
     subprocess.run(["pandoc", str(rmd), "-f", "markdown+tex_math_dollars+pipe_tables+fenced_divs", "--citeproc",
                     "--bibliography", str(ROOT / "literature" / "verified_references.bib"), "--csl", csl,
                     "--number-sections", "--mathml", "--standalone", "--embed-resources", "--css", str(css),
@@ -293,17 +293,19 @@ def main(argv=None):
     ap.add_argument("--out", default=str(MS / "manuscript_final.docx"))
     ap.add_argument("--csl", default=str(MS / "styles" / "elsevier-harvard.csl"))
     ap.add_argument("--no-pdf", action="store_true")
+    ap.add_argument("--sections-dir", default=str(MS / "sections"))
+    ap.add_argument("--rendered", default=str(MS / "manuscript_rendered.md"))
     a = ap.parse_args(argv)
     if a.source:
         src = Path(a.source).read_text()
     else:
-        src = "\n\n".join(p.read_text() for p in sorted((MS / "sections").glob("*.md")))
+        src = "\n\n".join(p.read_text() for p in sorted(Path(a.sections_dir).glob("*.md")))
     rendered = insert_objects(fill_numbers(src))
-    rmd = MS / "manuscript_rendered.md"
+    rmd = Path(a.rendered)
     rmd.write_text(rendered)
     ref = MS / "styles" / "reference.docx"
     reference_doc(ref)
-    out = Path(a.out)
+    out = Path(a.out).resolve()
     subprocess.run(["pandoc", str(rmd), "-f", "markdown+tex_math_dollars+pipe_tables+fenced_divs", "--citeproc",
                     "--bibliography", str(ROOT / "literature" / "verified_references.bib"), "--csl", a.csl,
                     "--reference-doc", str(ref), "--resource-path", str(ROOT), "--number-sections", "-o", str(out)], check=True)

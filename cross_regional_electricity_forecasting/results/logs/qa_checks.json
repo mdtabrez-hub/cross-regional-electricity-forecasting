@@ -1,0 +1,92 @@
+[
+  {
+    "check": "All manuscript number keys resolve",
+    "status": "Passed",
+    "detail": "228 keys; missing=[]"
+  },
+  {
+    "check": "Headline h=24 nMAE medians recomputed from raw predictions",
+    "status": "Passed",
+    "detail": "[('LGB_G_IN', '4.64', '4.64'), ('LGB_G_LRO', '4.75', '4.75'), ('LGB_L', '4.72', '4.72')]"
+  },
+  {
+    "check": "Table 2 matches point_metrics_summary.csv",
+    "status": "Passed",
+    "detail": "23 values"
+  },
+  {
+    "check": "All citation keys exist in BibTeX",
+    "status": "Passed",
+    "detail": "63 cited; unknown=[]"
+  },
+  {
+    "check": "Cited references not fully verified",
+    "status": "Requires manual verification",
+    "detail": "hong2016gefcom2014: partially verified: title/authors/venue/volume/pages confirm; ahmadi2025globalization: preprint: arXiv listing seen via search result; not peer-rev; ling2025comparative: preprint: arXiv listing seen via search result; not peer-rev; obst2021adaptive: partially verified: journal (IEEE TPWRS, 2021) seen only on ; rasul2023lagllama: preprint: arXiv listing seen via search result; not peer-rev; garza2023timegpt: preprint: arXiv listing seen via search result; not peer-rev; simeone2026tsfm: preprint: arXiv listing seen via search result; not peer-rev; hong2026benchmarking: preprint: arXiv listing seen via search result; not peer-rev; matulin2023cqr: partially verified: title/authors/venue from energy-proceedi; eia930about: partially verified: EIA page seen as search result; content ; pudl2026: partially verified: PUDL Zenodo releases seen via search; v2; tashman2000out: partially verified: title/author/venue/volume/pages on RePEc; diebold1995comparing: partially verified: title/authors/venue/volume/pages confirm"
+  },
+  {
+    "check": "Referenced figures exist (PNG+PDF)",
+    "status": "Passed",
+    "detail": "13 figures; missing=[]"
+  },
+  {
+    "check": "Figures listed in manifest",
+    "status": "Passed",
+    "detail": "not in manifest=[]"
+  },
+  {
+    "check": "Figure font",
+    "status": "Partially verified",
+    "detail": "fonts used: ['Liberation Serif'] (Times New Roman not installed; metric-compatible substitute)"
+  },
+  {
+    "check": "Referenced tables exist",
+    "status": "Passed",
+    "detail": "12 tables; missing=[]"
+  },
+  {
+    "check": "DOCX fonts are Times New Roman",
+    "status": "Passed",
+    "detail": "fonts={'Times New Roman'}"
+  },
+  {
+    "check": "DOCX body 12 pt",
+    "status": "Passed",
+    "detail": "body sizes={12.0}; body paragraphs=278"
+  },
+  {
+    "check": "DOCX body justified, 1.5 spacing",
+    "status": "Passed",
+    "detail": "non-conforming body paragraphs=0"
+  },
+  {
+    "check": "No unresolved citations/placeholders in DOCX",
+    "status": "Passed",
+    "detail": "[]"
+  },
+  {
+    "check": "Author-specific placeholders (intentional)",
+    "status": "Requires manual verification",
+    "detail": "9 [AUTHOR ACTION] placeholders: names/affiliations, funding, CRediT, COI, AI disclosure, repository DOI"
+  },
+  {
+    "check": "DOCX embeds figures",
+    "status": "Passed",
+    "detail": "inline images=13, referenced=13"
+  },
+  {
+    "check": "DOCX tables",
+    "status": "Passed",
+    "detail": "tables=13"
+  },
+  {
+    "check": "PDF rendered",
+    "status": "Passed",
+    "detail": "pandoc (MathML) + headless Chromium; LibreOffice export drops inline OMML equations"
+  },
+  {
+    "check": "Unit tests",
+    "status": "Passed",
+    "detail": "15 passed in 1.03s"
+  }
+]

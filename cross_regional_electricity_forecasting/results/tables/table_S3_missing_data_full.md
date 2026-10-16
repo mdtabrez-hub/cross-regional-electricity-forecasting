@@ -1,14 +1,14 @@
-**Table 8. Robustness to missing input observations (test period).**
+**Table S3. Robustness to missing input observations, all scenarios (test period; common scored hours).**
 
 |   h (h) | Scenario   | Strategy   | Model        |   Input missing % |   nMAE % median |   nMAE % mean |   Min. scored share of hours |
 |--------:|:-----------|:-----------|:-------------|------------------:|----------------:|--------------:|-----------------------------:|
-|       1 | BLOCK_168h | locf       | LGB_G_IN     |               9.7 |            2.66 |          2.8  |                        1     |
-|       1 | BLOCK_168h | locf       | LGB_G_LRO    |               9.7 |            2.68 |          2.84 |                        1     |
+|       1 | BLOCK_168h | locf       | LGB_G_IN     |               9.7 |            2.42 |          2.51 |                        0.969 |
+|       1 | BLOCK_168h | locf       | LGB_G_LRO    |               9.7 |            2.46 |          2.56 |                        0.969 |
 |       1 | BLOCK_168h | native     | LGB_G_IN     |               9.7 |            1.95 |          2.08 |                        0.969 |
 |       1 | BLOCK_168h | native     | LGB_G_IN_AUG |               9.7 |            1.94 |          2.01 |                        0.969 |
 |       1 | BLOCK_168h | native     | LGB_G_LRO    |               9.7 |            1.99 |          2.11 |                        0.969 |
-|       1 | BLOCK_168h | seasonal   | LGB_G_IN     |               9.7 |            2.05 |          2.07 |                        1     |
-|       1 | BLOCK_168h | seasonal   | LGB_G_LRO    |               9.7 |            2.08 |          2.12 |                        1     |
+|       1 | BLOCK_168h | seasonal   | LGB_G_IN     |               9.7 |            1.87 |          1.93 |                        0.969 |
+|       1 | BLOCK_168h | seasonal   | LGB_G_LRO    |               9.7 |            1.9  |          1.98 |                        0.969 |
 |       1 | BLOCK_24h  | locf       | LGB_G_IN     |               9.5 |            2.52 |          2.56 |                        1     |
 |       1 | BLOCK_24h  | locf       | LGB_G_LRO    |               9.5 |            2.56 |          2.6  |                        1     |
 |       1 | BLOCK_24h  | native     | LGB_G_IN     |               9.5 |            1.89 |          1.98 |                        1     |
@@ -47,13 +47,13 @@
 |       1 | clean      | native     | LGB_G_IN     |               0.2 |            1.14 |          1.23 |                        1     |
 |       1 | clean      | native     | LGB_G_IN_AUG |               0.2 |            1.17 |          1.26 |                        1     |
 |       1 | clean      | native     | LGB_G_LRO    |               0.2 |            1.17 |          1.28 |                        1     |
-|      24 | BLOCK_168h | locf       | LGB_G_IN     |               9.7 |            6.11 |          6.07 |                        1     |
-|      24 | BLOCK_168h | locf       | LGB_G_LRO    |               9.7 |            6.14 |          6.1  |                        1     |
+|      24 | BLOCK_168h | locf       | LGB_G_IN     |               9.7 |            5.79 |          5.85 |                        0.969 |
+|      24 | BLOCK_168h | locf       | LGB_G_LRO    |               9.7 |            5.82 |          5.88 |                        0.969 |
 |      24 | BLOCK_168h | native     | LGB_G_IN     |               9.7 |            5.07 |          5.34 |                        0.969 |
 |      24 | BLOCK_168h | native     | LGB_G_IN_AUG |               9.7 |            5.03 |          5.3  |                        0.969 |
 |      24 | BLOCK_168h | native     | LGB_G_LRO    |               9.7 |            5.08 |          5.38 |                        0.969 |
-|      24 | BLOCK_168h | seasonal   | LGB_G_IN     |               9.7 |            5.09 |          5.42 |                        1     |
-|      24 | BLOCK_168h | seasonal   | LGB_G_LRO    |               9.7 |            5.12 |          5.46 |                        1     |
+|      24 | BLOCK_168h | seasonal   | LGB_G_IN     |               9.7 |            5.07 |          5.34 |                        0.969 |
+|      24 | BLOCK_168h | seasonal   | LGB_G_LRO    |               9.7 |            5.09 |          5.38 |                        0.969 |
 |      24 | BLOCK_24h  | locf       | LGB_G_IN     |               9.5 |            5.81 |          5.82 |                        1     |
 |      24 | BLOCK_24h  | locf       | LGB_G_LRO    |               9.5 |            5.83 |          5.85 |                        1     |
 |      24 | BLOCK_24h  | native     | LGB_G_IN     |               9.5 |            5.02 |          5.3  |                        1     |

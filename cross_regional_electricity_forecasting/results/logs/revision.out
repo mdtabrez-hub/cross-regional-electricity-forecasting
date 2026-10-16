@@ -1,0 +1,33 @@
+2026-10-16 13:23:02,625 revision INFO ridge alpha=0.01 val nMAE=0.05059
+2026-10-16 13:23:20,533 revision INFO ridge alpha=0.1 val nMAE=0.05059
+2026-10-16 13:23:40,187 revision INFO ridge alpha=1 val nMAE=0.05059
+2026-10-16 13:23:57,937 revision INFO ridge alpha=10 val nMAE=0.05059
+2026-10-16 13:24:16,587 revision INFO ridge alpha=100 val nMAE=0.05059
+2026-10-16 13:24:33,141 revision INFO ridge alpha=1000 val nMAE=0.05059
+2026-10-16 13:24:46,757 revision INFO excluded BAs h=24 done: ['HST', 'PSEI', 'SEC', 'SPA', 'WAUW']
+2026-10-16 13:25:30,077 revision INFO excluded BAs h=1 done: ['HST', 'PSEI', 'SEC', 'SPA', 'WAUW']
+2026-10-16 13:27:04,549 revision INFO origins h=24 origin 2024-04-01 done
+2026-10-16 13:28:09,757 revision INFO origins h=24 origin 2024-07-01 done
+2026-10-16 13:29:15,007 revision INFO origins h=24 origin 2024-10-01 done
+2026-10-16 13:31:51,072 revision INFO origins h=6 origin 2024-04-01 done
+2026-10-16 13:34:03,721 revision INFO origins h=6 origin 2024-07-01 done
+2026-10-16 13:36:18,269 revision INFO origins h=6 origin 2024-10-01 done
+2026-10-16 13:39:07,509 revision INFO spatial h=24 block NW (15 held out) done
+2026-10-16 13:41:54,688 revision INFO spatial h=24 block CAL (5 held out) done
+2026-10-16 13:44:38,046 revision INFO spatial h=24 block SW (6 held out) done
+2026-10-16 13:47:43,251 revision INFO spatial h=24 block FLA (7 held out) done
+2026-10-16 13:50:48,380 revision INFO spatial h=24 block CAR (5 held out) done
+2026-10-16 13:54:11,213 revision INFO spatial h=24 block TEX+CENT (2 held out) done
+2026-10-16 13:57:11,173 revision INFO spatial h=24 block MIDW+MIDA (4 held out) done
+2026-10-16 14:00:26,992 revision INFO spatial h=24 block SE+TEN (2 held out) done
+2026-10-16 14:03:33,036 revision INFO spatial h=24 block NE+NY (2 held out) done
+2026-10-16 14:09:08,142 revision INFO spatial h=1 block NW (15 held out) done
+2026-10-16 14:13:56,996 revision INFO spatial h=1 block CAL (5 held out) done
+2026-10-16 14:19:04,608 revision INFO spatial h=1 block SW (6 held out) done
+2026-10-16 14:24:06,099 revision INFO spatial h=1 block FLA (7 held out) done
+2026-10-16 14:29:16,656 revision INFO spatial h=1 block CAR (5 held out) done
+2026-10-16 14:34:29,361 revision INFO spatial h=1 block TEX+CENT (2 held out) done
+2026-10-16 14:39:45,579 revision INFO spatial h=1 block MIDW+MIDA (4 held out) done
+2026-10-16 14:44:55,684 revision INFO spatial h=1 block SE+TEN (2 held out) done
+2026-10-16 14:50:09,587 revision INFO spatial h=1 block NE+NY (2 held out) done
+REVISION_DONE

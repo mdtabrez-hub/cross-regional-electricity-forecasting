@@ -117,3 +117,67 @@ The following came up in searches but were left out, either because metadata cou
 - A `doi` field appears in the BibTeX only when the DOI string appeared in a search result: a publisher page, PMC, Project Euclid, a RePEc/IDEAS record, BibSonomy, DOAJ or an institutional repository. DOIs that are probably correct but were not seen were left blank. This applies to Diebold-Mariano 1995, Tashman 2000, Hyndman-Koehler 2006, GEFCom2014, GEFCom2017 and Tzortzis et al. 2024.
 - The matrix contains one "unverified" entry, [crossbuilding2026reliability]. It was kept because it may be the closest competitor and must be read in full.
 - Search engines can return synthesised summaries. Every finding recorded in the matrix is taken from abstract-level text and should be checked against the full paper before it is cited in the manuscript.
+
+---
+
+## Revision pass (2026-10-16, after internal review)
+
+**Sources reached:** WebSearch only, about 22 further queries (3 in "extended" mode). WebFetch was not retried. Scopus, Web of Science and Crossref were still not accessed.
+
+### Re-verification queries
+
+1. Applied Sciences cross-building reliability paper: exact title (extended); DOI plus "HEEW"; title plus "mdpi applsci author"; "16(16) 7984 HEEW ... conformal SHAP" (extended).
+2. STaRNet exact title plus "journal doi" (extended).
+3. GEFCom2014 title with a candidate DOI string, which was **not** corroborated.
+4. GEFCom2017 title plus DOI.
+5. Tashman with a candidate DOI string.
+6. Hyndman–Koehler with a candidate DOI string, then a ScienceDirect PII query.
+7. Diebold–Mariano on Taylor & Francis.
+8. Tzortzis et al. title plus "Mathematics doi".
+9. Stratigakos et al. plus IEEE TSG.
+10. Obst et al. plus IEEE TPWRS.
+11. "PUDL Data Release v2026.10.0 zenodo".
+12. Matulin DOI.
+13. Ahmadi et al. journal version.
+
+### New-entry queries
+
+Tibshirani et al. 2019 (covariate shift); Salinas et al. DeepAR (twice); Oreshkin et al. N-BEATS; Hewamalage, Bergmeir & Bandara 2022; Bhatnagar et al. 2023; Ribeiro et al. 2018. *Forecasting: Principles and Practice* (3rd edition) was verified from earlier search results (OTexts 2021, ISBN 9780987507136).
+
+### Outcomes
+
+**Now verified (DOI added only where the DOI string itself was seen):**
+- yuan2026adaptive: Engineering Applications of Artificial Intelligence 164:113104; DOI 10.1016/j.engappai.2025.113104; full author list.
+- hong2019gefcom2017: DOI 10.1016/j.ijforecast.2019.02.006.
+- hyndman2006another: DOI 10.1016/j.ijforecast.2006.03.001, seen as a doi.org result.
+- stratigakos2024resilient: IEEE Transactions on Smart Grid 15(1):874–885; DOI 10.1109/TSG.2023.3272379, from HAL and dblp.
+- tzortzis2024transfer: venue confirmed. DOI string never seen, so it was left blank and the MDPI URL is used.
+
+**Still partially verified:**
+- hong2016gefcom2014, tashman2000out, diebold1995comparing: DOI never seen.
+- obst2021adaptive: journal stated only on a co-author's publications page.
+- matulin2023cqr: DOI seen once and not corroborated, so it was removed from the BibTeX doi field.
+- eia930about.
+- pudl2026: **no Zenodo record for v2026.10.0 was found**. The latest release seen was v2026.7.2, and two different concept DOIs appeared (10.5281/zenodo.3404014 and 10.5281/zenodo.3653158), so the DOI was left blank.
+
+**Marked "unverified – do not cite":**
+- crossbuilding2026reliability: title and DOI 10.3390/app16167984 were seen, but the author list could not be established from a publisher page.
+  - Its content, per search summaries, makes it the closest design analogue found: HEEW buildings, building-isolated folds, LightGBM residual model, future-year scenario, sensor missingness, and conformal coverage lost on unseen buildings.
+  - It is removed from related_work_draft.md citations. The gap analysis was updated to state the overlap plainly.
+
+**New entries:**
+- tibshirani2019conformal
+- salinas2020deepar: DOI seen.
+- oreshkin2020nbeats
+- hewamalage2022global: DOI not seen.
+- bhatnagar2023improved
+- ribeiro2018transfer: DOI not seen.
+- hyndman2021fpp3
+
+### BibTeX changes
+
+- Bibkeys of existing entries are unchanged.
+- Placeholder text was removed from author and journal fields.
+- The do-not-cite entry keeps its BibTeX record, with no author field and an explanatory note.
+
+**Matrix totals after revision:** 65 entries. 51 verified, 7 partially verified, 6 arXiv-only preprints, 1 unverified – do not cite.

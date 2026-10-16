@@ -1,4 +1,4 @@
-**Table 10. Computational cost (4-core CPU).**
+**Table 11. Computational cost (4-core CPU).**
 
 | Model                |   h (h) |   Fits |   Mean fit time (s) |   Inference (µs/forecast) |   Model size (MB) |   Trees |   Peak RSS of run (MB) |
 |:---------------------|--------:|-------:|--------------------:|--------------------------:|------------------:|--------:|-----------------------:|

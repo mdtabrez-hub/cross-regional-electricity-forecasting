@@ -165,13 +165,26 @@ def evaluate(cfg):
         clean = d[d.scenario == "clean"]
         ok = clean.eval_ok & np.isfinite(clean.y)
         keys = set(zip(clean.region[ok].astype(str), clean.time_utc[ok]))
+        d = d[[k in keys for k in zip(d.region.astype(str), d.time_utc)]]
+        # common scored hours: within a scenario, every strategy/method must have a forecast
+        d = d.copy()
+        d["_common"] = False
+        for sc, gs in d.groupby("scenario"):
+            piv = gs.pivot_table(index=["region", "time_utc"], columns="strategy",
+                                 values=["LGB_G_IN", "LGB_G_LRO"], observed=True)
+            ok = np.isfinite(piv).all(axis=1)
+            aug = gs[gs.strategy == "native"].set_index(["region", "time_utc"])["LGB_G_IN_AUG"]
+            ok &= np.isfinite(aug.reindex(ok.index))
+            common = set(ok.index[ok.to_numpy()])
+            d.loc[gs.index, "_common"] = [k in common for k in zip(gs.region, gs.time_utc)]
         for (sc, st), g in d.groupby(["scenario", "strategy"]):
-            g = g[[k in keys for k in zip(g.region.astype(str), g.time_utc)]]
+            n_all = len(g)
+            g = g[g._common.astype(bool)]
             methods = [m for m in ("LGB_G_IN", "LGB_G_LRO", "LGB_G_IN_AUG") if g[m].notna().any()]
             for m in methods:
-                gg = g[np.isfinite(g[m])]
+                gg = g
                 pr = per_region_metrics(gg, [m], scales)
-                pr["coverage_of_eval_hours"] = len(gg) / len(g)
+                pr["coverage_of_eval_hours"] = len(gg) / n_all
                 pr["h"], pr["scenario"], pr["strategy"] = h, sc, st
                 pr["input_missing_share"] = g.input_missing_share.iloc[0]
                 rows.append(pr)

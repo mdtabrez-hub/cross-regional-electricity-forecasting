@@ -1,4 +1,4 @@
-**Table 7b. POST-HOC test-set sensitivity of ACI-CQR (90%, unseen BAs) to the step size γ (not used for any selection).**
+**Table S2. POST-HOC test-set sensitivity of ACI-CQR (90%, unseen BAs) to the step size γ (not used for any selection).**
 
 |   h (h) |     γ |   Mean coverage % |   Min coverage % |   Median hourly width % of mean load |   Median interval score % |   Capped hours % |
 |--------:|------:|------------------:|-----------------:|-------------------------------------:|--------------------------:|-----------------:|

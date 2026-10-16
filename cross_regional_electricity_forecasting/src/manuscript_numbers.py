@@ -17,7 +17,8 @@ import pandas as pd
 from .common import DATA_META, DATA_PROCESSED, LOG_DIR, METRIC_DIR, RESULTS
 
 PCT = ("nMAE", "nRMSE", "MAPE", "bias_pct", "coverage", "width", "interval_score", "mean_abs_cov_dev",
-       "share", "median_rel_change", "rel_ci", "pinball", "input_missing")
+       "share", "median_rel_change", "rel_ci", "pinball", "input_missing", "median_rel", "p90_rel", "max_rel",
+       "min_rel", "cluster_ci", "IS_", "peak_", "under")
 
 
 def fmt(col: str, v):
@@ -25,12 +26,15 @@ def fmt(col: str, v):
         return "n/a"
     if isinstance(v, (bool, np.bool_)):
         return str(bool(v))
+    if isinstance(v, str):
+        return v
     if isinstance(v, (int, np.integer)):
         return f"{int(v):,}"
     if col.startswith("p") and (col == "p" or col.startswith("p_")):
-        return f"{v:.2g}" if v >= 1e-4 else "<0.0001"
+        return f"= {v:.2g}" if v >= 1e-4 else "< 0.0001"
     if any(col.startswith(k) or k in col for k in PCT):
-        return f"{100 * v:.1f}" if ("share" in col or "rel" in col or "coverage" in col) else f"{100 * v:.2f}"
+        return f"{100 * v:.1f}" if ("share" in col or "rel" in col or "coverage" in col or "cluster_ci" in col
+                                     or "under" in col or "peak_above" in col) else f"{100 * v:.2f}"
     if "MASE" in col:
         return f"{v:.3f}"
     if "seconds" in col or col.endswith("_s"):
@@ -135,6 +139,73 @@ def main():
             N[f"ablationpool.{n}.nMAE_median"] = f"{100 * g.nMAE_median.mean():.2f}"
             N[f"ablationpool.{n}.nMAE_min"] = f"{100 * g.nMAE_median.min():.2f}"
             N[f"ablationpool.{n}.nMAE_max"] = f"{100 * g.nMAE_median.max():.2f}"
+    rev = [("rev_gap_distribution_cluster_bootstrap.csv", "revgap", ["h", "method_a", "method_b"]),
+           ("rev_equivalence_tost.csv", "reveq", ["h", "margin"]),
+           ("rev_spatial_summary.csv", "revsp", ["h", "method"]),
+           ("rev_spatial_gap_tails.csv", "revsptail", ["h"]),
+           ("rev_adapt_origins_summary.csv", "revorig", ["h", "origin", "method"]),
+           ("rev_excluded_bas.csv", "revexcl", ["h", "region"]),
+           ("rev_calibration_summary.csv", "revcal", ["setting", "h", "method"])]
+    for fname, pref, keys in rev:
+        f = m / fname
+        if f.exists():
+            d = pd.read_csv(f)
+            if "margin" in d:
+                d["margin"] = (100 * d.margin).round().astype(int)
+            if "setting" in d:
+                d["setting"] = d.setting.str.replace(r"[^A-Za-z]+", "_", regex=True).str.strip("_")
+            if "method" in d and pref == "revcal":
+                d["method"] = d.method.str.split(" ").str[0] + d.method.str.extract(r"gamma=([0-9.]+)")[0].fillna("").radd("_g").replace("_g", "")
+            if "origin" in d:
+                d["origin"] = d.origin.astype(str)
+            flatten(d, pref, keys, N)
+    for fname, pref in (("rev_spatial_tests.csv", "revsptest"), ("rev_adapt_origins_tests.csv", "revorigtest")):
+        f = m / fname
+        if f.exists():
+            t = pd.read_csv(f)
+            keys = ["h", "origin", "method_a", "method_b"] if "origin" in t else ["h", "method_a", "method_b"]
+            if "origin" in t:
+                t["origin"] = t.origin.astype(str)
+            flatten(t, pref, keys, N)
+    f = m / "rev_adapt_origins_tests.csv"
+    if f.exists():
+        t = pd.read_csv(f)
+        for h, d in t[t.method_a.str.startswith("LGB_FT")].groupby("h"):
+            N[f"revorigrange.h{h}.FT.min"] = f"{100 * d.median_rel_change.min():.1f}"
+            N[f"revorigrange.h{h}.FT.max"] = f"{100 * d.median_rel_change.max():.1f}"
+            N[f"revorigrange.h{h}.FT.max_share_better"] = f"{100 * d.share_a_better.max():.0f}"
+    f = m / "rev_zero_shot_vs_local_by_year.csv"
+    if f.exists():
+        t = pd.read_csv(f)
+        t["period"] = t.period.astype(str).str.replace(r"[^0-9A-Za-z]+", "_", regex=True).str.strip("_")
+        flatten(t, "revyear", ["h", "period", "method_a", "method_b"], N)
+    f = m / "rev_gamma_source_selected.csv"
+    if f.exists():
+        g = pd.read_csv(f)
+        for (st, h), d in g.groupby(["setting", "h"]):
+            key = __import__("re").sub(r"[^A-Za-z]+", "_", st).strip("_")
+            N[f"revgamma.{key}.h{h}"] = ", ".join(sorted({f"{x:g}" for x in d.gamma_selected}))
+    f = m / "rev_peak_metrics_by_region.csv"
+    if f.exists():
+        pk = pd.read_csv(f)
+        for st, d in pk.groupby("setting"):
+            key = __import__("re").sub(r"[^A-Za-z]+", "_", st).strip("_")
+            N[f"revpeak.{key}.APE_zero_shot_median"] = f"{100 * d.peak_APE_zero_shot.median():.2f}"
+            N[f"revpeak.{key}.APE_BA_DA_median"] = f"{100 * d.peak_APE_BA_DA.median():.2f}"
+            for c in [c for c in d.columns if c.startswith("peak_above_upper::")]:
+                lab = c.split("::")[1].split(" ")[0]
+                gm = __import__("re").search(r"gamma=([0-9.]+)", c)
+                lab = lab + (f"_g{gm.group(1)}" if gm else "")
+                N[f"revpeak.{key}.above_upper.{lab}"] = f"{100 * d[c].mean():.1f}"
+    f = m / "rev_conditional_coverage.csv"
+    if f.exists():
+        cc = pd.read_csv(f)
+        for _, r in cc.iterrows():
+            st = __import__("re").sub(r"[^A-Za-z]+", "_", r.setting).strip("_")
+            gm = __import__("re").search(r"gamma=([0-9.]+)", r.method)
+            lab = r.method.split(" ")[0] + (f"_g{gm.group(1)}" if gm else "")
+            N[f"revcond.{st}.h{r.h}.{lab}.{r.by}.{r.level}.mean"] = f"{100 * r.coverage_mean_over_BAs:.1f}"
+            N[f"revcond.{st}.h{r.h}.{lab}.{r.by}.{r.level}.min"] = f"{100 * r.coverage_min_over_BAs:.1f}"
     # derived: share of BAs where unseen-region model is worse than in-region (h=24)
     pr = m / "point_metrics_by_region.csv"
     if pr.exists():
@@ -143,6 +214,8 @@ def main():
             piv = d[d.h == h].pivot(index="region", columns="method", values="nMAE")
             gap = piv.LGB_G_LRO / piv.LGB_G_IN - 1
             N[f"derived.h{h}.gap_max_pct"] = f"{100 * gap.max():.1f}"
+            for ba in ("MISO", "PJM", "ERCO", "GCPD"):
+                N[f"derived.h{h}.gap.{ba}"] = f"{100 * gap[ba]:.1f}"
             N[f"derived.h{h}.gap_max_ba"] = gap.idxmax()
             N[f"derived.h{h}.gap_min_pct"] = f"{100 * gap.min():.1f}"
             N[f"derived.h{h}.n_lro_worse"] = str(int((gap > 0).sum()))

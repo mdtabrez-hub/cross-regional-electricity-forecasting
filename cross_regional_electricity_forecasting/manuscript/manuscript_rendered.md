@@ -12,7 +12,7 @@ title: "Forecasting Electricity Demand in Unseen Regions: A Leave-Regions-Out Be
 
 # Abstract {.unnumbered}
 
-Forecasting models are increasingly expected to serve power systems they were not trained on. We present a pre-registered, leakage-resistant benchmark on hourly EIA-930 demand of 48 U.S. balancing authorities (2019–2025) that separates geographic from temporal distribution shift. A pooled, instance-normalised LightGBM model applied to balancing authorities held out from training lost a median 0.5% (day-ahead) to 3.4% (hour-ahead) accuracy relative to in-region training. It was no worse than local models trained on four years of target data. Fine-tuning on one to thirteen weeks of target data mostly degraded accuracy. Static conformal intervals achieved near-nominal average coverage but under-covered by more than five points in 20.8–33.3% of systems, irrespective of geographic shift. Adaptive conformal inference restored per-system coverage only when its step size suited the forecast feedback delay. Code and protocol are openly available.
+Forecasting models are increasingly expected to serve power systems they were not trained on. We benchmark this on hourly EIA-930 demand of 48 U.S. balancing authorities (2019–2025), using a leakage-resistant protocol frozen before test evaluation. A pooled LightGBM model applied to unseen balancing authorities lost a median 0.5% (day-ahead) to 3.4% (hour-ahead) accuracy relative to in-region training. When whole regions were held out the loss rose to 1.7% (day-ahead) and 8.0% (hour-ahead), yet zero-shot forecasts still matched local models trained on four years of target data. Fine-tuning on one to thirteen weeks of target data degraded accuracy. Static conformal intervals under-covered by more than five points in 20.8–33.3% of systems, whether seen or unseen. Adaptive conformal inference, with its step size chosen on other systems, restored per-system coverage at little cost in sharpness.
 
 **Keywords:** load forecasting; distribution shift; transfer learning; conformal prediction; global forecasting models; balancing authorities
 
@@ -48,9 +48,9 @@ The paper is organised as follows. Section 2 reviews related work and Section 3 
 
 Robustness to *temporal* shift has received more attention since the COVID-19 pandemic. Adaptive state-space models and online aggregation performed well in a post-pandemic day-ahead competition [@farrokhabadi2022dayahead]. Kalman-filter adaptation of additive models [@obst2021adaptive] was later extended to adaptive probabilistic forecasting [@devilmarest2024adaptive]. These studies concern change over time within known systems, not deployment to systems absent from training.
 
-**Global versus local models.** Global models fitted jointly across many series can be as expressive as local models without assuming that the series are similar [@montero2021principles]. Pooled gradient boosting was prominent in the M5 competition [@makridakis2022m5], and LightGBM [@ke2017lightgbm] is a common implementation. For electricity load, Ahmadi et al. report that global models outperform local ones on Alberta data and include a zero-shot evaluation on regions not used for training [@ahmadi2025globalization]. Ling and Wu compare global, clustered and local probabilistic LightGBM models in a non-energy setting [@ling2025comparative]. Most global-versus-local comparisons, however, evaluate series that were pooled during training. Generalisation to withheld series is seldom isolated, and its effect on uncertainty calibration is rarely reported.
+**Global versus local models.** Global models fitted jointly across many series can be as expressive as local models without assuming that the series are similar [@montero2021principles]. Pooled gradient boosting was prominent in the M5 competition [@makridakis2022m5], and LightGBM [@ke2017lightgbm] is a common implementation. Global neural forecasters such as DeepAR [@salinas2020deepar] and N-BEATS [@oreshkin2020nbeats] share the same principle, and simulation evidence clarifies when global models help [@hewamalage2022global]. For electricity load, Ahmadi et al. report that global models outperform local ones on Alberta data and include a zero-shot evaluation on regions not used for training [@ahmadi2025globalization]. Ling and Wu compare global, clustered and local probabilistic LightGBM models in a non-energy setting [@ling2025comparative]. Most global-versus-local comparisons, however, evaluate series that were pooled during training. Generalisation to withheld series is seldom isolated, and its effect on uncertainty calibration is rarely reported.
 
-**Transfer and few-shot learning across regions.** Tzortzis et al. pre-train neural networks on European national demand and adapt them to held-out countries [@tzortzis2024transfer]. Yuan et al. propose a meta-learning initialisation that adapts to unseen German transmission-system-operator areas [@yuan2026adaptive]. Hierarchical transfer [@antoniadis2024hierarchical] and meta-learning for data-scarce consumers [@tsoumplekas2025fewshot] address related settings. At building level, BuildingsBench established zero-shot and fine-tuning evaluation on unseen buildings [@emami2023buildingsbench]. These works mostly report point accuracy on a few target regions or on building-level data. Whether transfer preserves *calibrated* uncertainty for large, independently operated systems remains largely unexamined.
+**Transfer and few-shot learning across regions.** Tzortzis et al. pre-train neural networks on European national demand and adapt them to held-out countries [@tzortzis2024transfer]. Yuan et al. propose a meta-learning initialisation that adapts to unseen German transmission-system-operator areas [@yuan2026adaptive]. Hierarchical transfer [@antoniadis2024hierarchical], meta-learning for data-scarce consumers [@tsoumplekas2025fewshot] and cross-building transfer with seasonal adjustment [@ribeiro2018transfer] address related settings. At building level, BuildingsBench established zero-shot and fine-tuning evaluation on unseen buildings [@emami2023buildingsbench]. These works mostly report point accuracy on a few target regions or on building-level data. Whether transfer preserves *calibrated* uncertainty for large, independently operated systems remains largely unexamined.
 
 **Time-series foundation models.** Pre-trained forecasters such as Chronos [@ansari2024chronos], TimesFM [@das2024decoder], Moirai [@woo2024unified], Lag-Llama [@rasul2023lagllama] and TimeGPT [@garza2023timegpt] claim competitive zero-shot accuracy on unseen datasets. For household load, zero-shot foundation models perform comparably to Transformers trained from scratch [@meyer2025benchmarking]. A recent preprint on ERCOT system load reports that interval calibration differs sharply between foundation models [@simeone2026tsfm], and another benchmarks deep sequence models on EIA-930 with per-grid training [@hong2026benchmarking]. Calibration of zero-shot models therefore cannot be assumed, which motivates a model-agnostic recalibration layer of the kind studied here.
 
@@ -62,13 +62,13 @@ Robustness to *temporal* shift has received more attention since the COVID-19 pa
 - EnbPI [@xu2021conformal] and SPCI [@xu2023sequential] exploit residual structure;
 - conformal PID control [@angelopoulos2023conformal] and online-optimisation approaches [@areces2025online] include electricity-demand experiments.
 
-Conformalised quantile regression has also been applied to transmission-level load [@matulin2023cqr]. A recent study reports reduced coverage when building-level load models are applied to unseen buildings [@crossbuilding2026reliability]. Electricity applications of online conformal methods have so far mostly concerned single series under temporal drift. Coverage under *geographic* shift, where a model is calibrated on some regions and deployed on a region it has never seen, is less studied for system-level load.
+Conformalised quantile regression has also been applied to transmission-level load [@matulin2023cqr]. Weighted conformal prediction handles known covariate shift [@tibshirani2019conformal], and strongly adaptive online methods refine ACI [@bhatnagar2023improved]. The closest design precedent we found is at building level: a 2026 article in *Applied Sciences* (doi:10.3390/app16167984) holds out whole buildings, combines a LightGBM correction with persistence, and reports loss of conformal coverage on unseen buildings and under sensor missingness. [AUTHOR ACTION: we could not verify this article's author list from a publisher page; complete the reference before submission.] Our study transfers the question to system-level balancing-authority demand and adds operator benchmarks and spatially blocked folds. Electricity applications of online conformal methods have so far mostly concerned single series under temporal drift. Coverage under *geographic* shift, where a model is calibrated on some regions and deployed on a region it has never seen, is less studied for system-level load.
 
 **Data quality and evaluation methodology.** EIA-930 provides hourly demand and day-ahead forecasts for U.S. balancing authorities [@eia930about]. Ruggles et al. documented its missing and anomalous values and developed the screening and imputation reimplemented in PUDL [@ruggles2020developing; @pudl2026]. The comparable European resources, OPSD [@wiese2019opsd] and the ENTSO-E Transparency Platform [@hirth2018entsoe], have documented quality limitations. Robust optimisation has been proposed as an alternative to imputation for missing inputs [@stratigakos2024resilient].
 
 Our evaluation design follows established practice. We use rolling-origin and blocked validation for dependent data [@tashman2000out; @bergmeir2012use; @bergmeir2018note], group-blocked validation analogous to spatial cross-validation [@roberts2017cross], and scale-free accuracy (MASE) [@hyndman2006another]. We test differences with block-bootstrap intervals [@kunsch1989jackknife; @politis1994stationary], in the spirit of Diebold–Mariano comparisons [@diebold1995comparing], and we avoid known pitfalls in forecast evaluation [@hewamalage2023forecast; @lago2021forecasting].
 
-**Positioning.** Every ingredient of this study has precedent: cross-region transfer, global gradient boosting, adaptive conformal prediction and operator-forecast data. To our knowledge, based on a non-exhaustive search, they have not been combined in a single pre-registered evaluation across tens of independently operated U.S. balancing authorities. Such an evaluation separates geographic from temporal shift, quantifies the value of a few weeks of target data, assesses interval coverage under both shifts, and benchmarks against the operators' own forecasts. Our contribution is this evaluation framework and benchmark, not a new forecasting or conformal algorithm.
+**Positioning.** Every ingredient of this study has precedent: cross-region transfer, global gradient boosting, adaptive conformal prediction and operator-forecast data. To our knowledge, based on a non-exhaustive search, they have not been combined in a single frozen-protocol evaluation across tens of independently operated U.S. balancing authorities. Such an evaluation separates geographic from temporal shift, quantifies the value of a few weeks of target data, assesses interval coverage under both shifts, and benchmarks against the operators' own forecasts. Our contribution is this evaluation framework and benchmark, not a new forecasting or conformal algorithm.
 
 
 # Research gap and contributions
@@ -84,7 +84,7 @@ We found no study that measures, on a common protocol, (i) the accuracy cost of 
 
 The study makes four contributions.
 
-1. *A leakage-resistant, pre-registered benchmark for cross-region load forecasting.* It covers 48 U.S. BAs from EIA Form 930 (2019–2025), spanning three orders of magnitude in size. Its components are: leave-regions-out folds in which held-out BAs are excluded from fitting, early stopping and calibration; past-only input screening independent of the label imputation; a protocol and configuration frozen in version control before test evaluation; and a log of every subsequent amendment.
+1. *A leakage-resistant benchmark for cross-region load forecasting with a protocol frozen before test evaluation.* It covers 48 U.S. BAs from EIA Form 930 (2019–2025), spanning three orders of magnitude in size. Its components are: leave-regions-out folds in which held-out BAs are excluded from fitting, early stopping and calibration; past-only input screening independent of the label imputation; a protocol and configuration frozen in version control before test evaluation; and a log of every subsequent amendment.
 2. *A quantification of the geographic generalisation gap for instance-normalised global models.* We compare zero-shot, limited-data adaptation, local and in-region regimes at 1-, 6- and 24-h horizons, with BA-level paired statistics that account for temporal dependence.
 3. *An assessment of interval calibration by shift type.* We evaluate quantile regression, split conformal prediction, conformalised quantile regression, target-calibrated conformal prediction and adaptive conformal inference with horizon-delayed feedback, separately for in-region and unseen-region deployment and by year and season. This includes the sensitivity of ACI to its step size, which we found to be decisive.
 4. *Engineering evidence and an open reproducible pipeline.* We report robustness to missing inputs, the computational cost of each regime, and a comparison with the BAs' own day-ahead forecasts. All code, configurations, predictions and metrics are released.
@@ -234,7 +234,7 @@ For $h \in \{1, 24\}$, central intervals with nominal coverage $1-\alpha$, $\alp
 $$
 \alpha_{t+1} = \alpha_t + \gamma\,(\alpha - \mathrm{err}_{t-h}),
 $$
-where $\mathrm{err}_{t-h}$ indicates whether the interval issued for hour $t-h$ missed. Feedback is therefore delayed by the horizon. Scores enter the calibration pool once their outcomes are observed. When $\alpha_t$ leaves $(0,1)$ the exact ACI interval is unbounded or empty; we cap it at the most extreme score observed so far and report the share of capped hours. ACI-CQR uses the pre-registered step size $\gamma = 0.005$. **ACI-CQR-V** uses $\gamma$ selected from $\{0.001, 0.002, 0.005, 0.01\}$ by interval score on the 2023 data of held-out BAs; this variant was added after the freeze (Section 15).
+where $\mathrm{err}_{t-h}$ indicates whether the interval issued for hour $t-h$ missed. Feedback is therefore delayed by the horizon. Scores enter the calibration pool once their outcomes are observed. When $\alpha_t$ leaves $(0,1)$ the exact ACI interval is unbounded or empty; we cap it at the most extreme score observed so far and report the share of capped hours. Two implementation details: the online stream runs over scored (unflagged) hours only, so the delay of $h$ steps corresponds to at least $h$ hours, a conservative choice; and at nominal 50% coverage the threshold never needed capping. ACI-CQR uses the step size fixed in the frozen protocol, $\gamma = 0.005$. **ACI-CQR-V** uses $\gamma$ selected from $\{0.001, 0.002, 0.005, 0.01\}$ by interval score on the 2023 data of held-out BAs; this variant was added after the freeze (Section 15).
 
 # Experimental design
 
@@ -269,6 +269,17 @@ All settings were fixed in a configuration file before test-set evaluation (Fig.
 
 **Hardware.** All runs used a 4-core CPU with 15 GB of memory and no GPU. Fixed seeds and LightGBM's deterministic mode were used throughout.
 
+**Post-review analyses.** The following analyses were added after an internal review, after the test results had been seen, and are reported as such (DECISION_LOG D14–D16):
+
+- spatially blocked folds: nine blocks of contiguous EIA regions, at $h = 24$ h (point and quantile models) and $h = 1$ h (point);
+- ACI with $\gamma$ selected per fold on the *source* BAs' calibration weeks only (ACI-CQR-S), with a $\gamma = 0$ expanding-pool control;
+- split conformal calibrated on each BA's most recent four weeks of observed residuals (SCP-R4);
+- conditional coverage by season and load decile, and peak-hour diagnostics;
+- adaptation at three further onboarding origins (1 April, 1 July and 1 October 2024; $k \in \{4, 13\}$ weeks; $h \in \{6, 24\}$ h);
+- zero-shot forecasts for the five excluded BAs;
+- a ridge penalty grid;
+- a cluster bootstrap over the nine spatial blocks and non-inferiority bounds with post-hoc margins of 1% and 2%.
+
 # Evaluation metrics
 
 For BA $r$ with scored hours $T_r$ (test period, unflagged label, all compared methods available):
@@ -292,7 +303,7 @@ The quantile grid is scored with the average pinball loss $\rho_\tau(e) = \max(\
 
 **Aggregation.** Cross-BA summaries are medians (with interquartile ranges) of per-BA metrics, so each BA counts equally. This is deliberate: pooled MWh errors would be dominated by PJM, MISO and ERCOT.
 
-**Statistical comparisons.** Paired comparisons across BAs use the Wilcoxon signed-rank test on per-BA nMAE, with Holm adjustment over all reported comparisons. Effect sizes are median relative changes, with 95% percentile bootstrap intervals over BAs (1,000 resamples). Within each BA, temporal dependence is handled by a moving-block bootstrap [@kunsch1989jackknife] of the hourly absolute-error differential (168-h blocks, 1,000 resamples); we report the share of BAs whose 95% interval excludes zero. BAs are spatially correlated, so region-level tests overstate the effective sample size [@roberts2017cross]. We therefore emphasise effect sizes.
+**Statistical comparisons.** Paired comparisons across BAs use the Wilcoxon signed-rank test on per-BA nMAE. Holm adjustment is applied within families: the 72 point-forecast tests (8 pairs, 3 metrics, 3 horizons), the adaptation tests, the refit tests and the ablation tests. Effect sizes are median relative changes, with 95% percentile bootstrap intervals over BAs (1,000 resamples). Within each BA, temporal dependence is handled by a moving-block bootstrap [@kunsch1989jackknife] of the hourly absolute-error differential (168-h blocks, 1,000 resamples); we report the share of BAs whose 95% interval excludes zero. BAs are spatially correlated, so region-level tests overstate the effective sample size [@roberts2017cross]. We therefore emphasise effect sizes.
 
 
 # Results
@@ -333,7 +344,6 @@ Table 1 and Fig. 5 summarise per-BA accuracy.
 |       6 | LightGBM, global (unseen region, zero-shot) | 3.66 [3.03, 4.40]     |             5.29 |         0.654 |           -0.01 |        48 |
 |      24 | Seasonal naive (24 h)                       | 5.48 [4.57, 6.81]     |             7.81 |         1.009 |           -0.02 |        48 |
 |      24 | Seasonal naive (168 h)                      | 9.12 [8.17, 11.40]    |            12.84 |         1.731 |           -0.04 |        48 |
-|      24 | Persistence                                 | 5.48 [4.57, 6.81]     |             7.81 |         1.009 |           -0.02 |        48 |
 |      24 | Ridge, global (in-region)                   | 5.05 [4.17, 6.21]     |             7.12 |         0.932 |            0.07 |        48 |
 |      24 | Ridge, global (unseen region)               | 5.06 [4.17, 6.21]     |             7.13 |         0.933 |            0.08 |        48 |
 |      24 | LightGBM, local                             | 4.72 [3.94, 5.94]     |             6.85 |         0.893 |           -0.19 |        48 |
@@ -355,44 +365,44 @@ Table 1 and Fig. 5 summarise per-BA accuracy.
 
 **Size of the gap.** The cost of never having seen a BA is small but systematic (Table 2). At $h = 24$ h the median per-BA relative increase in nMAE from G-IN to G-LRO is 0.5% (95% bootstrap CI 0.4 to 0.7%). The held-out model is better in only 6.2% of BAs. The gap grows as the horizon shrinks: 1.9% at 6 h and 3.4% at 1 h (CI 2.5 to 4.6%). The moving-block bootstrap shows that the in-region model is significantly better within 97.9% of BAs at 1 h but only 52.1% at 24 h.
 
-**Distribution across BAs.** The gap is concentrated in a few BAs (Fig. 6). The largest relative gap at 24 h is 6.6% (GCPD), and the gap is weakly related to BA size (correlation with log mean demand -0.25). Per-BA errors of the zero-shot model range from 2.47% (GCPD) to 8.55% (AECI). This spread across BAs is an order of magnitude larger than the geographic gap itself.
+**Distribution across BAs.** The median hides a tail (Fig. 6).
 
-**Global versus local.** Pooling helps more than locality does. The median per-BA relative change in nMAE from local models to G-IN is -1.4% at 24 h (CI -2.2 to -0.8%) and -9.2% at 1 h (negative values favour the global model). More strikingly, the *zero-shot* G-LRO model, which has never seen the target BA, is not worse than a local model trained on four years of that BA's data. The median relative difference is -0.8% at 24 h (CI -1.6 to 0.2%; Holm-adjusted $p$ = 0.21) and -5.4% at 1 h (CI -8.1 to -3.7%).
+- At $h = 1$ h the gap exceeds 5% in 31.2% of BAs. The 90th percentile is 8.3% and the maximum 44.6% (GCPD). MISO, the second-largest BA, also shows a gap of 18.5% at this horizon.
+- At $h = 6$ h the maximum is 29.3% (GCPD).
+- At $h = 24$ h the 90th percentile is 1.8% and the maximum 6.6% (GCPD).
 
-**Linear benchmark.** Relative to ridge regression on the same features, G-IN changes nMAE by a median -5.5% at 24 h and -19.3% at 1 h. Its own geographic gap is negligible (0.1% at 24 h), consistent with a low-capacity model that cannot memorise BA-specific patterns.
+The gap is weakly related to BA size (correlation with log mean demand -0.25 at 24 h). Per-BA errors of the zero-shot model range from 2.47% (GCPD) to 8.55% (AECI) at 24 h, a spread much larger than the median gap.
+
+**Robustness to spatial correlation.** Resampling the nine spatial blocks of Section 11.3 instead of individual BAs gives 95% intervals for the median gap of 0.3 to 0.8% at 24 h and 2.5 to 4.6% at 1 h.
+
+**Global versus local.** Pooling helps more than locality does. The median per-BA relative change in nMAE from local models to G-IN is -1.4% at 24 h (CI -2.2 to -0.8%) and -9.2% at 1 h (negative values favour the global model). The *zero-shot* G-LRO model, which has never seen the target BA, compares with local models trained on four years of that BA's data as follows.
+
+- **At $h = 1$ h and $h = 6$ h it is more accurate:** median relative change -5.4% (CI -8.1 to -3.7%) and -3.1%.
+- **At $h = 24$ h the difference is small and not significant:** -0.8% (CI -1.6 to 0.2%; Holm-adjusted $p$ = 0.21). With a 1% non-inferiority margin, chosen post hoc, the 90% cluster-bootstrap interval (-2.1 to 0.3%) supports non-inferiority but not equivalence.
+- **By year at 24 h,** the paired difference is 0.0% in 2024 and -1.4% in 2025. In 2024 the local models have a marginally lower *median level* across BAs (Table 5), so the zero-shot model matches rather than beats local models at the day-ahead horizon.
+
+**Linear benchmark.** Relative to ridge regression on the same features, G-IN changes nMAE by a median -5.5% at 24 h and -19.3% at 1 h. Ridge regression's own geographic gap is negligible (0.1% at 24 h), consistent with a low-capacity model that cannot memorise BA-specific patterns.
 
 
 
 ::: {custom-style="Table Caption"}
-**Table 2.** Paired comparisons of per-BA nMAE (test period).
+**Table 2.** Key paired comparisons of per-BA nMAE (test period; negative = A more accurate).
 :::
 
-|   h (h) | A                                           | B                             |   Median rel. change in nMAE (A vs B) % | 95% CI (regions bootstrap)   |   A better (share of BAs) |   Wilcoxon p (Holm, all) |   BAs with A sig. better (block bootstrap) |   BAs with B sig. better |
-|--------:|:--------------------------------------------|:------------------------------|----------------------------------------:|:-----------------------------|--------------------------:|-------------------------:|-------------------------------------------:|-------------------------:|
-|       1 | LightGBM, global (unseen region, zero-shot) | LightGBM, global (in-region)  |                                     3.4 | [2.5, 4.6]                   |                      0    |                  5.1e-13 |                                       0    |                     0.98 |
-|       1 | LightGBM, global (in-region)                | LightGBM, local               |                                    -9.2 | [-11.7, -7.3]                |                      0.92 |                  2.1e-08 |                                       0.83 |                     0.04 |
-|       1 | LightGBM, global (unseen region, zero-shot) | LightGBM, local               |                                    -5.4 | [-8.1, -3.7]                 |                      0.77 |                  0.00052 |                                       0.75 |                     0.12 |
-|       1 | LightGBM, global (unseen region, zero-shot) | Seasonal naive (24 h)         |                                   -79.6 | [-81.7, -77.5]               |                      1    |                  5.1e-13 |                                       1    |                     0    |
-|       1 | LightGBM, global (in-region)                | Ridge, global (in-region)     |                                   -19.3 | [-22.3, -15.5]               |                      1    |                  5.1e-13 |                                       1    |                     0    |
-|       1 | Ridge, global (unseen region)               | Ridge, global (in-region)     |                                     0.5 | [0.2, 0.6]                   |                      0.23 |                  0.0083  |                                     nan    |                   nan    |
-|       1 | LightGBM, global (unseen region, zero-shot) | Ridge, global (unseen region) |                                   -14.8 | [-19.7, -11.5]               |                      0.98 |                  2.1e-11 |                                     nan    |                   nan    |
-|       1 | LightGBM, local                             | Seasonal naive (24 h)         |                                   -78.1 | [-79.2, -76.4]               |                      1    |                  5.1e-13 |                                     nan    |                   nan    |
-|       6 | LightGBM, global (unseen region, zero-shot) | LightGBM, global (in-region)  |                                     1.9 | [1.6, 2.3]                   |                      0    |                  5.1e-13 |                                       0    |                     0.9  |
-|       6 | LightGBM, global (in-region)                | LightGBM, local               |                                    -5.7 | [-7.1, -4.0]                 |                      0.88 |                  3.9e-08 |                                       0.79 |                     0.04 |
-|       6 | LightGBM, global (unseen region, zero-shot) | LightGBM, local               |                                    -3.1 | [-5.6, -1.8]                 |                      0.71 |                  0.0067  |                                       0.54 |                     0.15 |
-|       6 | LightGBM, global (unseen region, zero-shot) | Seasonal naive (24 h)         |                                   -35.3 | [-37.2, -32.6]               |                      0.98 |                  6.4e-13 |                                       0.98 |                     0.02 |
-|       6 | LightGBM, global (in-region)                | Ridge, global (in-region)     |                                   -15.8 | [-18.1, -14.1]               |                      1    |                  5.1e-13 |                                       1    |                     0    |
-|       6 | Ridge, global (unseen region)               | Ridge, global (in-region)     |                                     0.2 | [0.1, 0.2]                   |                      0.25 |                  0.00065 |                                     nan    |                   nan    |
-|       6 | LightGBM, global (unseen region, zero-shot) | Ridge, global (unseen region) |                                   -13   | [-15.5, -12.3]               |                      0.98 |                  3.6e-12 |                                     nan    |                   nan    |
-|       6 | LightGBM, local                             | Seasonal naive (24 h)         |                                   -32.5 | [-35.3, -29.9]               |                      1    |                  5.1e-13 |                                     nan    |                   nan    |
-|      24 | LightGBM, global (unseen region, zero-shot) | LightGBM, global (in-region)  |                                     0.5 | [0.4, 0.7]                   |                      0.06 |                  2.5e-11 |                                       0    |                     0.52 |
-|      24 | LightGBM, global (in-region)                | LightGBM, local               |                                    -1.4 | [-2.2, -0.8]                 |                      0.71 |                  0.0029  |                                       0.35 |                     0.06 |
-|      24 | LightGBM, global (unseen region, zero-shot) | LightGBM, local               |                                    -0.8 | [-1.6, 0.2]                  |                      0.62 |                  0.21    |                                       0.31 |                     0.17 |
-|      24 | LightGBM, global (unseen region, zero-shot) | Seasonal naive (24 h)         |                                   -12   | [-15.2, -10.5]               |                      1    |                  5.1e-13 |                                       0.94 |                     0    |
-|      24 | LightGBM, global (in-region)                | Ridge, global (in-region)     |                                    -5.5 | [-7.1, -5.2]                 |                      1    |                  5.1e-13 |                                       0.98 |                     0    |
-|      24 | Ridge, global (unseen region)               | Ridge, global (in-region)     |                                     0.1 | [0.0, 0.2]                   |                      0.25 |                  0.00021 |                                     nan    |                   nan    |
-|      24 | LightGBM, global (unseen region, zero-shot) | Ridge, global (unseen region) |                                    -5.4 | [-6.5, -4.6]                 |                      1    |                  5.1e-13 |                                     nan    |                   nan    |
-|      24 | LightGBM, local                             | Seasonal naive (24 h)         |                                   -11.7 | [-14.3, -10.1]               |                      0.98 |                  6.4e-13 |                                     nan    |                   nan    |
+|   h (h) | A vs B                     |   Median rel. change % | 95% CI         |   A better (BAs %) | A sig. better / B sig. better (block bootstrap, BAs %)   | Holm p   |
+|--------:|:---------------------------|-----------------------:|:---------------|-------------------:|:---------------------------------------------------------|:---------|
+|       1 | G-LRO (zero-shot) vs G-IN  |                    3.4 | [2.5, 4.6]     |                  0 | 0 / 98                                                   | <1e-4    |
+|       1 | G-IN vs Local              |                   -9.2 | [-11.7, -7.3]  |                 92 | 83 / 4                                                   | <1e-4    |
+|       1 | G-LRO (zero-shot) vs Local |                   -5.4 | [-8.1, -3.7]   |                 77 | 75 / 12                                                  | 0.0005   |
+|       1 | G-LRO (zero-shot) vs SN24  |                  -79.6 | [-81.7, -77.5] |                100 | 100 / 0                                                  | <1e-4    |
+|       6 | G-LRO (zero-shot) vs G-IN  |                    1.9 | [1.6, 2.3]     |                  0 | 0 / 90                                                   | <1e-4    |
+|       6 | G-IN vs Local              |                   -5.7 | [-7.1, -4.0]   |                 88 | 79 / 4                                                   | <1e-4    |
+|       6 | G-LRO (zero-shot) vs Local |                   -3.1 | [-5.6, -1.8]   |                 71 | 54 / 15                                                  | 0.007    |
+|       6 | G-LRO (zero-shot) vs SN24  |                  -35.3 | [-37.2, -32.6] |                 98 | 98 / 2                                                   | <1e-4    |
+|      24 | G-LRO (zero-shot) vs G-IN  |                    0.5 | [0.4, 0.7]     |                  6 | 0 / 52                                                   | <1e-4    |
+|      24 | G-IN vs Local              |                   -1.4 | [-2.2, -0.8]   |                 71 | 35 / 6                                                   | 0.003    |
+|      24 | G-LRO (zero-shot) vs Local |                   -0.8 | [-1.6, 0.2]    |                 62 | 31 / 17                                                  | 0.2      |
+|      24 | G-LRO (zero-shot) vs SN24  |                  -12   | [-15.2, -10.5] |                100 | 94 / 0                                                   | <1e-4    |
 
 
 
@@ -407,7 +417,7 @@ Table 1 and Fig. 5 summarise per-BA accuracy.
 
 
 
-**Operator reference.** The BAs' own day-ahead forecasts reach a median nMAE of 3.57% on the same hours, against 4.64% for G-IN at 24 h (Table 3). Operators use weather forecasts and our models do not, so this difference mainly reflects the value of weather information at the day-ahead horizon. It is not a like-for-like comparison of methods.
+**Operator reference.** The BAs' own day-ahead forecasts reach a median nMAE of 3.57% on the same hours, against 4.64% for G-IN at 24 h (Table 3). The information sets differ: operators use weather forecasts and other operational information, issue forecasts at undocumented times, and are not restricted to our past-demand features. We therefore do not attribute the difference to any single cause, and the comparison is not like-for-like. For orientation only, the in-region model at $h = 6$ h (3.50%), which has far more recent information than any day-ahead forecast, is more accurate than the operators' day-ahead forecasts.
 
 
 
@@ -439,9 +449,9 @@ Table 4 and Fig. 7 compare adaptation strategies for unseen BAs.
 
 **Local models need history.** With little target history, local models are poor. At $h = 24$ h, a local model trained on one week reaches a median nMAE of 9.21%, on four weeks 8.07% and on thirteen weeks 5.77%. All of these are worse than the zero-shot global model (4.75%).
 
-**Fine-tuning gives little and can hurt.** Fine-tuning the global model on the same data yields 5.37%, 5.26% and 5.00% for one, four and thirteen weeks. The median relative change versus zero-shot is 12.9% with four weeks (CI 9.7 to 17.9%) and 6.5% with thirteen. At $h = 1$ h the corresponding changes are 0.9% and -1.5%.
+**Fine-tuning gives little and usually hurts.** Fine-tuning the global model on the same data yields 5.37%, 5.26% and 5.00% for one, four and thirteen weeks. The median relative change versus zero-shot is 12.9% with four weeks (CI 9.7 to 17.9%) and 6.5% with thirteen. The exception is $h = 1$ h with thirteen weeks, where fine-tuning helps slightly (-1.5%, CI -2.5 to -0.7%).
 
-The adaptation windows end in late December, so they over-represent winter and holiday conditions. This is a realistic feature of onboarding at an arbitrary date, and Section 10 discusses it.
+**The degradation is not specific to a December origin.** We repeated the experiment at three onboarding origins inside the test period: 1 April, 1 July and 1 October 2024, each evaluated over the following year. Fine-tuning remained worse than zero-shot at every origin. Median relative changes ranged from +5.4% to +14.3% at 24 h, and from +1.2% to +6.0% at 6 h (Supplementary Table S5). These adaptation settings were fixed a priori; better-regularised adaptation might behave differently.
 
 
 
@@ -487,10 +497,10 @@ The adaptation windows end in late December, so they over-represent winter and h
 
 
 
-![](/home/user/cross-regional-electricity-forecasting/cross_regional_electricity_forecasting/figures/fig08_transfer.png){width=16cm}
+![](/home/user/cross-regional-electricity-forecasting/cross_regional_electricity_forecasting/figures/fig07_transfer.png){width=16cm}
 
 ::: {custom-style="Figure Caption"}
-**Fig. 7.** Limited target-data adaptation for unseen BAs: median test nMAE vs weeks of target history.
+**Fig. 7.** Limited target-data adaptation for unseen BAs: median test nMAE vs weeks of target (x-axis on a symmetric-log scale) history.
 :::
 
 
@@ -501,7 +511,7 @@ The adaptation windows end in late December, so they over-represent winter and h
 
 **Seasonal pattern.** Errors are highest in winter and summer and lowest in autumn: at 24 h, G-IN reaches 4.76% in DJF, 4.76% in JJA and 4.34% in SON. This pattern reflects weather-driven heating and cooling load that calendar and lag features cannot anticipate.
 
-**Effect of refitting.** Refitting on data through 2023 and evaluating on 2025 (Table 6) leaves the median nMAE of G-IN essentially unchanged (4.67% frozen, 4.67% refit), and of local models from 4.80% to 4.78%. The median per-BA relative change is 0.1% for G-IN (Holm $p$ = 0.87) and -0.9% for local models (Holm $p$ = <0.0001). Refitting thus benefits local models, which gain a fifth year of their own data, but not the pooled model, which already has abundant data.
+**Effect of refitting.** Refitting on data through 2023 and evaluating on 2025 (Table 6) leaves the median nMAE of G-IN essentially unchanged (4.67% frozen, 4.67% refit), and of local models from 4.80% to 4.78%. The median per-BA relative change is 0.1% for G-IN (Holm $p$ = 0.87) and -0.9% for local models (Holm $p$ < 0.0001). Refitting thus benefits local models, which gain a fifth year of their own data, but not the pooled model, which already has abundant data.
 
 
 
@@ -544,7 +554,7 @@ The adaptation windows end in late December, so they over-represent winter and h
 
 
 
-![](/home/user/cross-regional-electricity-forecasting/cross_regional_electricity_forecasting/figures/fig07_temporal_shift.png){width=16cm}
+![](/home/user/cross-regional-electricity-forecasting/cross_regional_electricity_forecasting/figures/fig08_temporal_shift.png){width=16cm}
 
 ::: {custom-style="Figure Caption"}
 **Fig. 8.** Temporal distribution shift: (a) median nMAE by year for models trained on 2019–2022; (b) by season (test period); (c) frozen vs refit models on 2025.
@@ -564,68 +574,57 @@ Table 7 and Fig. 9 report interval calibration.
 
 **Temporal drift lowers coverage.** Static coverage declines from 2024 to 2025: CQR falls from 89.5% to 88.8% (Fig. 9c).
 
-**ACI restores per-BA coverage, but its step size is decisive.** Adaptive conformal inference with horizon-delayed feedback restores coverage in every BA. With the pre-registered step size $\gamma = 0.005$, coverage is 90.0% on average, with a minimum of 89.8%. This is partly achieved, however, by issuing very wide intervals: the threshold is capped in a mean of 4.4% of hours, and the median interval score rises to 88.55% of mean load, against 28.15% for CQR.
+**Online recalibration: what ACI does and does not show.** ACI is guaranteed by construction to reach the nominal long-run coverage for each stream, so per-BA coverage close to 90% is expected rather than an empirical finding. The empirical questions are how sharp the resulting intervals are, how they behave conditionally, and how the step size should be chosen without test data.
 
-**A validation-selected step size gives coverage and sharpness.** Choosing $\gamma$ on the 2023 data of held-out BAs selects $\gamma$ = 0.001 at 24 h and 0.002 at 1 h. The resulting ACI-CQR-V keeps per-BA coverage between 89.4% and 90.5% at 24 h. Its median interval score (28.24%) and median hourly width (17.81% of mean load) are on a par with CQR. The same holds at $h = 1$ h: ACI-CQR-V coverage has a minimum of 89.7% and a median interval score of 7.13%, against 7.21% for CQR, while static CQR under-covers in 33.3% of BAs.
+**The frozen-protocol step size is too large.** With the frozen-protocol step size $\gamma = 0.005$ and 24-h feedback delay, the threshold had to be capped at the largest score seen in a mean of 4.4% of hours. The median interval score rose to 88.55% of mean load, against 28.15% for CQR.
 
-**Post-hoc sensitivity.** Table 8 shows the test-set sensitivity of ACI to $\gamma$. It is labelled post hoc and was not used for selection. The degradation at $\gamma \ge 0.005$ is consistent with the 24-h feedback delay: with large steps, $\alpha_t$ overshoots before the effect of earlier updates is observed.
+**Step size chosen on source BAs only (ACI-CQR-S).** After the internal review we selected $\gamma$ separately for each fold from $\{0, 0.0005, 0.001, 0.002, 0.005, 0.01\}$, using only the source BAs' calibration weeks. The selected values were 0.0005 at 24 h and 0.002, 0.005 at 1 h (Table 8).
+
+- *Coverage.* ACI-CQR-S keeps mean coverage at 89.9% with a minimum of 88.9% across BAs at 24 h.
+- *Sharpness.* Its median interval score (28.18%) is close to that of static CQR (28.15%), and its median hourly width is 17.81% of mean load.
+- *Hour-ahead.* At 1 h, ACI-CQR-S reaches a minimum coverage of 89.8% and a median interval score of 7.40%, against 7.21% for CQR.
+
+**The adaptive update is what helps.** A $\gamma = 0$ control, which keeps adding observed target scores to the calibration pool without adapting $\alpha_t$, under-covers like static CQR: minimum 79.3%, with 20.8% of BAs more than 5 points below nominal. The benefit therefore comes from the adaptive update, not from pooling target scores. The variant whose $\gamma$ was chosen on the held-out BAs' own 2023 data (ACI-CQR-V; exploratory, see Section 15) gives similar results.
+
+**Rolling target calibration.** A simple rolling alternative is split conformal prediction on each BA's most recent four weeks of observed residuals (SCP-R4).
+
+- *Day-ahead.* It is also well calibrated per BA (mean 89.2%, minimum 88.4%), but less sharp: median interval score 31.65% against 28.18% for ACI-CQR-S.
+- *Hour-ahead.* It is competitive (minimum coverage 89.5%; median interval score 7.31% against 7.40%).
+
+What matters is therefore online use of recent target feedback; the particular online scheme is secondary.
+
+**Spatially blocked folds.** Under spatial blocking (Section 11.3), static CQR covers 89.5% on average (minimum 78.9%) and ACI-CQR-S 89.9% (minimum 88.9%). The calibration conclusions are thus unchanged when whole regions are new.
+
+**Conditional coverage.** Marginal coverage hides conditional deviations (Supplementary Table S8).
+
+- *Season.* For ACI-CQR-S at 24 h, mean coverage across BAs is 88.3% in winter and 90.0% in summer.
+- *Load level.* In the top load decile of each BA it is 87.9%, against 87.0% for CQR.
+- *Daily peaks.* At the daily peak hour, the observed load exceeds the upper 90% bound on 11.8% of days for CQR and 11.2% for ACI-CQR-S. A calibrated central 90% interval would be exceeded from above on 5% of hours, so peak-hour upper-tail risk is under-stated by roughly a factor of two. This matters for reserve sizing.
+
+**Peak-hour point accuracy.** The daily-peak absolute percentage error of the zero-shot point forecast has a median across BAs of 4.76%, against 3.69% for the operators' day-ahead forecasts.
+
+**Post-hoc sensitivity.** Supplementary Table S2 gives the test-set sensitivity of ACI to $\gamma$. It was not used for any selection.
 
 
 
 ::: {custom-style="Table Caption"}
-**Table 7.** Interval calibration on the test period (48 BAs).
+**Table 7.** Calibration of nominal 90% intervals for unseen BAs (random folds, test period). Widths and interval scores (IS) are in % of mean load.
 :::
 
-| Nominal   |   h (h) | Setting       | Method    |   Mean coverage % | Min–max coverage %   |   Mean |cov. dev.| pp |   BAs under-covered >5 pp |   Median hourly width % |   Mean width % |   Median interval score % |
-|:----------|--------:|:--------------|:----------|------------------:|:---------------------|----------------------:|--------------------------:|------------------------:|---------------:|--------------------------:|
-| 90%       |       1 | in-region     | QR        |              84.8 | 66.7–96.4            |                   6.8 |                        44 |                    4.08 |           4.46 |                      7.12 |
-| 90%       |       1 | in-region     | SCP       |              88.3 | 54.8–99.5            |                   7   |                        31 |                    4.8  |           4.96 |                      7.45 |
-| 90%       |       1 | in-region     | CQR       |              88.7 | 70.1–98.0            |                   5.3 |                        25 |                    4.59 |           4.98 |                      6.99 |
-| 90%       |       1 | in-region     | SCP-T4    |              86.4 | 74.1–95.5            |                   4.6 |                        29 |                    4.1  |           4.44 |                      7.54 |
-| 90%       |       1 | in-region     | ACI-CQR   |              90   | 89.9–90.1            |                   0   |                         0 |                    4.76 |           5.34 |                      7.15 |
-| 90%       |       1 | in-region     | ACI-CQR-V |              90   | 89.7–90.4            |                   0.1 |                         0 |                    4.74 |           5.17 |                      6.9  |
-| 90%       |       1 | unseen-region | QR        |              83.9 | 64.8–97.5            |                   7.8 |                        52 |                    4.2  |           4.53 |                      7.4  |
-| 90%       |       1 | unseen-region | SCP       |              87.5 | 52.6–98.9            |                   7.2 |                        31 |                    4.78 |           4.93 |                      7.72 |
-| 90%       |       1 | unseen-region | CQR       |              88.1 | 69.2–98.7            |                   5.9 |                        33 |                    4.74 |           5.1  |                      7.21 |
-| 90%       |       1 | unseen-region | SCP-T4    |              86.9 | 74.3–96.5            |                   4.6 |                        29 |                    4.3  |           4.58 |                      7.81 |
-| 90%       |       1 | unseen-region | ACI-CQR   |              90   | 89.9–90.2            |                   0   |                         0 |                    4.9  |           5.49 |                      7.4  |
-| 90%       |       1 | unseen-region | ACI-CQR-V |              90   | 89.7–90.4            |                   0.1 |                         0 |                    4.9  |           5.38 |                      7.13 |
-| 90%       |      24 | in-region     | QR        |              87.5 | 77.2–93.3            |                   3.5 |                        23 |                   17.04 |          20.25 |                     27.79 |
-| 90%       |      24 | in-region     | SCP       |              89.1 | 71.7–99.3            |                   5.5 |                        31 |                   20.29 |          20.96 |                     31.43 |
-| 90%       |      24 | in-region     | CQR       |              89.2 | 79.7–95.1            |                   3.1 |                        19 |                   17.98 |          21.18 |                     27.78 |
-| 90%       |      24 | in-region     | SCP-T4    |              85.3 | 61.4–96.2            |                   6.4 |                        40 |                   15.27 |          15.97 |                     34.23 |
-| 90%       |      24 | in-region     | ACI-CQR   |              90   | 89.8–90.1            |                   0.1 |                         0 |                   18.37 |          98.41 |                    104.47 |
-| 90%       |      24 | in-region     | ACI-CQR-V |              89.9 | 89.4–90.4            |                   0.2 |                         0 |                   17.75 |          21.03 |                     27.81 |
-| 90%       |      24 | unseen-region | QR        |              87.3 | 76.1–96.1            |                   3.8 |                        29 |                   17.15 |          20.14 |                     28.26 |
-| 90%       |      24 | unseen-region | SCP       |              88.9 | 71.4–99.3            |                   5.6 |                        29 |                   20.14 |          20.88 |                     31.88 |
-| 90%       |      24 | unseen-region | CQR       |              89.2 | 78.6–97.3            |                   3.5 |                        21 |                   18.14 |          21.18 |                     28.15 |
-| 90%       |      24 | unseen-region | SCP-T4    |              85.3 | 60.8–95.9            |                   6.3 |                        40 |                   14.97 |          15.68 |                     34.15 |
-| 90%       |      24 | unseen-region | ACI-CQR   |              90   | 89.8–90.2            |                   0.1 |                         0 |                   18.6  |          82.58 |                     88.55 |
-| 90%       |      24 | unseen-region | ACI-CQR-V |              89.9 | 89.4–90.5            |                   0.3 |                         0 |                   17.81 |          21.32 |                     28.24 |
-| 50%       |       1 | in-region     | QR        |              41.9 | 28.2–57.8            |                   8.9 |                        69 |                    1.31 |           1.48 |                      3.78 |
-| 50%       |       1 | in-region     | SCP       |              48   | 21.3–75.8            |                  10.7 |                        40 |                    1.49 |           1.54 |                      3.79 |
-| 50%       |       1 | in-region     | CQR       |              48.5 | 32.2–67.6            |                   7.2 |                        35 |                    1.55 |           1.73 |                      3.75 |
-| 50%       |       1 | in-region     | SCP-T4    |              46.7 | 33.2–61.1            |                   5.6 |                        31 |                    1.45 |           1.5  |                      3.82 |
-| 50%       |       1 | in-region     | ACI-CQR   |              49.9 | 49.6–50.1            |                   0.1 |                         0 |                    1.64 |           1.84 |                      3.75 |
-| 50%       |       1 | in-region     | ACI-CQR-V |              49.8 | 48.9–50.3            |                   0.2 |                         0 |                    1.63 |           1.83 |                      3.75 |
-| 50%       |       1 | unseen-region | QR        |              41.4 | 27.2–58.7            |                   9.8 |                        65 |                    1.35 |           1.52 |                      3.9  |
-| 50%       |       1 | unseen-region | SCP       |              46.3 | 20.3–73.6            |                  10.5 |                        50 |                    1.49 |           1.54 |                      3.91 |
-| 50%       |       1 | unseen-region | CQR       |              47.7 | 31.0–66.9            |                   8.1 |                        42 |                    1.58 |           1.77 |                      3.88 |
-| 50%       |       1 | unseen-region | SCP-T4    |              47.3 | 34.0–64.5            |                   5.6 |                        35 |                    1.52 |           1.6  |                      3.9  |
-| 50%       |       1 | unseen-region | ACI-CQR   |              49.9 | 49.5–50.2            |                   0.1 |                         0 |                    1.69 |           1.93 |                      3.87 |
-| 50%       |       1 | unseen-region | ACI-CQR-V |              49.8 | 48.9–50.4            |                   0.2 |                         0 |                    1.69 |           1.92 |                      3.87 |
-| 50%       |      24 | in-region     | QR        |              47.6 | 36.5–55.5            |                   3.9 |                        25 |                    6.31 |           7.5  |                     15.27 |
-| 50%       |      24 | in-region     | SCP       |              48.3 | 29.8–74.1            |                   7.4 |                        38 |                    6.11 |           6.31 |                     15.6  |
-| 50%       |      24 | in-region     | CQR       |              48.8 | 37.5–56.8            |                   3.8 |                        19 |                    6.5  |           7.69 |                     15.28 |
-| 50%       |      24 | in-region     | SCP-T4    |              48.6 | 22.4–67.4            |                   7.2 |                        33 |                    6.05 |           6.1  |                     15.86 |
-| 50%       |      24 | in-region     | ACI-CQR   |              49.9 | 49.6–50.2            |                   0.1 |                         0 |                    6.62 |           7.66 |                     15.34 |
-| 50%       |      24 | in-region     | ACI-CQR-V |              49.7 | 48.6–50.6            |                   0.4 |                         0 |                    6.59 |           7.54 |                     15.28 |
-| 50%       |      24 | unseen-region | QR        |              47.1 | 36.3–58.2            |                   4.5 |                        29 |                    6.23 |           7.4  |                     15.64 |
-| 50%       |      24 | unseen-region | SCP       |              47.9 | 29.9–73.1            |                   7.6 |                        35 |                    6.08 |           6.28 |                     15.89 |
-| 50%       |      24 | unseen-region | CQR       |              48.8 | 37.6–60.7            |                   4.2 |                        25 |                    6.49 |           7.68 |                     15.64 |
-| 50%       |      24 | unseen-region | SCP-T4    |              48.9 | 23.3–65.0            |                   7   |                        33 |                    6    |           6.15 |                     16.07 |
-| 50%       |      24 | unseen-region | ACI-CQR   |              49.9 | 49.6–50.2            |                   0.1 |                         0 |                    6.75 |           7.69 |                     15.68 |
-| 50%       |      24 | unseen-region | ACI-CQR-V |              49.7 | 48.5–50.7            |                   0.4 |                         0 |                    6.63 |           7.54 |                     15.64 |
+|   h (h) | Method                                                |   Mean cov. % | Min–max cov. %   |   BAs > 5 pp under % |   Median hourly width % |   Median IS % |
+|--------:|:------------------------------------------------------|--------------:|:-----------------|---------------------:|------------------------:|--------------:|
+|       1 | QR                                                    |          83.9 | 64.8–97.5        |                   52 |                    4.2  |          7.4  |
+|       1 | SCP                                                   |          87.5 | 52.6–98.9        |                   31 |                    4.78 |          7.72 |
+|       1 | CQR                                                   |          88.1 | 69.2–98.7        |                   33 |                    4.74 |          7.21 |
+|       1 | SCP-T4                                                |          86.9 | 74.3–96.5        |                   29 |                    4.3  |          7.81 |
+|       1 | ACI-CQR (γ = 0.005, frozen protocol)                  |          90   | 89.9–90.2        |                    0 |                    4.9  |          7.4  |
+|       1 | ACI-CQR-V (γ on held-out BAs' 2023 data; exploratory) |          90   | 89.7–90.4        |                    0 |                    4.9  |          7.13 |
+|      24 | QR                                                    |          87.3 | 76.1–96.1        |                   29 |                   17.15 |         28.26 |
+|      24 | SCP                                                   |          88.9 | 71.4–99.3        |                   29 |                   20.14 |         31.88 |
+|      24 | CQR                                                   |          89.2 | 78.6–97.3        |                   21 |                   18.14 |         28.15 |
+|      24 | SCP-T4                                                |          85.3 | 60.8–95.9        |                   40 |                   14.97 |         34.15 |
+|      24 | ACI-CQR (γ = 0.005, frozen protocol)                  |          90   | 89.8–90.2        |                    0 |                   18.6  |         88.55 |
+|      24 | ACI-CQR-V (γ on held-out BAs' 2023 data; exploratory) |          89.9 | 89.4–90.5        |                    0 |                   17.81 |         28.24 |
 
 
 
@@ -633,19 +632,27 @@ Table 7 and Fig. 9 report interval calibration.
 
 
 ::: {custom-style="Table Caption"}
-**Table 8.** POST-HOC test-set sensitivity of ACI-CQR (90%, unseen BAs) to the step size γ (not used for any selection).
+**Table 8.** Online and source-only calibration of 90% intervals for unseen BAs, including spatially blocked folds (post-review analyses; γ selected on source BAs only for ACI-CQR-S).
 :::
 
-|   h (h) |     γ |   Mean coverage % |   Min coverage % |   Median hourly width % of mean load |   Median interval score % |   Capped hours % |
-|--------:|------:|------------------:|-----------------:|-------------------------------------:|--------------------------:|-----------------:|
-|       1 | 0.001 |              90   |             89.5 |                                 4.88 |                      7.13 |             0    |
-|       1 | 0.002 |              90   |             89.7 |                                 4.9  |                      7.13 |             0    |
-|       1 | 0.005 |              90   |             89.9 |                                 4.9  |                      7.4  |             0.09 |
-|       1 | 0.01  |              90   |             89.9 |                                 4.93 |                      7.71 |             0.46 |
-|      24 | 0.001 |              89.9 |             89.4 |                                17.81 |                     28.24 |             0.13 |
-|      24 | 0.002 |              89.9 |             89.6 |                                18.05 |                     29.35 |             0.97 |
-|      24 | 0.005 |              90   |             89.8 |                                18.6  |                     88.55 |             4.37 |
-|      24 | 0.01  |              90   |             89.9 |                                19.51 |                    272.91 |            12.25 |
+| Setting                 |   h (h) | Method                                     |   Mean cov. % | Min–max cov. %   |   BAs > 5 pp under % |   Median hourly width % |   Median IS % |
+|:------------------------|--------:|:-------------------------------------------|--------------:|:-----------------|---------------------:|------------------------:|--------------:|
+| unseen (random folds)   |       1 | ACI-CQR (gamma=0, expanding pool)          |          88.3 | 70.2–98.6        |                   31 |                    4.75 |          7.21 |
+| unseen (random folds)   |       1 | ACI-CQR (gamma=0.005, pre-registered)      |          90   | 89.9–90.2        |                    0 |                    4.9  |          7.4  |
+| unseen (random folds)   |       1 | ACI-CQR-S (gamma source-selected)          |          90   | 89.8–90.2        |                    0 |                    4.9  |          7.4  |
+| unseen (random folds)   |       1 | CQR                                        |          88.1 | 69.2–98.7        |                   33 |                    4.74 |          7.21 |
+| unseen (random folds)   |       1 | SCP-R4 (rolling 4-week target calibration) |          89.9 | 89.5–90.1        |                    0 |                    4.76 |          7.31 |
+| unseen (random folds)   |      24 | ACI-CQR (gamma=0, expanding pool)          |          89.2 | 79.3–97.1        |                   21 |                   18.07 |         28.15 |
+| unseen (random folds)   |      24 | ACI-CQR (gamma=0.005, pre-registered)      |          90   | 89.8–90.2        |                    0 |                   18.6  |         88.55 |
+| unseen (random folds)   |      24 | ACI-CQR-S (gamma source-selected)          |          89.9 | 88.9–90.8        |                    0 |                   17.81 |         28.18 |
+| unseen (random folds)   |      24 | CQR                                        |          89.2 | 78.6–97.3        |                   21 |                   18.14 |         28.15 |
+| unseen (random folds)   |      24 | SCP-R4 (rolling 4-week target calibration) |          89.2 | 88.4–90.0        |                    0 |                   19.39 |         31.65 |
+| unseen (spatial blocks) |      24 | ACI-CQR (gamma=0, expanding pool)          |          89.6 | 79.5–97.8        |                   19 |                   19.39 |         28.5  |
+| unseen (spatial blocks) |      24 | ACI-CQR (gamma=0.005, pre-registered)      |          90   | 89.8–90.1        |                    0 |                   19.04 |         88.27 |
+| unseen (spatial blocks) |      24 | ACI-CQR-S (gamma source-selected)          |          89.9 | 88.9–91.0        |                    0 |                   18.51 |         28.51 |
+| unseen (spatial blocks) |      24 | CQR                                        |          89.5 | 78.9–98.0        |                   19 |                   19.39 |         28.5  |
+| unseen (spatial blocks) |      24 | SCP-R4 (rolling 4-week target calibration) |          89.3 | 88.4–90.0        |                    0 |                   19.63 |         31.9  |
+
 
 
 
@@ -673,19 +680,32 @@ Table 7 and Fig. 9 report interval calibration.
 
 # Discussion
 
-**Why does zero-shot transfer work so well here?** Three design choices make an unseen BA look "in distribution" to a global model.
+**Why does zero-shot transfer work as well as it does?** Three design choices make an unseen BA look "in distribution" to a global model.
 
 - *Instance scaling* by the trailing weekly mean removes level differences of three orders of magnitude, and with them most of the between-BA variation in absolute terms.
-- *Shared shapes.* Once normalised, the daily and weekly profiles of U.S. BAs share a small number of shapes driven by human activity and climate. Forty source BAs from all three interconnections cover these shapes well. The ablation in Section 11 shows that accuracy degrades only when the source pool is small.
-- *Lag-dominated information.* At short horizons the most recent observations carry most of the information. This explains why the geographic gap, although statistically clear, is small in absolute terms: about 0.1 percentage point of nMAE at 24 h. It also explains why the gap is largest in relative terms at 1 h, where errors are smallest and BA-specific intraday dynamics matter most. The largest relative gaps occur in a few BAs: Grant County PUD (GCPD) at every horizon, and MISO at 1 h. We did not investigate the causes, which may include atypical customer mixes or reporting practices.
+- *Shared shapes.* Once normalised, the daily and weekly profiles of U.S. BAs share a small number of shapes driven by human activity and climate. Forty source BAs from all three interconnections cover these shapes well. Accuracy declines steadily as the source pool shrinks: to a median nMAE of 4.81% with 20 sources and 4.97% with five, against 4.75% with 40 (Section 11.2).
+- *Lag-dominated information.* At short horizons the most recent observations carry most of the information. This explains why the geographic gap, although statistically clear, is small in absolute terms at the median: about 0.1 percentage point of nMAE at 24 h with random folds, rising to about 1.7% (relative) when whole regions are held out. It also explains why the gap is largest in relative terms at 1 h, where errors are smallest and BA-specific intraday dynamics matter most. The largest relative gaps occur in a few BAs: Grant County PUD (GCPD) at every horizon, and MISO at 1 h. We did not investigate the causes, which may include atypical customer mixes or reporting practices.
 
-The finding that a never-seen global model matches local models trained on four years of target data is consistent with the global-model literature [@montero2021principles]. It has a direct practical corollary: for system-level load with the information set studied here, *data pooling is worth more than target-specific history*.
+With random folds, zero-shot models are more accurate than local models at intraday horizons and non-inferior day-ahead. When whole regions are held out, they are on a par with local models at both horizons. This is consistent with the global-model literature [@montero2021principles; @hewamalage2022global]. For system-level load with the information set studied here, the practical corollary is that *data pooling is worth at least as much as target-specific history*. The exceptions, a few BAs with large intraday gaps, are discussed under practical implications.
 
-**Why does fine-tuning on a few weeks hurt?** Continued boosting on one to thirteen weeks fits the idiosyncrasies of a short, seasonally unrepresentative window: late-December weeks, with holidays and winter peaks. It degrades accuracy on the following two years. Local models trained on the same window are far worse still. Without a validation scheme for choosing how much to adapt, which the short window cannot provide, the safest policy for a newly onboarded system is to use the pooled model unchanged. Adaptation should be revisited once at least a full seasonal cycle is available. Shrinkage-based or regularised adaptation, and adaptation of the *calibration layer* rather than of the point model, are natural alternatives. The latter is what ACI effectively does.
+**Why does fine-tuning on a few weeks hurt?** Continued boosting on one to thirteen weeks fits the idiosyncrasies of a short window. Whatever the onboarding date, such a window is seasonally unrepresentative of the following year: the degradation appeared at all four dates we tested (late December, April, July and October). Local models trained on the same window are far worse still. Without a validation scheme for choosing how much to adapt, which the short window cannot provide, the safest policy for a newly onboarded system is to use the pooled model unchanged. Adaptation should be revisited once at least a full seasonal cycle is available. Shrinkage-based or regularised adaptation, and adaptation of the *calibration layer* rather than of the point model, are natural alternatives. The latter is what ACI effectively does.
 
-**Calibration is a per-system and per-period property.** Average coverage over 48 BAs hides large BA-level deviations. A single pooled calibration set cannot be exchangeable with every BA. This holds for unseen and in-region BAs alike, which is why the geographic shift changes calibration much less than the heterogeneity among BAs does. Short target-specific calibration windows fail for the same reason that short adaptation windows do: they are seasonally unrepresentative. Online recalibration with ACI solves the per-BA coverage problem without any target history, but only if its step size is matched to the feedback delay. With delayed feedback (24 h), a step that is too large lets $\alpha_t$ overshoot before earlier updates take effect, producing occasional extreme intervals. Selecting $\gamma$ on validation data from other BAs and periods worked well here. The aggregated variant [@zaffran2022adaptive], which removes the choice altogether, is a natural next step.
+**Calibration is a per-system and per-period property.** Average coverage over 48 BAs hides large BA-level deviations. A single pooled calibration set cannot be exchangeable with every BA. This holds for unseen and in-region BAs alike, and with spatially blocked folds; the heterogeneity among BAs and over time therefore matters more than whether the BA was seen in training. Short target-specific calibration windows fail for the same reason that short adaptation windows do: they are seasonally unrepresentative.
 
-**Relation to operator forecasts.** The BAs' own day-ahead forecasts are more accurate than our weather-free 24-h models. This is expected and does not contradict the main findings. The purpose of the benchmark is to isolate the effects of geographic and temporal shift under a fixed, reproducible information set, not to replace operational weather-driven forecasting. The results suggest a practical complement: a pooled, weather-free model calibrated online can serve as a reliable fallback or sanity check for any BA from day one, including BAs without forecasting staff.
+Online recalibration with ACI fixes per-BA marginal coverage by construction, so its value lies in the price paid in sharpness. With delayed feedback (24 h), a step that is too large lets $\alpha_t$ overshoot before earlier updates take effect, producing occasional extreme intervals. Choosing $\gamma$ on *other* BAs' validation data avoided this. It gave intervals as sharp as static CQR at 24 h and a few per cent less sharp at 1 h. Conditional coverage remains imperfect at seasonal peaks and in the highest load decile, which matters most for reserves. Aggregated or strongly adaptive variants [@zaffran2022adaptive; @bhatnagar2023improved] and conditional methods are natural next steps.
+
+**Trade-offs (RQ5).** The table below summarises the trade-offs across the regimes studied.
+
+| Regime | Accuracy (median, relative) | Interval reliability | Target data needed | Compute and maintenance |
+|---|---|---|---|---|
+| Local LightGBM (per BA) | Baseline | Needs per-BA recalibration | Years | One model per BA |
+| Global, in-region | Best at all horizons | Static CQR under-covers (>5 pp) in 18.8% (24 h) to 25.0% (1 h) of BAs | Shared pool including target | One model per horizon |
+| Global, zero-shot (random folds) | +0.5% (24 h) to +3.4% (1 h) vs in-region; maximum +44.6% at 1 h | Same as in-region | One week (for scale) | Same; no retraining to add a BA |
+| Global, zero-shot (spatial blocks) | +1.7% (24 h) to +8.0% (1 h) vs in-region; on a par with local | Same pattern | One week | Same |
+| Fine-tuned on 1–13 weeks | Worse than zero-shot | Not studied | Weeks | Small per-BA cost |
+| + ACI (source-selected γ) | Unchanged (point) | Near-nominal per-BA marginal coverage; sharpness equal to CQR at 24 h, slightly lower at 1 h | Online feedback | Negligible |
+
+**Relation to operator forecasts.** The BAs' own day-ahead forecasts are more accurate than our 24-h models, which use only past demand and calendar information. This does not contradict the main findings. The purpose of the benchmark is to isolate the effects of geographic and temporal shift under a fixed, reproducible information set, not to replace operational weather-driven forecasting. The results suggest a practical complement: a pooled, weather-free model calibrated online can serve as a fallback or sanity check for any BA from day one, including BAs without forecasting staff.
 
 
 # Robustness and ablation analysis
@@ -701,112 +721,32 @@ Table 9 and Fig. 11 report accuracy when test-period inputs are corrupted while 
 **The best imputation strategy depends on the gap pattern.**
 
 - For scattered MCAR gaps, causal last-observation-carried-forward imputation is better than native handling (1.68% at 10% MCAR, $h = 1$ h).
-- For contiguous outages it is worse: with 168-h blocks at $h = 1$ h it reaches 2.66%, against 1.95% (native) and 2.05% (weekly-seasonal imputation).
+- For contiguous outages it is worse: with 168-h blocks at $h = 1$ h it reaches 2.42%, against 1.95% (native) and 1.87% (weekly-seasonal imputation).
 
-**Training with masked inputs is the most effective remedy.** A model trained with 10% MCAR input masking reaches 1.32% at 10% MCAR and 2.29% at 40% MCAR ($h = 1$ h). On clean inputs it costs almost nothing (1.17% versus 1.14%).
+**Training with masked inputs is the most effective remedy.** A model trained with 10% MCAR input masking reaches 1.32% at 10% MCAR and 2.29% at 40% MCAR ($h = 1$ h). On clean inputs it costs 1.17% versus 1.14%. That is a relative penalty of a few per cent, similar in size to the 1-h geographic gap, which is the price of robustness. Augmentation was tested for the in-region model only.
 
 **Unseen BAs behave the same way.** The zero-shot model degrades in the same way as the in-region model (e.g., 1.93% at 10% MCAR, $h = 1$ h), so missing data does not interact with geographic shift.
 
-**Unscored hours.** In the most severe scenarios the instance scale cannot be computed for some origins, because fewer than 24 of the preceding 168 hours are observed. No forecast is then issued, and in the worst BA and scenario 96.9% of hours remain scored. Errors are computed on the scored hours.
+**Unscored hours.** In the most severe scenarios the instance scale cannot be computed for some origins, because fewer than 24 of the preceding 168 hours are observed, and no forecast is issued. All strategies within a scenario are scored on the common set of hours where every strategy issued a forecast; in the worst BA and scenario 96.9% of hours remain. Real EIA-930 gaps are clustered rather than uniformly random, so the MCAR and uniform-outage scenarios are stylised.
 
 
 
 ::: {custom-style="Table Caption"}
-**Table 9.** Robustness to missing input observations (test period).
+**Table 9.** Median nMAE (%) of the in-region global model with corrupted inputs (test period; common scored hours).
 :::
 
-|   h (h) | Scenario   | Strategy   | Model        |   Input missing % |   nMAE % median |   nMAE % mean |   Min. scored share of hours |
-|--------:|:-----------|:-----------|:-------------|------------------:|----------------:|--------------:|-----------------------------:|
-|       1 | BLOCK_168h | locf       | LGB_G_IN     |               9.7 |            2.66 |          2.8  |                        1     |
-|       1 | BLOCK_168h | locf       | LGB_G_LRO    |               9.7 |            2.68 |          2.84 |                        1     |
-|       1 | BLOCK_168h | native     | LGB_G_IN     |               9.7 |            1.95 |          2.08 |                        0.969 |
-|       1 | BLOCK_168h | native     | LGB_G_IN_AUG |               9.7 |            1.94 |          2.01 |                        0.969 |
-|       1 | BLOCK_168h | native     | LGB_G_LRO    |               9.7 |            1.99 |          2.11 |                        0.969 |
-|       1 | BLOCK_168h | seasonal   | LGB_G_IN     |               9.7 |            2.05 |          2.07 |                        1     |
-|       1 | BLOCK_168h | seasonal   | LGB_G_LRO    |               9.7 |            2.08 |          2.12 |                        1     |
-|       1 | BLOCK_24h  | locf       | LGB_G_IN     |               9.5 |            2.52 |          2.56 |                        1     |
-|       1 | BLOCK_24h  | locf       | LGB_G_LRO    |               9.5 |            2.56 |          2.6  |                        1     |
-|       1 | BLOCK_24h  | native     | LGB_G_IN     |               9.5 |            1.89 |          1.98 |                        1     |
-|       1 | BLOCK_24h  | native     | LGB_G_IN_AUG |               9.5 |            1.71 |          1.81 |                        1     |
-|       1 | BLOCK_24h  | native     | LGB_G_LRO    |               9.5 |            1.97 |          2.02 |                        1     |
-|       1 | BLOCK_24h  | seasonal   | LGB_G_IN     |               9.5 |            1.91 |          2.02 |                        1     |
-|       1 | BLOCK_24h  | seasonal   | LGB_G_LRO    |               9.5 |            1.93 |          2.07 |                        1     |
-|       1 | MCAR_10    | locf       | LGB_G_IN     |              10.2 |            1.68 |          1.66 |                        1     |
-|       1 | MCAR_10    | locf       | LGB_G_LRO    |              10.2 |            1.7  |          1.71 |                        1     |
-|       1 | MCAR_10    | native     | LGB_G_IN     |              10.2 |            1.84 |          1.84 |                        1     |
-|       1 | MCAR_10    | native     | LGB_G_IN_AUG |              10.2 |            1.32 |          1.41 |                        1     |
-|       1 | MCAR_10    | native     | LGB_G_LRO    |              10.2 |            1.93 |          1.93 |                        1     |
-|       1 | MCAR_10    | seasonal   | LGB_G_IN     |              10.2 |            2.19 |          2.26 |                        1     |
-|       1 | MCAR_10    | seasonal   | LGB_G_LRO    |              10.2 |            2.22 |          2.31 |                        1     |
-|       1 | MCAR_20    | locf       | LGB_G_IN     |              20.2 |            2.21 |          2.2  |                        1     |
-|       1 | MCAR_20    | locf       | LGB_G_LRO    |              20.2 |            2.24 |          2.24 |                        1     |
-|       1 | MCAR_20    | native     | LGB_G_IN     |              20.2 |            2.56 |          2.51 |                        1     |
-|       1 | MCAR_20    | native     | LGB_G_IN_AUG |              20.2 |            1.52 |          1.62 |                        1     |
-|       1 | MCAR_20    | native     | LGB_G_LRO    |              20.2 |            2.7  |          2.64 |                        1     |
-|       1 | MCAR_20    | seasonal   | LGB_G_IN     |              20.2 |            3.19 |          3.27 |                        1     |
-|       1 | MCAR_20    | seasonal   | LGB_G_LRO    |              20.2 |            3.25 |          3.31 |                        1     |
-|       1 | MCAR_40    | locf       | LGB_G_IN     |              40.1 |            3.68 |          3.68 |                        1     |
-|       1 | MCAR_40    | locf       | LGB_G_LRO    |              40.1 |            3.68 |          3.7  |                        1     |
-|       1 | MCAR_40    | native     | LGB_G_IN     |              40.1 |            4.04 |          4.11 |                        1     |
-|       1 | MCAR_40    | native     | LGB_G_IN_AUG |              40.1 |            2.29 |          2.34 |                        1     |
-|       1 | MCAR_40    | native     | LGB_G_LRO    |              40.1 |            4.22 |          4.31 |                        1     |
-|       1 | MCAR_40    | seasonal   | LGB_G_IN     |              40.1 |            5.14 |          5.28 |                        1     |
-|       1 | MCAR_40    | seasonal   | LGB_G_LRO    |              40.1 |            5.19 |          5.31 |                        1     |
-|       1 | MCAR_5     | locf       | LGB_G_IN     |               5.2 |            1.37 |          1.44 |                        1     |
-|       1 | MCAR_5     | locf       | LGB_G_LRO    |               5.2 |            1.41 |          1.48 |                        1     |
-|       1 | MCAR_5     | native     | LGB_G_IN     |               5.2 |            1.47 |          1.53 |                        1     |
-|       1 | MCAR_5     | native     | LGB_G_IN_AUG |               5.2 |            1.25 |          1.33 |                        1     |
-|       1 | MCAR_5     | native     | LGB_G_LRO    |               5.2 |            1.56 |          1.6  |                        1     |
-|       1 | MCAR_5     | seasonal   | LGB_G_IN     |               5.2 |            1.66 |          1.76 |                        1     |
-|       1 | MCAR_5     | seasonal   | LGB_G_LRO    |               5.2 |            1.7  |          1.8  |                        1     |
-|       1 | clean      | native     | LGB_G_IN     |               0.2 |            1.14 |          1.23 |                        1     |
-|       1 | clean      | native     | LGB_G_IN_AUG |               0.2 |            1.17 |          1.26 |                        1     |
-|       1 | clean      | native     | LGB_G_LRO    |               0.2 |            1.17 |          1.28 |                        1     |
-|      24 | BLOCK_168h | locf       | LGB_G_IN     |               9.7 |            6.11 |          6.07 |                        1     |
-|      24 | BLOCK_168h | locf       | LGB_G_LRO    |               9.7 |            6.14 |          6.1  |                        1     |
-|      24 | BLOCK_168h | native     | LGB_G_IN     |               9.7 |            5.07 |          5.34 |                        0.969 |
-|      24 | BLOCK_168h | native     | LGB_G_IN_AUG |               9.7 |            5.03 |          5.3  |                        0.969 |
-|      24 | BLOCK_168h | native     | LGB_G_LRO    |               9.7 |            5.08 |          5.38 |                        0.969 |
-|      24 | BLOCK_168h | seasonal   | LGB_G_IN     |               9.7 |            5.09 |          5.42 |                        1     |
-|      24 | BLOCK_168h | seasonal   | LGB_G_LRO    |               9.7 |            5.12 |          5.46 |                        1     |
-|      24 | BLOCK_24h  | locf       | LGB_G_IN     |               9.5 |            5.81 |          5.82 |                        1     |
-|      24 | BLOCK_24h  | locf       | LGB_G_LRO    |               9.5 |            5.83 |          5.85 |                        1     |
-|      24 | BLOCK_24h  | native     | LGB_G_IN     |               9.5 |            5.02 |          5.3  |                        1     |
-|      24 | BLOCK_24h  | native     | LGB_G_IN_AUG |               9.5 |            4.94 |          5.22 |                        1     |
-|      24 | BLOCK_24h  | native     | LGB_G_LRO    |               9.5 |            5.12 |          5.33 |                        1     |
-|      24 | BLOCK_24h  | seasonal   | LGB_G_IN     |               9.5 |            5.13 |          5.39 |                        1     |
-|      24 | BLOCK_24h  | seasonal   | LGB_G_LRO    |               9.5 |            5.21 |          5.42 |                        1     |
-|      24 | MCAR_10    | locf       | LGB_G_IN     |              10.2 |            4.81 |          5.09 |                        1     |
-|      24 | MCAR_10    | locf       | LGB_G_LRO    |              10.2 |            4.91 |          5.12 |                        1     |
-|      24 | MCAR_10    | native     | LGB_G_IN     |              10.2 |            5.05 |          5.33 |                        1     |
-|      24 | MCAR_10    | native     | LGB_G_IN_AUG |              10.2 |            4.72 |          5.03 |                        1     |
-|      24 | MCAR_10    | native     | LGB_G_LRO    |              10.2 |            5.14 |          5.36 |                        1     |
-|      24 | MCAR_10    | seasonal   | LGB_G_IN     |              10.2 |            5.06 |          5.41 |                        1     |
-|      24 | MCAR_10    | seasonal   | LGB_G_LRO    |              10.2 |            5.16 |          5.45 |                        1     |
-|      24 | MCAR_20    | locf       | LGB_G_IN     |              20.2 |            5.05 |          5.28 |                        1     |
-|      24 | MCAR_20    | locf       | LGB_G_LRO    |              20.2 |            5.13 |          5.31 |                        1     |
-|      24 | MCAR_20    | native     | LGB_G_IN     |              20.2 |            5.62 |          5.77 |                        1     |
-|      24 | MCAR_20    | native     | LGB_G_IN_AUG |              20.2 |            4.87 |          5.12 |                        1     |
-|      24 | MCAR_20    | native     | LGB_G_LRO    |              20.2 |            5.69 |          5.79 |                        1     |
-|      24 | MCAR_20    | seasonal   | LGB_G_IN     |              20.2 |            5.57 |          5.89 |                        1     |
-|      24 | MCAR_20    | seasonal   | LGB_G_LRO    |              20.2 |            5.65 |          5.91 |                        1     |
-|      24 | MCAR_40    | locf       | LGB_G_IN     |              40.1 |            5.98 |          5.95 |                        1     |
-|      24 | MCAR_40    | locf       | LGB_G_LRO    |              40.1 |            5.99 |          5.98 |                        1     |
-|      24 | MCAR_40    | native     | LGB_G_IN     |              40.1 |            6.93 |          6.88 |                        1     |
-|      24 | MCAR_40    | native     | LGB_G_IN_AUG |              40.1 |            5.4  |          5.54 |                        1     |
-|      24 | MCAR_40    | native     | LGB_G_LRO    |              40.1 |            7.02 |          6.9  |                        1     |
-|      24 | MCAR_40    | seasonal   | LGB_G_IN     |              40.1 |            6.66 |          6.91 |                        1     |
-|      24 | MCAR_40    | seasonal   | LGB_G_LRO    |              40.1 |            6.69 |          6.93 |                        1     |
-|      24 | MCAR_5     | locf       | LGB_G_IN     |               5.2 |            4.72 |          5.02 |                        1     |
-|      24 | MCAR_5     | locf       | LGB_G_LRO    |               5.2 |            4.82 |          5.06 |                        1     |
-|      24 | MCAR_5     | native     | LGB_G_IN     |               5.2 |            4.84 |          5.14 |                        1     |
-|      24 | MCAR_5     | native     | LGB_G_IN_AUG |               5.2 |            4.68 |          4.99 |                        1     |
-|      24 | MCAR_5     | native     | LGB_G_LRO    |               5.2 |            4.94 |          5.18 |                        1     |
-|      24 | MCAR_5     | seasonal   | LGB_G_IN     |               5.2 |            4.86 |          5.19 |                        1     |
-|      24 | MCAR_5     | seasonal   | LGB_G_LRO    |               5.2 |            4.96 |          5.22 |                        1     |
-|      24 | clean      | native     | LGB_G_IN     |               0.2 |            4.64 |          4.96 |                        1     |
-|      24 | clean      | native     | LGB_G_IN_AUG |               0.2 |            4.65 |          4.97 |                        1     |
-|      24 | clean      | native     | LGB_G_LRO    |               0.2 |            4.75 |          5    |                        1     |
+|   h (h) | Scenario   |   Native NaN | LOCF   | Weekly-seasonal   |   MCAR-trained, native |
+|--------:|:-----------|-------------:|:-------|:------------------|-----------------------:|
+|       1 | clean      |         1.14 | –      | –                 |                   1.17 |
+|       1 | MCAR_10    |         1.84 | 1.68   | 2.19              |                   1.32 |
+|       1 | MCAR_40    |         4.04 | 3.68   | 5.14              |                   2.29 |
+|       1 | BLOCK_24h  |         1.89 | 2.52   | 1.91              |                   1.71 |
+|       1 | BLOCK_168h |         1.95 | 2.42   | 1.87              |                   1.94 |
+|      24 | clean      |         4.64 | –      | –                 |                   4.65 |
+|      24 | MCAR_10    |         5.05 | 4.81   | 5.06              |                   4.72 |
+|      24 | MCAR_40    |         6.93 | 5.98   | 6.66              |                   5.4  |
+|      24 | BLOCK_24h  |         5.02 | 5.81   | 5.13              |                   4.94 |
+|      24 | BLOCK_168h |         5.07 | 5.79   | 5.07              |                   5.03 |
 
 
 
@@ -869,6 +809,40 @@ Table 10 and Fig. 12 report ablations for unseen BAs at $h = 24$ h. Each is meas
 
 
 
+## Spatially blocked evaluation (post-review)
+
+The random, size-stratified folds of the main analysis keep neighbouring and same-utility BAs of a held-out BA in the training set, so they measure transfer within a covered geography. They may therefore understate the cost of a geographically new region.
+
+**Design.** We repeated the zero-shot experiment with nine spatial blocks: the EIA regions NW, CAL, SW, FLA and CAR, and four merged groups of adjacent single-BA regions (TEX+CENT, MIDW+MIDA, SE+TEN, NE+NY). Every BA in a held-out block is excluded from fitting, early stopping and calibration (Supplementary Table S6).
+
+**Day-ahead results.** At $h = 24$ h the spatially blocked model (G-LRS) attains a median nMAE of 4.81%, against 4.75% for random folds and 4.64% in-region.
+
+- The median relative gap to the in-region model roughly triples, to 1.7% (CI 1.3 to 2.4%).
+- The 90th percentile of the gap is 4.7% and the maximum 8.8% (GCPD).
+- The spatially blocked model remains statistically indistinguishable from local models trained on four years of target data (0.9%, CI -1.0 to 1.6%).
+
+**Hour-ahead results.** At $h = 1$ h the cost of spatial novelty is much larger.
+
+- The spatially blocked gap is 8.0% (CI 6.5 to 10.8%), against 3.4% with random folds.
+- The gap exceeds 10% in 41.7% of BAs, with a maximum of 46.3% (GCPD).
+- The intraday advantage of zero-shot over local models disappears: -0.8%, CI -3.1 to 1.8%.
+
+Neighbouring BAs in the training pool thus explain much of the intraday transfer seen with random folds.
+
+The geographic cost is therefore larger when whole regions are new, especially intraday, although even then the zero-shot model was not worse than local models trained on four years of the target BA's data. Calibration under spatial blocking is reported in Table 8.
+
+## Small and lower-quality BAs (post-review)
+
+The selection criteria excluded five BAs that report demand through 2025: HST, SPA and WAUW (below 200 MW), and PSEI and SEC (data-quality criteria). Applying the in-region model, which never saw these BAs, gives day-ahead median nMAEs of:
+
+- 7.02% for HST;
+- 6.40% for WAUW;
+- 10.29% for SEC;
+- 4.01% for PSEI;
+- 25.30% for SPA, a 22 MW federal power-marketing area.
+
+These are comparable to local models trained on the same BAs' own history (Supplementary Table S7) but far above the errors of the study BAs. The headline accuracy figures should therefore not be extrapolated to very small systems.
+
 # Computational complexity
 
 All experiments ran on a 4-core CPU with 15 GB of memory (Table 11; Fig. 13).
@@ -924,9 +898,9 @@ All experiments ran on a 4-core CPU with 15 GB of memory (Table 11; Fig. 13).
 
 For system operators, market participants and planners, the results translate into five recommendations.
 
-1. **Onboarding a new or data-poor BA.** A pooled, instance-normalised gradient-boosting model trained on other BAs can be deployed from the first day. It needs only a week of recent observations to compute the scale. In our data, its accuracy is within about 1–3% (relative) of a model that has seen the BA. Fine-tuning on a few weeks of data was counter-productive and should be avoided until a full seasonal cycle is available.
+1. **Onboarding a new or data-poor BA.** A pooled, instance-normalised gradient-boosting model trained on other BAs can produce usable forecasts from the first day; it needs only a week of recent observations to compute the scale. In our data its median accuracy was within 0.5% (day-ahead) to 3.4% (hour-ahead), in relative terms, of a model that had seen the BA. Tail risk is material for intraday use, however: at 1 h the gap exceeded 10% for 6.2% of BAs, including one very large BA. A zero-shot model should therefore be monitored against the BA's own data, and replaced or pooled with that data, during the first months. Fine-tuning on a few weeks of data degraded accuracy at every onboarding date we tested and is not recommended with the settings studied here.
 2. **Small BAs.** Small BAs benefit from pooling as much as large ones. Because the gap was only weakly related to size, a single shared model with BA-specific online calibration is a viable service model for many small utilities.
-3. **Uncertainty for reserves and risk.** Intervals calibrated once on pooled data will under-cover in a substantial share of BAs and drift over time, so operational use should include online recalibration. ACI on top of CQR, with a step size selected on held-out systems and periods, delivered near-nominal coverage per BA at both horizons without wider typical intervals. When feedback is delayed (day-ahead), the step size must be conservative.
+3. **Uncertainty for reserves and risk.** Intervals calibrated once on pooled data under-covered in a substantial share of BAs and drifted over time, so operational use should include online recalibration. ACI on top of CQR is guaranteed to reach the nominal long-run coverage. What matters in practice is its sharpness and its behaviour in the first months on a new system, and both depend on the step size. A step size chosen on *other* BAs' validation data (ACI-CQR-S) gave a median interval score of 28.18% against 28.15% for static CQR at 24 h; Table 8 gives the details. With day-ahead feedback delay, large step sizes should be avoided. A rolling four-week recalibration on the BA's own recent residuals is a simpler alternative that worked comparably for hour-ahead intervals but was less sharp day-ahead.
 4. **Data quality.** Input gaps matter much more for intraday than for day-ahead forecasts. A simple remedy, training with randomly masked inputs, removes most of the intraday degradation at negligible cost on clean data. For long outages, native missing-value handling or seasonal filling is preferable to carrying the last value forward (Section 11).
 5. **Compute.** All models in this study train on a commodity 4-core CPU. A pooled model (one model per horizon) is cheaper to maintain than 48 local models and was more accurate.
 
@@ -940,6 +914,10 @@ For system operators, market participants and planners, the results translate in
 6. **Compute amendment.** For compute reasons, models at $h \in \{1, 6\}$ used a higher learning rate, and probabilistic experiments were run at $h \in \{1, 24\}$ only.
 7. **No neural or foundation models.** These could not be included (CPU only; model weights not reachable). How they compare under the same protocol remains open.
 8. **Unscored anomalies.** Labels are PUDL-screened values, and flagged hours were not scored, so performance during data anomalies is not measured.
+9. **Limited tuning.** Hyper-parameter grids were small (2×2), were tuned at $h = 24$ h on the pooled model and reused for leave-regions-out folds. They were not re-tuned after the 1-h and 6-h learning-rate change. At $h = 1$ h the in-region model reached the 3,000-tree cap, while the leave-regions-out models stopped between about 2,260 and 3,000 trees, so convergence was not perfectly equal across arms.
+10. **Fixed adaptation settings.** The small-tree adaptation models used a learning rate of 0.05 (local) or 0.02 (fine-tuning) at every horizon; they were not covered by the 1-h/6-h amendment.
+11. **Literature search.** The search relied on web-search results of publisher pages; Scopus, Web of Science and Crossref were not accessible. Some references could only be partially verified, and closely related work may have been missed.
+12. **Sample of BAs.** The 48 BAs were selected for data quality and size (at least 200 MW), so the main results concern well-reported, medium-to-large BAs. Section 11 reports a secondary zero-shot check on the excluded small and low-quality BAs.
 
 # Threats to validity
 
@@ -950,7 +928,15 @@ For system operators, market participants and planners, the results translate in
 - held-out BAs excluded from fitting, early stopping and calibration;
 - separate early-stopping and calibration weeks.
 
-Four post-freeze amendments were necessary and are logged with their motivation: an ACI implementation fix, a validation-selected ACI variant, a median-width metric and a compute-driven learning-rate change. The validation-selected ACI variant was *motivated* by test-set behaviour of the pre-registered variant, even though its step size was chosen on validation data. Its advantage should therefore be confirmed on new data.
+The freeze was an internal, timestamped commit made on the same day as the analysis; it was not registered externally. Five post-freeze amendments are logged with their motivation (DECISION_LOG D9–D13):
+
+- an ACI implementation fix;
+- a validation-selected ACI variant;
+- a median-width metric;
+- interval-start dating of hour-ending timestamps;
+- a compute-driven learning-rate change at 1 h and 6 h.
+
+All analyses added in response to the internal review (spatially blocked folds, source-only ACI step-size selection, multiple adaptation origins, excluded BAs, conditional and peak-hour diagnostics; D14–D16) are also post hoc. The validation-selected ACI variant was *motivated* by test-set behaviour of the frozen-protocol variant, and its step size was chosen on 2023 data of the evaluated BAs themselves. We therefore treat it as exploratory and base recommendations on the source-only variant.
 
 **Construct validity.** Instance-normalised nMAE weights all BAs equally. An analysis weighted by energy would emphasise the largest ISOs, where the geographic gap was small. BA day-ahead forecasts have undocumented issuance times and a different information set.
 
@@ -960,11 +946,11 @@ Four post-freeze amendments were necessary and are logged with their motivation:
 
 # Conclusion and future work
 
-We built a leakage-resistant, pre-registered benchmark for forecasting hourly electricity demand of balancing authorities that a model has never seen, using 48 U.S. BAs from EIA Form 930. Four conclusions follow.
+We built a leakage-resistant benchmark, with a protocol frozen before test evaluation, for forecasting hourly electricity demand of balancing authorities that a model has never seen, using 48 U.S. BAs from EIA Form 930. Four conclusions follow.
 
-1. **Zero-shot transfer works.** A pooled, instance-normalised LightGBM model transfers to unseen BAs with a small but systematic accuracy loss of about 0.5% (24 h) to 3.4% (1 h) relative to in-region training. It is no worse than local models trained on four years of target data.
-2. **Short-window adaptation does not help.** Fine-tuning or local training on one to thirteen weeks of target data mostly made forecasts worse.
-3. **Interval calibration is the binding problem, and it is temporal and BA-specific rather than geographic.** Static conformal intervals under-covered in a fifth to a half of BAs, whether or not the BA had been seen in training. Online adaptive conformal inference restored per-BA coverage, but only with a step size matched to the feedback delay.
+1. **Zero-shot transfer works, with a tail.** A pooled, instance-normalised LightGBM model transfers to unseen BAs with a small but systematic median accuracy loss: 0.5% (24 h) to 3.4% (1 h) with random folds, and 1.7% (24 h) to 8.0% (1 h) when whole regions are held out. With random folds it is non-inferior to local models trained on four years of target data day-ahead and better intraday; with whole regions held out it matches local models at both horizons. Some BAs show large intraday gaps.
+2. **Short-window adaptation does not help.** With the settings studied, fine-tuning or local training on one to thirteen weeks of target data degraded forecasts at every onboarding date tested.
+3. **Interval calibration is the binding problem, and it is temporal and BA-specific rather than geographic.** Static conformal intervals (CQR) under-covered by more than 5 points in a fifth to a third of BAs, whether or not the BA had been seen in training. Online adaptive conformal inference restores marginal coverage by construction. Its practical value depended on the step size: chosen on other BAs, it gave sharpness close to CQR (equal at 24 h, slightly lower at 1 h), whereas the larger pre-specified step produced very wide intervals at 24 h.
 4. **Data gaps matter mainly intraday, and compute is cheap.** Missing inputs degraded hour-ahead forecasts substantially but day-ahead forecasts only modestly, and training with masked inputs largely removed the hour-ahead penalty. Computational cost was a minor concern.
 
 **Future work.** Several extensions follow directly:
@@ -982,7 +968,7 @@ This study uses publicly available data only. The EIA Form 930 hourly balancing-
 
 # Code availability statement {.unnumbered}
 
-All code needed to reproduce every number, table and figure (data download, preprocessing, model training, evaluation, statistics, figures, tables and manuscript assembly) is available at [AUTHOR ACTION: repository URL / DOI]. A single command (`python -m src.run_all`) reproduces the full study on a 4-core CPU in approximately 3–4 hours; the frozen protocol, configuration and decision log are versioned with the code.
+All code needed to reproduce every number, table and figure (data download, preprocessing, model training, evaluation, statistics, figures, tables and manuscript assembly) is available at [AUTHOR ACTION: repository URL / DOI]. A single command (`python -m src.run_all`) reproduces the full study on a 4-core CPU in roughly six to seven hours of wall-clock time; the frozen protocol, configuration and decision log are versioned with the code.
 
 # Funding {.unnumbered}
 
@@ -1019,54 +1005,54 @@ We thank Catalyst Cooperative for the PUDL project and the U.S. Energy Informati
 
 | BA   | Name                                     | Interconnect   |   Mean demand (MW) |   Reported coverage (%) |   PUDL-flagged (%) |   LRO fold |
 |:-----|:-----------------------------------------|:---------------|-------------------:|------------------------:|-------------------:|-----------:|
-| PJM  | pjm interconnection                      | eastern        |              91577 |                   99.73 |               0.3  |          2 |
-| MISO | midcontinent iso                         | eastern        |              73658 |                   99.91 |               0.1  |          3 |
-| ERCO | electric reliability council of texas    | ercot          |              48661 |                   99.92 |               0.09 |          1 |
-| SWPP | southwest power pool                     | eastern        |              31811 |                  100    |               3.7  |          5 |
-| SOCO | southern company services                | eastern        |              26887 |                   99.96 |               0.06 |          0 |
-| CISO | california iso                           | western        |              25117 |                   99.81 |               0.33 |          4 |
-| TVA  | tennessee valley authority               | eastern        |              18446 |                  100    |               0.03 |          1 |
-| NYIS | new york iso                             | eastern        |              17277 |                  100    |               0.01 |          2 |
-| FPL  | florida power and light                  | eastern        |              15664 |                   98.77 |               1.36 |          4 |
-| ISNE | iso new england                          | eastern        |              13193 |                  100    |               0    |          0 |
-| DUK  | duke energy carolinas                    | eastern        |              12102 |                   99.92 |               0.08 |          3 |
-| CPLE | duke energy progress east                | eastern        |               6982 |                   99.85 |               0.16 |          5 |
-| BPAT | bonneville power                         | western        |               6563 |                  100    |               0.03 |          1 |
-| FPC  | progress energy florida                  | eastern        |               6418 |                   99.92 |               0.09 |          0 |
-| PACE | pacificorp east                          | western        |               5754 |                  100    |               0.19 |          5 |
-| PSCO | public service company of colorado       | western        |               5283 |                   99.96 |               0.13 |          4 |
-| NEVP | nevada power                             | western        |               4452 |                   99.97 |               0.1  |          3 |
-| LGEE | louisville gas and electric and kentucky | eastern        |               4124 |                   99.72 |               0.42 |          2 |
-| SRP  | salt river project                       | western        |               3792 |                   99.6  |               0.51 |          4 |
-| AZPS | arizona public service                   | western        |               3775 |                   99.96 |               0.14 |          5 |
-| WACM | western area power mountain              | western        |               3104 |                  100    |               0.87 |          0 |
-| LDWP | los angeles dept of water and power      | western        |               2867 |                   99.73 |               0.48 |          2 |
-| SC   | south carolina public service            | eastern        |               2849 |                   99.78 |               0.32 |          3 |
-| SCEG | south carolina electric and gas          | eastern        |               2789 |                   99.69 |               0.39 |          1 |
-| AECI | associated electric coop                 | eastern        |               2663 |                   99.98 |               0.04 |          4 |
-| TEC  | tampa electric                           | eastern        |               2513 |                   99.87 |               0.14 |          5 |
-| PGE  | portland general electric                | western        |               2506 |                   99.96 |               0.07 |          3 |
-| PACW | pacificorp west                          | western        |               2390 |                  100    |               0.04 |          1 |
-| FMPP | florida municipal power pool             | eastern        |               2117 |                   99.76 |               0.5  |          0 |
-| IPCO | idaho power                              | western        |               2075 |                  100    |               0.01 |          2 |
-| BANC | northern california                      | western        |               1985 |                   99.99 |               2.22 |          0 |
-| PNM  | public service company of new mexico     | western        |               1631 |                  100    |               0.11 |          2 |
-| TEPC | tuscon electric power                    | western        |               1564 |                   98.43 |               1.61 |          4 |
-| JEA  | jacksonville energy                      | eastern        |               1518 |                   99.56 |               0.5  |          5 |
-| AVA  | avista                                   | western        |               1462 |                  100    |               0.09 |          3 |
-| NWMT | northwestern energy                      | western        |               1362 |                   99.96 |               0.39 |          1 |
-| SCL  | seattle city light                       | western        |               1078 |                   99.99 |               0.08 |          4 |
-| WALC | western area power southwest             | western        |               1052 |                   99.92 |               0.71 |          5 |
-| EPE  | el paso electric                         | western        |               1015 |                   99.99 |               0.1  |          2 |
-| GCPD | public utility grant county              | western        |                689 |                  100    |               0.37 |          1 |
-| CPLW | duke energy progress west                | eastern        |                564 |                   99.88 |               0.21 |          3 |
-| TPWR | city of tacoma                           | western        |                545 |                  100    |               0.15 |          0 |
-| IID  | imperial irrigation                      | western        |                436 |                   99.73 |               1.08 |          3 |
-| TIDC | turlock irrigation district              | western        |                327 |                   99.8  |               0.72 |          4 |
-| TAL  | city of tallahassee                      | eastern        |                320 |                   98.83 |               1.29 |          2 |
-| DOPD | public utility of douglas county         | western        |                240 |                   97.69 |               3.07 |          1 |
-| GVL  | gainesville regional                     | eastern        |                237 |                   97.89 |               2.66 |          5 |
-| CHPD | public utility district of chelan county | western        |                218 |                   99.89 |               0.44 |          0 |
+| PJM  | Pjm Interconnection                      | eastern        |              91577 |                   99.73 |               0.3  |          2 |
+| MISO | Midcontinent ISO                         | eastern        |              73658 |                   99.91 |               0.1  |          3 |
+| ERCO | Electric Reliability Council of Texas    | ercot          |              48661 |                   99.92 |               0.09 |          1 |
+| SWPP | Southwest Power Pool                     | eastern        |              31811 |                  100    |               3.7  |          5 |
+| SOCO | Southern Company Services                | eastern        |              26887 |                   99.96 |               0.06 |          0 |
+| CISO | California ISO                           | western        |              25117 |                   99.81 |               0.33 |          4 |
+| TVA  | Tennessee Valley Authority               | eastern        |              18446 |                  100    |               0.03 |          1 |
+| NYIS | New York ISO                             | eastern        |              17277 |                  100    |               0.01 |          2 |
+| FPL  | Florida Power and Light                  | eastern        |              15664 |                   98.77 |               1.36 |          4 |
+| ISNE | Iso New England                          | eastern        |              13193 |                  100    |               0    |          0 |
+| DUK  | Duke Energy Carolinas                    | eastern        |              12102 |                   99.92 |               0.08 |          3 |
+| CPLE | Duke Energy Progress East                | eastern        |               6982 |                   99.85 |               0.16 |          5 |
+| BPAT | Bonneville Power                         | western        |               6563 |                  100    |               0.03 |          1 |
+| FPC  | Progress Energy Florida                  | eastern        |               6418 |                   99.92 |               0.09 |          0 |
+| PACE | Pacificorp East                          | western        |               5754 |                  100    |               0.19 |          5 |
+| PSCO | Public Service Company of Colorado       | western        |               5283 |                   99.96 |               0.13 |          4 |
+| NEVP | Nevada Power                             | western        |               4452 |                   99.97 |               0.1  |          3 |
+| LGEE | Louisville Gas and Electric and Kentucky | eastern        |               4124 |                   99.72 |               0.42 |          2 |
+| SRP  | Salt River Project                       | western        |               3792 |                   99.6  |               0.51 |          4 |
+| AZPS | Arizona Public Service                   | western        |               3775 |                   99.96 |               0.14 |          5 |
+| WACM | Western Area Power Mountain              | western        |               3104 |                  100    |               0.87 |          0 |
+| LDWP | Los Angeles Dept of Water and Power      | western        |               2867 |                   99.73 |               0.48 |          2 |
+| SC   | South Carolina Public Service            | eastern        |               2849 |                   99.78 |               0.32 |          3 |
+| SCEG | South Carolina Electric and Gas          | eastern        |               2789 |                   99.69 |               0.39 |          1 |
+| AECI | Associated Electric Coop                 | eastern        |               2663 |                   99.98 |               0.04 |          4 |
+| TEC  | Tampa Electric                           | eastern        |               2513 |                   99.87 |               0.14 |          5 |
+| PGE  | Portland General Electric                | western        |               2506 |                   99.96 |               0.07 |          3 |
+| PACW | Pacificorp West                          | western        |               2390 |                  100    |               0.04 |          1 |
+| FMPP | Florida Municipal Power Pool             | eastern        |               2117 |                   99.76 |               0.5  |          0 |
+| IPCO | Idaho Power                              | western        |               2075 |                  100    |               0.01 |          2 |
+| BANC | Northern California                      | western        |               1985 |                   99.99 |               2.22 |          0 |
+| PNM  | Public Service Company of New Mexico     | western        |               1631 |                  100    |               0.11 |          2 |
+| TEPC | Tucson Electric Power                    | western        |               1564 |                   98.43 |               1.61 |          4 |
+| JEA  | Jacksonville Energy                      | eastern        |               1518 |                   99.56 |               0.5  |          5 |
+| AVA  | Avista                                   | western        |               1462 |                  100    |               0.09 |          3 |
+| NWMT | Northwestern Energy                      | western        |               1362 |                   99.96 |               0.39 |          1 |
+| SCL  | Seattle City Light                       | western        |               1078 |                   99.99 |               0.08 |          4 |
+| WALC | Western Area Power Southwest             | western        |               1052 |                   99.92 |               0.71 |          5 |
+| EPE  | El Paso Electric                         | western        |               1015 |                   99.99 |               0.1  |          2 |
+| GCPD | Public Utility Grant County              | western        |                689 |                  100    |               0.37 |          1 |
+| CPLW | Duke Energy Progress West                | eastern        |                564 |                   99.88 |               0.21 |          3 |
+| TPWR | City of Tacoma                           | western        |                545 |                  100    |               0.15 |          0 |
+| IID  | Imperial Irrigation                      | western        |                436 |                   99.73 |               1.08 |          3 |
+| TIDC | Turlock Irrigation District              | western        |                327 |                   99.8  |               0.72 |          4 |
+| TAL  | City of Tallahassee                      | eastern        |                320 |                   98.83 |               1.29 |          2 |
+| DOPD | Public Utility of Douglas County         | western        |                240 |                   97.69 |               3.07 |          1 |
+| GVL  | Gainesville Regional                     | eastern        |                237 |                   97.89 |               2.66 |          5 |
+| CHPD | Public Utility District of Chelan County | western        |                218 |                   99.89 |               0.44 |          0 |
 
 
 

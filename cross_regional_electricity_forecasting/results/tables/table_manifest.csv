@@ -1,14 +1,23 @@
 table,caption,source_files,script
 table_A1_regions,Table A1. Balancing authorities included in the study (2019–2025).,data/processed/regions.csv,src/generate_tables.py
 table_2_point_accuracy,Table 2. Test-period (2024–2025) point accuracy across 48 BAs.,results/metrics/point_metrics_summary.csv,src/generate_tables.py
-table_3_paired_tests,Table 3. Paired comparisons of per-BA nMAE (test period).,results/metrics/paired_tests_point.csv; results/metrics/block_bootstrap_summary.csv,src/generate_tables.py
+table_S4_paired_tests_full,Table S4. All paired comparisons of per-BA nMAE (test period).,results/metrics/paired_tests_point.csv; results/metrics/block_bootstrap_summary.csv,src/generate_tables.py
+table_3_paired_tests,Table 3. Key paired comparisons of per-BA nMAE (test period; negative = A more accurate).,results/metrics/paired_tests_point.csv; results/metrics/block_bootstrap_summary.csv,src/generate_tables.py
 table_4_adaptation,Table 4. Limited target-data adaptation for unseen BAs (test 2024–2025).,results/metrics/adaptation_metrics_summary.csv,src/generate_tables.py
 table_5_temporal,Table 5. Median nMAE (%) by evaluation year (frozen models trained on 2019–2022).,results/metrics/temporal_metrics_summary.csv,src/generate_tables.py
 table_6_refit,Table 6. Frozen vs. refit (rolling origin) models on 2025: median nMAE (%).,results/metrics/refit_metrics_summary.csv,src/generate_tables.py
-table_7_probabilistic,Table 7. Interval calibration on the test period (48 BAs).,results/metrics/probabilistic_summary.csv,src/generate_tables.py
-table_7b_aci_sensitivity,"Table 7b. POST-HOC test-set sensitivity of ACI-CQR (90%, unseen BAs) to the step size γ (not used for any selection).",results/metrics/aci_gamma_sensitivity_summary.csv,src/generate_tables.py
-table_8_missing_data,Table 8. Robustness to missing input observations (test period).,results/metrics/missing_data_summary.csv,src/generate_tables.py
-table_9_ablation,"Table 9. Ablations of the zero-shot global model (h = 24 h, unseen BAs).",results/metrics/ablation_results.csv,src/generate_tables.py
-table_10_compute,Table 10. Computational cost (4-core CPU).,results/logs/compute_costs_point.csv,src/generate_tables.py
-table_10b_compute_adaptation,Table 10b. Adaptation fit time per target BA (s).,results/logs/compute_costs_adapt.csv,src/generate_tables.py
-table_11_ba_reference,Table 11. Comparison with BA-reported day-ahead forecasts (hours where available).,results/metrics/ba_dayahead_summary.csv,src/generate_tables.py
+table_S1_probabilistic_full,"Table S1. Interval calibration on the test period, all settings (48 BAs).",results/metrics/probabilistic_summary.csv,src/generate_tables.py
+table_7_probabilistic,"Table 7. Calibration of nominal 90% intervals for unseen BAs (random folds, test period). Widths and interval scores (IS) are in % of mean load.",results/metrics/probabilistic_summary.csv,src/generate_tables.py
+table_8_calibration_revision,"Table 8. Online and source-only calibration of 90% intervals for unseen BAs, including spatially blocked folds (post-review analyses; γ selected on source BAs only for ACI-CQR-S).",results/metrics/rev_calibration_summary.csv,src/generate_tables.py
+table_S2_aci_sensitivity,"Table S2. POST-HOC test-set sensitivity of ACI-CQR (90%, unseen BAs) to the step size γ (not used for any selection).",results/metrics/aci_gamma_sensitivity_summary.csv,src/generate_tables.py
+table_S3_missing_data_full,"Table S3. Robustness to missing input observations, all scenarios (test period; common scored hours).",results/metrics/missing_data_summary.csv,src/generate_tables.py
+table_9_missing_data,Table 9. Median nMAE (%) of the in-region global model with corrupted inputs (test period; common scored hours).,results/metrics/missing_data_summary.csv,src/generate_tables.py
+table_10_ablation,"Table 10. Ablations of the zero-shot global model (h = 24 h, unseen BAs).",results/metrics/ablation_results.csv,src/generate_tables.py
+table_11_compute,Table 11. Computational cost (4-core CPU).,results/logs/compute_costs_point.csv,src/generate_tables.py
+table_S10_compute_adaptation,Table 10b. Adaptation fit time per target BA (s).,results/logs/compute_costs_adapt.csv,src/generate_tables.py
+table_12_ba_reference,Table 12. Comparison with BA-reported day-ahead forecasts (hours where available).,results/metrics/ba_dayahead_summary.csv,src/generate_tables.py
+table_S5_adaptation_origins,Table S5. Median nMAE (%) for unseen BAs at three additional onboarding origins (evaluation: the following 365 days).,results/metrics/rev_adapt_origins_summary.csv,src/generate_tables.py
+table_S6_spatial,Table S6. Point accuracy with spatially blocked leave-region-out folds (test period).,results/metrics/rev_spatial_summary.csv,src/generate_tables.py
+table_S7_excluded_bas,Table S7. Zero-shot forecasts for the five BAs excluded by the selection criteria.,results/metrics/rev_excluded_bas.csv,src/generate_tables.py
+table_S8_conditional_coverage,Table S8. Conditional coverage of 90% intervals by season and by within-BA load decile (0 = lowest).,results/metrics/rev_conditional_coverage.csv,src/generate_tables.py
+table_S9_ridge_grid,"Table S9. Ridge penalty grid on the validation (odd ISO) weeks, h = 24 h.",results/logs/ridge_alpha_grid_validation.csv,src/generate_tables.py

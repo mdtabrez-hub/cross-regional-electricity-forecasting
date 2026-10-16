@@ -107,7 +107,7 @@ For $h \in \{1, 24\}$, central intervals with nominal coverage $1-\alpha$, $\alp
 $$
 \alpha_{t+1} = \alpha_t + \gamma\,(\alpha - \mathrm{err}_{t-h}),
 $$
-where $\mathrm{err}_{t-h}$ indicates whether the interval issued for hour $t-h$ missed. Feedback is therefore delayed by the horizon. Scores enter the calibration pool once their outcomes are observed. When $\alpha_t$ leaves $(0,1)$ the exact ACI interval is unbounded or empty; we cap it at the most extreme score observed so far and report the share of capped hours. ACI-CQR uses the pre-registered step size $\gamma = 0.005$. **ACI-CQR-V** uses $\gamma$ selected from $\{0.001, 0.002, 0.005, 0.01\}$ by interval score on the 2023 data of held-out BAs; this variant was added after the freeze (Section 15).
+where $\mathrm{err}_{t-h}$ indicates whether the interval issued for hour $t-h$ missed. Feedback is therefore delayed by the horizon. Scores enter the calibration pool once their outcomes are observed. When $\alpha_t$ leaves $(0,1)$ the exact ACI interval is unbounded or empty; we cap it at the most extreme score observed so far and report the share of capped hours. Two implementation details: the online stream runs over scored (unflagged) hours only, so the delay of $h$ steps corresponds to at least $h$ hours, a conservative choice; and at nominal 50% coverage the threshold never needed capping. ACI-CQR uses the step size fixed in the frozen protocol, $\gamma = 0.005$. **ACI-CQR-V** uses $\gamma$ selected from $\{0.001, 0.002, 0.005, 0.01\}$ by interval score on the 2023 data of held-out BAs; this variant was added after the freeze (Section 15).
 
 # Experimental design
 
@@ -142,6 +142,17 @@ All settings were fixed in a configuration file before test-set evaluation (Fig.
 
 **Hardware.** All runs used a 4-core CPU with 15 GB of memory and no GPU. Fixed seeds and LightGBM's deterministic mode were used throughout.
 
+**Post-review analyses.** The following analyses were added after an internal review, after the test results had been seen, and are reported as such (DECISION_LOG D14–D16):
+
+- spatially blocked folds: nine blocks of contiguous EIA regions, at $h = 24$ h (point and quantile models) and $h = 1$ h (point);
+- ACI with $\gamma$ selected per fold on the *source* BAs' calibration weeks only (ACI-CQR-S), with a $\gamma = 0$ expanding-pool control;
+- split conformal calibrated on each BA's most recent four weeks of observed residuals (SCP-R4);
+- conditional coverage by season and load decile, and peak-hour diagnostics;
+- adaptation at three further onboarding origins (1 April, 1 July and 1 October 2024; $k \in \{4, 13\}$ weeks; $h \in \{6, 24\}$ h);
+- zero-shot forecasts for the five excluded BAs;
+- a ridge penalty grid;
+- a cluster bootstrap over the nine spatial blocks and non-inferiority bounds with post-hoc margins of 1% and 2%.
+
 # Evaluation metrics
 
 For BA $r$ with scored hours $T_r$ (test period, unflagged label, all compared methods available):
@@ -165,4 +176,4 @@ The quantile grid is scored with the average pinball loss $\rho_\tau(e) = \max(\
 
 **Aggregation.** Cross-BA summaries are medians (with interquartile ranges) of per-BA metrics, so each BA counts equally. This is deliberate: pooled MWh errors would be dominated by PJM, MISO and ERCOT.
 
-**Statistical comparisons.** Paired comparisons across BAs use the Wilcoxon signed-rank test on per-BA nMAE, with Holm adjustment over all reported comparisons. Effect sizes are median relative changes, with 95% percentile bootstrap intervals over BAs (1,000 resamples). Within each BA, temporal dependence is handled by a moving-block bootstrap [@kunsch1989jackknife] of the hourly absolute-error differential (168-h blocks, 1,000 resamples); we report the share of BAs whose 95% interval excludes zero. BAs are spatially correlated, so region-level tests overstate the effective sample size [@roberts2017cross]. We therefore emphasise effect sizes.
+**Statistical comparisons.** Paired comparisons across BAs use the Wilcoxon signed-rank test on per-BA nMAE. Holm adjustment is applied within families: the 72 point-forecast tests (8 pairs, 3 metrics, 3 horizons), the adaptation tests, the refit tests and the ablation tests. Effect sizes are median relative changes, with 95% percentile bootstrap intervals over BAs (1,000 resamples). Within each BA, temporal dependence is handled by a moving-block bootstrap [@kunsch1989jackknife] of the hourly absolute-error differential (168-h blocks, 1,000 resamples); we report the share of BAs whose 95% interval excludes zero. BAs are spatially correlated, so region-level tests overstate the effective sample size [@roberts2017cross]. We therefore emphasise effect sizes.

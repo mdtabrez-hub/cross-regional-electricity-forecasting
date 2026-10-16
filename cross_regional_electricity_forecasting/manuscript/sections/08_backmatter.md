@@ -4,7 +4,7 @@ This study uses publicly available data only. The EIA Form 930 hourly balancing-
 
 # Code availability statement {.unnumbered}
 
-All code needed to reproduce every number, table and figure (data download, preprocessing, model training, evaluation, statistics, figures, tables and manuscript assembly) is available at [AUTHOR ACTION: repository URL / DOI]. A single command (`python -m src.run_all`) reproduces the full study on a 4-core CPU in approximately 3–4 hours; the frozen protocol, configuration and decision log are versioned with the code.
+All code needed to reproduce every number, table and figure (data download, preprocessing, model training, evaluation, statistics, figures, tables and manuscript assembly) is available at [AUTHOR ACTION: repository URL / DOI]. A single command (`python -m src.run_all`) reproduces the full study on a 4-core CPU in roughly six to seven hours of wall-clock time; the frozen protocol, configuration and decision log are versioned with the code.
 
 # Funding {.unnumbered}
 

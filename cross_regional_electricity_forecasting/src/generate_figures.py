@@ -265,7 +265,7 @@ def fig_temporal():
     axes[2].legend(frameon=False, fontsize=6.5, ncol=2, loc="upper left")
     panel_label(axes[2], "(c)")
     fig.tight_layout()
-    save(fig, "fig07_temporal_shift", "Temporal distribution shift: (a) median nMAE by year for models trained on "
+    save(fig, "fig08_temporal_shift", "Temporal distribution shift: (a) median nMAE by year for models trained on "
          "2019–2022; (b) by season (test period); (c) frozen vs refit models on 2025.",
          "results/metrics/temporal_metrics_summary.csv; results/metrics/refit_metrics_summary.csv")
 
@@ -293,7 +293,7 @@ def fig_transfer():
     axes[0].set_ylabel("Median nMAE (%)")
     axes[-1].legend(frameon=False, fontsize=7)
     fig.tight_layout()
-    save(fig, "fig08_transfer", "Limited target-data adaptation for unseen BAs: median test nMAE vs weeks of target "
+    save(fig, "fig07_transfer", "Limited target-data adaptation for unseen BAs: median test nMAE vs weeks of target (x-axis on a symmetric-log scale) "
          "history.", "results/metrics/adaptation_metrics_summary.csv")
 
 

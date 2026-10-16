@@ -1,4 +1,4 @@
-# Experimental Protocol (pre-registered)
+# Experimental Protocol (frozen in version control before test evaluation; not externally registered)
 
 Status: **FROZEN** before test evaluation. All settings in `configs/experiment.yaml`.
 
@@ -56,6 +56,6 @@ evaluated on the test period.
 * ACI thresholds are capped at the most extreme score seen when α_t ∉ (0,1); the share of
   capped hours is reported.
 * ACI-CQR-V: ACI with γ chosen on the 2023 validation year of held-out BAs, added after the
-  pre-registered γ = 0.005 was seen to produce very wide intervals on the test set. Reported
-  alongside, not instead of, the pre-registered variant.
+  frozen-protocol γ = 0.005 was seen to produce very wide intervals on the test set. Reported
+  alongside, not instead of, the frozen-protocol variant.
 * Median-hour interval width added as a sharpness metric.

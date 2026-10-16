@@ -1,0 +1,211 @@
+level,coverage_mean_over_BAs,coverage_min_over_BAs,by,method,setting,h,alpha
+DJF,0.8680386348801151,0.7154040985493898,season,CQR,unseen (random folds),24,0.1
+JJA,0.8986868243745819,0.7354473386183465,season,CQR,unseen (random folds),24,0.1
+MAM,0.89979265783651,0.8024915062287655,season,CQR,unseen (random folds),24,0.1
+SON,0.8999916226482504,0.8026587210634885,season,CQR,unseen (random folds),24,0.1
+0,0.8820109814209238,0.7002849002849003,decile,CQR,unseen (random folds),24,0.1
+1,0.9000838237846925,0.7691870380898238,decile,CQR,unseen (random folds),24,0.1
+2,0.9106955575830371,0.8180252583237658,decile,CQR,unseen (random folds),24,0.1
+3,0.9131671215741611,0.8310502283105022,decile,CQR,unseen (random folds),24,0.1
+4,0.9106583876765119,0.7871853546910755,decile,CQR,unseen (random folds),24,0.1
+5,0.8965083388609484,0.7689243027888446,decile,CQR,unseen (random folds),24,0.1
+6,0.8850554010541084,0.7662857142857142,decile,CQR,unseen (random folds),24,0.1
+7,0.875619447894261,0.7661748013620885,decile,CQR,unseen (random folds),24,0.1
+8,0.8729957939216338,0.7408675799086758,decile,CQR,unseen (random folds),24,0.1
+9,0.8699659786611328,0.6594036697247706,decile,CQR,unseen (random folds),24,0.1
+DJF,0.8683691847641674,0.7213907437255354,season,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+JJA,0.8993634791420173,0.7402038505096262,season,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+MAM,0.9005457907184254,0.8086070215175538,season,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+SON,0.9006079533479986,0.8104515241806096,season,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+0,0.8832687573014186,0.7133903133903133,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+1,0.9010668566546104,0.7799886299033542,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+2,0.9113636598307795,0.822617680826636,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+3,0.9135124060017149,0.8333333333333334,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+4,0.9110580939210559,0.7923340961098398,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+5,0.8970515291626834,0.7751849743881616,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+6,0.8854974052961947,0.772,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+7,0.8761399458602946,0.7741203178206584,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+8,0.8733010465698533,0.7431506849315068,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+9,0.870453614438472,0.6599770642201835,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),24,0.1
+DJF,0.8991023500662312,0.8909635776855694,season,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+JJA,0.8981685660691626,0.886701762417029,season,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+MAM,0.9022960882050395,0.8885617214043036,season,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+SON,0.8988214820529393,0.884047948363301,season,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+0,0.8845310070672087,0.8008800880088008,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+1,0.9029258652585744,0.8769318832283916,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+2,0.9115710805089642,0.8654836863194046,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+3,0.9154316129320136,0.881199538638985,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+4,0.9139609091700361,0.8819840364880274,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+5,0.9009653612853717,0.8602395892755277,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+6,0.892324963198126,0.8531587933978372,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+7,0.8884882485236192,0.8589377498572245,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+8,0.8900343484371063,0.8472063854047891,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+9,0.8958187567105821,0.7924311926605505,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),24,0.1
+DJF,0.8831728857539912,0.8174073221275616,season,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+JJA,0.9004702588640369,0.8491847826086957,season,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+MAM,0.9110803071434322,0.8480751604032998,season,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+SON,0.9002847745360637,0.8520055325034578,season,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+0,0.8930055934041478,0.8144154370034052,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+1,0.9092560713457348,0.8775042930738409,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+2,0.9170913122160914,0.8792215226101889,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+3,0.9189008686738399,0.881199538638985,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+4,0.916412198028718,0.8784883720930232,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+5,0.9030565224418584,0.864376130198915,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+6,0.8903563024937454,0.8584422967595224,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+7,0.8811716243929767,0.8500286204922725,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+8,0.8791781375390606,0.8036529680365296,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+9,0.8794780269821948,0.7201834862385321,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),24,0.1
+DJF,0.8857988544399195,0.8493434692467173,season,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+JJA,0.8942696776878184,0.8669839111715386,season,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+MAM,0.8971071268549858,0.8635021576198046,season,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+SON,0.89262724792593,0.8533886583679114,season,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+0,0.9427271662504566,0.8575482406356413,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+1,0.939288167350368,0.8962371721778791,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+2,0.9321362068185889,0.8906160046056419,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+3,0.9222768900919642,0.8708189158016147,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+4,0.9130306458334639,0.8435294117647059,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+5,0.8940839234224133,0.8370883882149047,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+6,0.8741793815246179,0.8394991462720547,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+7,0.8523815480844587,0.7950913242009132,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+8,0.8307011535949708,0.758266818700114,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+9,0.8234284761507822,0.6961009174311926,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),24,0.1
+DJF,0.8777432003529907,0.7049689440993789,season,CQR,unseen (random folds),1,0.1
+JJA,0.885215057990056,0.6620548877296439,season,CQR,unseen (random folds),1,0.1
+MAM,0.8811229004615461,0.6850215273056878,season,CQR,unseen (random folds),1,0.1
+SON,0.8802444419747116,0.675207756232687,season,CQR,unseen (random folds),1,0.1
+0,0.8786525362183926,0.6941580756013745,decile,CQR,unseen (random folds),1,0.1
+1,0.8793637809742642,0.705848623853211,decile,CQR,unseen (random folds),1,0.1
+2,0.8809656651141262,0.6724237190558434,decile,CQR,unseen (random folds),1,0.1
+3,0.8778184840482899,0.6949250288350635,decile,CQR,unseen (random folds),1,0.1
+4,0.8797080423755754,0.686046511627907,decile,CQR,unseen (random folds),1,0.1
+5,0.8824668358313293,0.7027491408934707,decile,CQR,unseen (random folds),1,0.1
+6,0.884285839028482,0.6891428571428572,decile,CQR,unseen (random folds),1,0.1
+7,0.8830850762953646,0.6732788798133023,decile,CQR,unseen (random folds),1,0.1
+8,0.8829353101079049,0.6572904707233066,decile,CQR,unseen (random folds),1,0.1
+9,0.881880073330135,0.64893001735107,decile,CQR,unseen (random folds),1,0.1
+DJF,0.8790580824778277,0.7114190157668419,season,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+JJA,0.8870739712684746,0.6786119301428896,season,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+MAM,0.8826424255846327,0.6990709268071607,season,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+SON,0.8826369798514224,0.683056325023084,season,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+0,0.8808256587633512,0.7033218785796106,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+1,0.8814470955541532,0.7190366972477065,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+2,0.8827398173036717,0.6781807714450202,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+3,0.87960529067411,0.7029988465974625,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+4,0.8815869048301157,0.6918604651162791,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+5,0.8841734129467737,0.7107674684994273,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+6,0.8861502605339945,0.7051428571428572,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+7,0.8843746471331969,0.6820303383897316,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+8,0.884548875079628,0.6745120551090701,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+9,0.8834211093007314,0.653556969346443,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (random folds),1,0.1
+DJF,0.899212721852548,0.8939603503918857,season,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+JJA,0.90042004384108,0.890324042601405,season,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+MAM,0.9015159846926051,0.8960036330608537,season,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+SON,0.8982496664850658,0.8889397755896497,season,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+0,0.9017134759801765,0.852,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+1,0.9001945670090161,0.8762886597938144,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+2,0.9026824603705078,0.8707289293849658,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+3,0.9002160556290241,0.8747836122331217,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+4,0.9018440197444657,0.8753541076487252,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+5,0.9005347813567641,0.8765008576329331,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+6,0.9014258112668948,0.8805031446540881,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+7,0.8971645416393207,0.8687679083094556,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+8,0.8957837732947936,0.8554488989271598,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+9,0.896971412819525,0.8328445747800587,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (random folds),1,0.1
+DJF,0.8987756169146994,0.8910891089108911,season,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+JJA,0.9004055224712953,0.890324042601405,season,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+MAM,0.9017921060910967,0.8960036330608537,season,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+SON,0.8981098815447366,0.8886326954115749,season,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+0,0.9017604940429487,0.852,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+1,0.9003486328218185,0.8762886597938144,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+2,0.9025998048498091,0.8707289293849658,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+3,0.9000723269237944,0.8747836122331217,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+4,0.9014505413100166,0.8753541076487252,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+5,0.9004758547781444,0.8765008576329331,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+6,0.9011885719539346,0.8805031446540881,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+7,0.897235850455672,0.8687679083094556,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+8,0.8958675768235729,0.8554488989271598,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+9,0.8967562395420344,0.8328445747800587,decile,ACI-CQR-S (gamma source-selected),unseen (random folds),1,0.1
+DJF,0.8956055363109513,0.870043000477783,season,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+JJA,0.9018502847175589,0.8760480398821663,season,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+MAM,0.901081067276606,0.8791808873720136,season,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+SON,0.8969196696025983,0.8825280512937944,season,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+0,0.946305325822954,0.8575482406356413,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+1,0.9291995122082436,0.8888248847926268,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+2,0.913378177122183,0.8756476683937824,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+3,0.9047124445997444,0.8736295441431045,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+4,0.9003260378138221,0.8686173264486517,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+5,0.895151047019962,0.8622069754145226,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+6,0.8906375017651702,0.8622069754145226,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+7,0.8839357402939116,0.857405140758874,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+8,0.8715506930848903,0.8147939017504235,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+9,0.8531804861243745,0.7654109589041096,decile,SCP-R4 (rolling 4-week target calibration),unseen (random folds),1,0.1
+DJF,0.8710405211880783,0.7089569422058485,season,CQR,unseen (spatial blocks),24,0.1
+JJA,0.9030323847502496,0.7356738391845979,season,CQR,unseen (spatial blocks),24,0.1
+MAM,0.9044547626335241,0.8199728260869565,season,CQR,unseen (spatial blocks),24,0.1
+SON,0.9028127853228329,0.8103092783505155,season,CQR,unseen (spatial blocks),24,0.1
+0,0.8859770482062274,0.7310541310541311,decile,CQR,unseen (spatial blocks),24,0.1
+1,0.9053794742887789,0.7845272206303725,decile,CQR,unseen (spatial blocks),24,0.1
+2,0.9151513637603722,0.7973593570608496,decile,CQR,unseen (spatial blocks),24,0.1
+3,0.9161929376450665,0.827054794520548,decile,CQR,unseen (spatial blocks),24,0.1
+4,0.914263804479264,0.7917620137299771,decile,CQR,unseen (spatial blocks),24,0.1
+5,0.9001559728802585,0.7734775184974388,decile,CQR,unseen (spatial blocks),24,0.1
+6,0.8891076081527564,0.7674285714285715,decile,CQR,unseen (spatial blocks),24,0.1
+7,0.8793756600172777,0.7661748013620885,decile,CQR,unseen (spatial blocks),24,0.1
+8,0.8766854465692332,0.7371134020618557,decile,CQR,unseen (spatial blocks),24,0.1
+9,0.8716135532003784,0.6456422018348624,decile,CQR,unseen (spatial blocks),24,0.1
+DJF,0.8713471837570678,0.7119502647939212,season,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+JJA,0.9033168108510204,0.7392978482446206,season,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+MAM,0.9047422743721486,0.8251415628539072,season,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+SON,0.9032191752576494,0.8174112256586483,season,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+0,0.8868210461995298,0.7418803418803419,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+1,0.9059244435163806,0.7919770773638969,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+2,0.9156777150696276,0.8019517795637199,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+3,0.9162164352157576,0.8299086757990868,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+4,0.9145131267537581,0.7963386727688787,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+5,0.9003407499404908,0.7808764940239044,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+6,0.889358542849485,0.7742857142857142,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+7,0.8795872356055326,0.7724177071509648,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+8,0.8768529363043219,0.740296803652968,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+9,0.8718142368001294,0.6456422018348624,decile,"ACI-CQR (gamma=0, expanding pool)",unseen (spatial blocks),24,0.1
+DJF,0.8993388534429423,0.8917597765363129,season,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+JJA,0.8979430345048077,0.8865861990434981,season,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+MAM,0.9025146027537789,0.8858437146092866,season,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+SON,0.8986498056489168,0.8817427385892116,season,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+0,0.8813071007320685,0.7992299229922992,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+1,0.9033058096836694,0.8780767029192902,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+2,0.9119390153338459,0.884373211219233,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+3,0.9163275606558768,0.8742791234140715,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+4,0.9150847005761559,0.8740022805017104,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+5,0.9002314125914957,0.8659440958357102,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+6,0.8922725204236994,0.8561682774303582,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+7,0.8891433632625702,0.8595088520845231,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+8,0.891708793406807,0.8420752565564424,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+9,0.8949156661756854,0.7928082191780822,decile,"ACI-CQR (gamma=0.005, pre-registered)",unseen (spatial blocks),24,0.1
+DJF,0.8847332411850358,0.8157955330416763,season,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+JJA,0.9012863984119454,0.8542941309766598,season,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+MAM,0.911392231257193,0.8439505041246563,season,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+SON,0.8982802198112608,0.8476256339326879,season,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+0,0.8902708993297255,0.8213470319634704,decile,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+1,0.9096585021295761,0.8797939324556382,decile,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+2,0.9174952738434698,0.8916143753565317,decile,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+3,0.9189635185185674,0.8713956170703575,decile,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+4,0.9167843972962527,0.8751425313568986,decile,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+5,0.903406300126005,0.869198312236287,decile,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+6,0.8918870500364298,0.8576329331046312,decile,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+7,0.8823190908259608,0.8480868075385494,decile,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+8,0.8794939533771887,0.8082191780821918,decile,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+9,0.8793706804743587,0.7144495412844036,decile,ACI-CQR-S (gamma source-selected),unseen (spatial blocks),24,0.1
+DJF,0.8863811054171292,0.847730937571988,season,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+JJA,0.894942598994742,0.868116927260367,season,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+MAM,0.8969057656408502,0.8635021576198046,season,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+SON,0.8920482151552921,0.8554633471645919,season,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+0,0.9432871449394402,0.8598183881952327,decile,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+1,0.9399841591032,0.8962371721778791,decile,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+2,0.9322457522332473,0.8865860679332181,decile,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+3,0.9221929242027107,0.8765859284890427,decile,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+4,0.9130563804650859,0.8588235294117647,decile,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+5,0.8944404176765367,0.8405545927209706,decile,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+6,0.8742004297801255,0.8298611111111112,decile,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+7,0.8521475357657406,0.7968036529680366,decile,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+8,0.830466528452449,0.7569880205362236,decile,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1
+9,0.8233448973444112,0.6943807339449541,decile,SCP-R4 (rolling 4-week target calibration),unseen (spatial blocks),24,0.1

@@ -1,0 +1,8 @@
+2026-10-16 15:10:34,599 rev_eval INFO gap/equivalence done
+2026-10-16 15:14:57,889 rev_eval INFO calibration revision unseen (random folds) h=24 done
+2026-10-16 15:19:19,266 rev_eval INFO calibration revision unseen (random folds) h=1 done
+2026-10-16 15:25:16,021 rev_eval INFO calibration revision unseen (spatial blocks) h=24 done
+2026-10-16 15:25:16,508 rev_eval INFO revision evaluation complete
+font used: Liberation Serif; 13 figures
+11185 numbers exported
+FINAL_EVAL_DONE

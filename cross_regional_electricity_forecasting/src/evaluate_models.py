@@ -313,7 +313,8 @@ def evaluate_probabilistic(cfg, horizons):
                 rows += r_; mrows += m_
                 # --- SCP-T4: calibrated on the target region's own last `tw` weeks before test
                 win = (p.time_utc > test_start - pd.Timedelta(weeks=tw)) & \
-                      (p.time_utc <= test_start - pd.Timedelta(hours=h)) & p.split.isin(["val_es", "val_cal"]) & \
+                      (p.time_utc <= test_start - pd.Timedelta(hours=h)) & \
+                      p.split.isin(["val_cal"] if setting == "in-region" else ["val_es", "val_cal"]) & \
                       p.eval_ok & np.isfinite(zhat)
                 qt = np.empty(len(te))
                 regs = te.region.astype(str).to_numpy()
